@@ -17,7 +17,8 @@ const puppeteer = require('C:\\Users\\Habib\\AppData\\Roaming\\npm\\node_modules
   const jobs = [
     { mode: 'blueprint', file: 'FloorPlan_2D_Engineering_Blueprint.png' },
     { mode: 'colored',   file: 'FloorPlan_2D_Luxury_Colored.png' },
-    { mode: '3d',        file: 'Apartment_3D_Isometric_Render.png' }
+    { mode: '3d',        file: 'Apartment_3D_Isometric_Render.png' },
+    { mode: 'walk',      file: 'Apartment_3D_Walkthrough_Interior.png' }
   ];
 
   for (const job of jobs) {

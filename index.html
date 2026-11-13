@@ -270,9 +270,91 @@
     /* Capture Mode for Ultra-Clean PNG Export */
     body.capture-mode header,
     body.capture-mode .ruler-status,
-    body.capture-mode .hud-bottom { display: none !important; }
+    body.capture-mode .hud-bottom,
+    body.capture-mode .walk-room-badge,
+    body.capture-mode #walkControlsHUD { display: none !important; }
     body.capture-mode aside { width: 340px; }
     body.capture-mode .controls-only { display: none !important; }
+
+    /* First-Person 3D Walkthrough On-Screen Controller HUD */
+    #walkControlsHUD {
+      position: absolute;
+      bottom: 62px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.90);
+      border: 1px solid #334155;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 20;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      user-select: none;
+    }
+    .walk-hud-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .walk-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 44px);
+      gap: 5px;
+      direction: ltr;
+    }
+    .walk-key {
+      height: 36px;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.1s;
+    }
+    .walk-key:hover { background: #334155; border-color: var(--accent-cyan); }
+    .walk-key:active, .walk-key.pressed { background: #0e7490; border-color: #22d3ee; transform: scale(0.95); }
+    .walk-key-wide {
+      grid-column: span 3;
+      height: 32px;
+      font-size: 11px;
+      background: linear-gradient(135deg, #0e7490, #1d4ed8);
+      border-color: #38bdf8;
+    }
+    .walk-key-wide.recording {
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
+      border-color: #fca5a5;
+    }
+    .walk-room-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #38bdf8;
+      color: #f8fafc;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: none;
+      pointer-events: none;
+    }
+    .preset-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
   </style>
 </head>
 <body>
@@ -287,8 +369,9 @@
 
     <div class="tabs">
       <button class="tab-btn active" data-mode="blueprint" onclick="setMode('blueprint')">📐 مخطط 2D هندسي (CAD)</button>
-      <button class="tab-btn" data-mode="colored" onclick="setMode('colored')">🎨 مخطط 2D ملون بالفرش</button>
+      <button class="tab-btn" data-mode="colored" onclick="setMode('colored')">🎨 مخطط 2D ملون</button>
       <button class="tab-btn" data-mode="3d" onclick="setMode('3d')">🧊 نموذج 3D تفاعلي</button>
+      <button class="tab-btn" data-mode="walk" onclick="setMode('walk')">🚶 تجول داخلي 3D (تحكم حر)</button>
     </div>
 
     <div class="actions">
@@ -301,6 +384,21 @@
     <main class="viewport" id="viewport">
       <canvas id="mainCanvas"></canvas>
       <div class="ruler-status" id="rulerStatus">📏 اضغط نقطتين على الرسم لقياس المسافة بدقة</div>
+      <div class="walk-room-badge" id="walkRoomBadge">🚪 الموقع الحالي: مدخل الشقة</div>
+      <div id="walkControlsHUD">
+        <div class="walk-hud-title">
+          <span>🎮 تحكم التجول (WASD / أسهم + سحب)</span>
+        </div>
+        <div class="walk-pad">
+          <button class="walk-key" data-walk-key="KeyQ" title="التفاف يسار (Q)">↶</button>
+          <button class="walk-key" data-walk-key="KeyW" title="تقدم للأمام (W / ↑)">▲</button>
+          <button class="walk-key" data-walk-key="KeyE" title="التفاف يمين (E)">↷</button>
+          <button class="walk-key" data-walk-key="KeyA" title="حركة جانبية يسار (A)">◀</button>
+          <button class="walk-key" data-walk-key="KeyS" title="رجوع للخلف (S / ↓)">▼</button>
+          <button class="walk-key" data-walk-key="KeyD" title="حركة جانبية يمين (D)">▶</button>
+          <button class="walk-key walk-key-wide" id="walkHudTourBtn" onclick="toggleAutoTour()">🎬 تشغيل / إيقاف جولة الفيديو التلقائية</button>
+        </div>
+      </div>
       <div class="hud-bottom" id="hudBottom">
         <span>المساحة الكلية: <strong>12.50 × 8.05 م (100.6 م²)</strong></span>
         <span>الصافي الداخلي: <strong>97.84 م²</strong></span>
@@ -318,7 +416,7 @@
           <label class="toggle-label"><input type="checkbox" id="chkCols" checked onchange="redraw()"> الأعمدة الخرسانية والمخدات</label>
         </div>
         <div class="control-row">
-          <label class="toggle-label"><input type="checkbox" id="chkFurn" checked onchange="redraw()"> توزيع الأثاث والفرش المقترح</label>
+          <label class="toggle-label"><input type="checkbox" id="chkFurn" onchange="redraw()"> توزيع الأثاث والفرش المقترح</label>
         </div>
         <div class="control-row">
           <label class="toggle-label"><input type="checkbox" id="chkUtils" checked onchange="redraw()"> المرافق (كهرباء / غاز / سخان / صرف)</label>
@@ -335,7 +433,7 @@
           <input type="range" id="wallHSlider" min="40" max="290" value="270" oninput="update3DSettings()">
         </div>
         <div class="control-row">
-          <label class="toggle-label"><input type="checkbox" id="chk3DFurn" checked onchange="update3DSettings()"> إظهار الفرش 3D</label>
+          <label class="toggle-label"><input type="checkbox" id="chk3DFurn" onchange="update3DSettings()"> إظهار الفرش 3D</label>
         </div>
         <div class="control-row">
           <label class="toggle-label"><input type="checkbox" id="chk3DLabels" checked onchange="update3DSettings()"> أسماء وأبعاد الغرف</label>
@@ -351,6 +449,37 @@
             <button class="preset-btn" onclick="set3DCamera('reception')">الصالة والمطبخ</button>
             <button class="preset-btn" onclick="set3DCamera('bedrooms')">الغرف والصالون</button>
           </div>
+        </div>
+      </div>
+
+      <div class="card controls-only" id="controlsWalkCard" style="display:none;">
+        <h3><span>🚶 تحكم التجول الداخلي 3D</span></h3>
+        <div class="control-row">
+          <label class="toggle-label"><input type="checkbox" id="chkWalkCeiling" checked onchange="redraw()"> إظهار الأسقف والعتب</label>
+        </div>
+        <div class="control-row">
+          <label class="toggle-label"><input type="checkbox" id="chkWalkFurn" onchange="redraw()"> إظهار الأثاث بالداخل</label>
+        </div>
+        <div class="control-row">
+          <label class="toggle-label"><input type="checkbox" id="chkWalkCollide" checked> منع اختراق الحوائط (اصطدام)</label>
+        </div>
+        <div style="margin-top:8px;">
+          <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;">انتقال سريع للغرف (أو اضغط على الرادار):</div>
+          <div class="preset-grid-3">
+            <button class="preset-btn" onclick="jumpWalkRoom('door')">باب الشقة</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('reception')">الصالة</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('kitchen')">المطبخ</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('entry')">المدخل</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('bath')">الحمام</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('salon')">الصالون</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('kids')">أطفال</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('master')">الماستر</button>
+            <button class="preset-btn" onclick="jumpWalkRoom('balcony')">البلكونة</button>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:10px;">
+          <button class="btn" id="walkTourBtn" style="flex:1;" onclick="toggleAutoTour()">🎬 جولة تلقائية</button>
+          <button class="btn btn-gold" id="walkRecordBtn" style="flex:1;" onclick="toggleVideoRecord()">🎥 تسجيل فيديو</button>
         </div>
       </div>
 
@@ -542,6 +671,24 @@ let cam3D = {
   targetZ: 100
 };
 
+// First-Person 3D Walkthrough State
+let walkCam = {
+  x: 458,
+  y: 420,
+  z: 162,
+  yaw: -0.85,
+  pitch: -0.04
+};
+const walkKeys = {};
+let walkRafId = null;
+let walkLastTs = 0;
+let walkTourActive = false;
+let walkTourT = 0;
+let walkMediaRecorder = null;
+let walkRecordedChunks = [];
+let miniMapRect = null;
+let _walkSolidCache = null;
+
 function resizeCanvas() {
   const rect = canvas.parentElement.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
@@ -565,13 +712,28 @@ function fit2DToViewport() {
 function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-  document.getElementById('layers2DCard').style.display = (mode === '3d') ? 'none' : 'block';
+  const is2D = (mode === 'blueprint' || mode === 'colored');
+  document.getElementById('layers2DCard').style.display = is2D ? 'block' : 'none';
   document.getElementById('controls3DCard').style.display = (mode === '3d') ? 'block' : 'none';
-  document.getElementById('rulerToggleBtn').style.display = (mode === '3d') ? 'none' : 'inline-block';
+  document.getElementById('controlsWalkCard').style.display = (mode === 'walk') ? 'block' : 'none';
+  document.getElementById('rulerToggleBtn').style.display = is2D ? 'inline-block' : 'none';
+  document.getElementById('walkControlsHUD').style.display = (mode === 'walk') ? 'flex' : 'none';
+  document.getElementById('walkRoomBadge').style.display = (mode === 'walk') ? 'block' : 'none';
+
+  if (mode !== 'walk') {
+    stopWalkTour();
+    Object.keys(walkKeys).forEach(k => delete walkKeys[k]);
+  }
+
   if (mode === '3d') {
     rulerActive = false;
     document.getElementById('rulerStatus').style.display = 'none';
     document.getElementById('hudHint').textContent = 'اسحب بالماوس لتدوير المجسم 360° • العجلة للتكبير والتصغير';
+  } else if (mode === 'walk') {
+    rulerActive = false;
+    document.getElementById('rulerStatus').style.display = 'none';
+    document.getElementById('hudHint').textContent = 'تحرك بـ WASD أو الأسهم • اسحب بالماوس للالتفات • اضغط على الخريطة للانتقال';
+    updateWalkRoomBadge();
   } else {
     document.getElementById('hudHint').textContent = 'اسحب للتحريك • عجلة الماوس للتكبير • اضغط مسطرة القياس لحساب أي مسافة';
     fit2DToViewport();
@@ -617,13 +779,32 @@ function exportPNG() {
 }
 
 // ============================================================================
-// 3. MOUSE INTERACTION (PAN/ZOOM 2D, ORBIT 3D, RULER)
+// 3. MOUSE & KEYBOARD INTERACTION (PAN/ZOOM 2D, ORBIT 3D, WALK FPS, RULER)
 // ============================================================================
 canvas.addEventListener('mousedown', e => {
   const rect = canvas.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
-  if (currentMode !== '3d' && rulerActive) {
+
+  if (currentMode === 'walk' && miniMapRect) {
+    if (mx >= miniMapRect.boxX && mx <= miniMapRect.boxX + miniMapRect.boxW &&
+        my >= miniMapRect.boxY && my <= miniMapRect.boxY + miniMapRect.boxH) {
+      const tx = (mx - miniMapRect.x) / miniMapRect.s;
+      const ty = (my - miniMapRect.y) / miniMapRect.s;
+      if (tx >= 0 && tx <= APT.W && ty >= 0 && ty <= APT.H) {
+        stopWalkTour();
+        if (!document.getElementById('chkWalkCollide').checked || canStandAt(tx, ty)) {
+          walkCam.x = tx;
+          walkCam.y = ty;
+          updateWalkRoomBadge();
+          redraw();
+        }
+      }
+      return;
+    }
+  }
+
+  if ((currentMode === 'blueprint' || currentMode === 'colored') && rulerActive) {
     const wx = (mx - pan2D.x) / pan2D.scale;
     const wy = (my - pan2D.y) / pan2D.scale;
     if (rulerPts.length >= 2) rulerPts = [];
@@ -649,6 +830,10 @@ window.addEventListener('mousemove', e => {
   if (currentMode === '3d') {
     cam3D.yaw -= dx * 0.007;
     cam3D.pitch = Math.max(0.18, Math.min(1.52, cam3D.pitch + dy * 0.007));
+  } else if (currentMode === 'walk') {
+    stopWalkTour();
+    walkCam.yaw += dx * 0.0045;
+    walkCam.pitch = Math.max(-0.55, Math.min(0.55, walkCam.pitch - dy * 0.004));
   } else {
     pan2D.x += dx;
     pan2D.y += dy;
@@ -662,6 +847,10 @@ canvas.addEventListener('wheel', e => {
   e.preventDefault();
   if (currentMode === '3d') {
     cam3D.dist = Math.max(600, Math.min(3400, cam3D.dist + e.deltaY * 1.1));
+  } else if (currentMode === 'walk') {
+    stopWalkTour();
+    const step = e.deltaY < 0 ? 32 : -32;
+    moveWalkCamera(Math.cos(walkCam.yaw) * step, Math.sin(walkCam.yaw) * step);
   } else {
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
@@ -674,6 +863,21 @@ canvas.addEventListener('wheel', e => {
   redraw();
 }, { passive: false });
 
+window.addEventListener('keydown', e => {
+  if (currentMode !== 'walk') return;
+  if (e.target && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+  if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+    e.preventDefault();
+    stopWalkTour();
+    walkKeys[e.code] = true;
+    ensureWalkLoop();
+  }
+});
+
+window.addEventListener('keyup', e => {
+  if (walkKeys[e.code]) delete walkKeys[e.code];
+});
+
 // ============================================================================
 // 4. 2D ARCHITECTURAL RENDERER (BLUEPRINT CAD & LUXURY COLORED)
 // ============================================================================
@@ -683,6 +887,8 @@ function redraw() {
   ctx.clearRect(0, 0, W, H);
   if (currentMode === '3d') {
     render3DScene(W, H);
+  } else if (currentMode === 'walk') {
+    renderWalkScene(W, H);
   } else {
     render2DPlan(W, H, currentMode === 'blueprint');
   }
@@ -1348,7 +1554,8 @@ function render3DScene(W, H) {
     const bx = isH ? Math.min(w.x1, w.x2) : w.x1 - w.t / 2;
     const by = isH ? w.y1 - w.t / 2 : Math.min(w.y1, w.y2);
     const bw = isH ? Math.abs(w.x2 - w.x1) : w.t;
-    const bd = isH ? w.t : Math.abs(w.y2 - w.y1);
+    let bd = isH ? w.t : Math.abs(w.y2 - w.y1);
+    if (!isH && w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) bd -= 7;
 
     let cWall = '#efe2b8';
     let cSide = '#dfd0a0';
@@ -1509,6 +1716,602 @@ function render3DScene(W, H) {
   }
 }
 
+// ============================================================================
+// 6. FIRST-PERSON 3D INTERIOR WALKTHROUGH ENGINE (SUTHERLAND-HODGMAN CLIP)
+// ============================================================================
+const WALK_TOUR_PATH = [
+  { x: 490,  y: 480, yaw: -1.57, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
+  { x: 490,  y: 315, yaw: -1.42, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
+  { x: 525,  y: 195, yaw: -0.35, pitch: -0.05 }, // 2: استعراض الصالة والشباك
+  { x: 445,  y: 195, yaw: -2.95, pitch: -0.05 }, // 3: الالتفات غرباً نحو المطبخ والمدخل
+  { x: 335,  y: 280, yaw: -3.12, pitch: -0.06 }, // 4: أمام باب المطبخ
+  { x: 335,  y: 420, yaw:  2.75, pitch: -0.06 }, // 5: المرور بركن الغسالة
+  { x: 335,  y: 575, yaw:  2.95, pitch: -0.06 }, // 6: أمام باب الحمام
+  { x: 335,  y: 705, yaw:  1.60, pitch: -0.05 }, // 7: نهاية المدخل أمام باب الصالون
+  { x: 328,  y: 890, yaw:  2.25, pitch: -0.05 }, // 8: داخل الصالون باتجاه الشباك
+  { x: 330,  y: 830, yaw: -1.56, pitch: -0.04 }, // 9: الالتفات شمالاً أمام باب الصالون
+  { x: 332,  y: 710, yaw: -1.56, pitch: -0.04 }, // 10: الخروج مباشرة لممر الطرقة
+  { x: 365,  y: 710, yaw:  0.04, pitch: -0.04 }, // 11: الاتجاه شرقاً عبر الطرقة
+  { x: 510,  y: 710, yaw:  0.22, pitch: -0.04 }, // 12: منتصف الطرقة
+  { x: 630,  y: 712, yaw:  1.42, pitch: -0.05 }, // 13: أمام باب غرفة الأطفال
+  { x: 785,  y: 710, yaw:  0.04, pitch: -0.04 }, // 14: التوجه لباب الماستر
+  { x: 965,  y: 710, yaw:  0.65, pitch: -0.05 }, // 15: الدخول لغرفة الماستر
+  { x: 1045, y: 865, yaw:  0.95, pitch: -0.05 }, // 16: داخل الماستر باتجاه الشباك
+  { x: 1120, y: 715, yaw:  0.02, pitch: -0.04 }, // 17: أمام باب البلكونة
+  { x: 1252, y: 715, yaw: -1.52, pitch: -0.03 }, // 18: الخروج للبلكونة والنظر شمالاً
+  { x: 1252, y: 835, yaw: -1.96, pitch: -0.04 }, // 19: لقطة ختامية للبلكونة المتدرجة وباب الماستر
+];
+
+function getWalkSolidBoxes() {
+  if (_walkSolidCache) return _walkSolidCache;
+  const boxes = [];
+  APT.walls.forEach(w => {
+    const isH = Math.abs(w.y2 - w.y1) < 1;
+    const x1 = isH ? Math.min(w.x1, w.x2) : w.x1 - w.t / 2;
+    const y1 = isH ? w.y1 - w.t / 2 : Math.min(w.y1, w.y2);
+    const x2 = isH ? Math.max(w.x1, w.x2) : w.x1 + w.t / 2;
+    const y2 = isH ? w.y1 + w.t / 2 : Math.max(w.y1, w.y2);
+    boxes.push([x1, y1, x2, y2]);
+  });
+  APT.windows.forEach(win => {
+    const isH = win.y1 === win.y2;
+    boxes.push([
+      isH ? win.x1 : win.x1 - 7,
+      isH ? win.y1 - 7 : win.y1,
+      isH ? win.x2 : win.x1 + 7,
+      isH ? win.y1 + 7 : win.y2
+    ]);
+  });
+  // Lightwell shaft + Balcony railings
+  boxes.push([APT.shaft.x, APT.shaft.y, APT.shaft.x + APT.shaft.w, APT.shaft.y + APT.shaft.h]);
+  boxes.push([885, 0, 897, 570]);
+  boxes.push([885, 570, 1300, 582]);
+  boxes.push([1288, 570, 1300, 1180]);
+  boxes.push([1210, 1168, 1300, 1180]);
+  _walkSolidCache = boxes;
+  return boxes;
+}
+
+function canStandAt(x, y) {
+  if (x < -10 || x > APT.W + 10 || y < -10 || y > APT.H + 10) return false;
+  const r = 15;
+  const boxes = getWalkSolidBoxes();
+  for (let i = 0; i < boxes.length; i++) {
+    const b = boxes[i];
+    if (x + r > b[0] && x - r < b[2] && y + r > b[1] && y - r < b[3]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function moveWalkCamera(dx, dy) {
+  const collide = document.getElementById('chkWalkCollide').checked;
+  if (!collide) {
+    walkCam.x += dx;
+    walkCam.y += dy;
+  } else {
+    if (canStandAt(walkCam.x + dx, walkCam.y)) walkCam.x += dx;
+    if (canStandAt(walkCam.x, walkCam.y + dy)) walkCam.y += dy;
+  }
+  updateWalkRoomBadge();
+}
+
+function getWalkRoomName(x, y) {
+  if (x >= 440 && x <= 540 && y >= 375 && y <= 415) return 'باب الشقة الرئيسي';
+  for (let i = 0; i < APT.rooms.length; i++) {
+    const r = APT.rooms[i];
+    if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+      return r.id.startsWith('balcony') ? 'البلكونة' : r.name;
+    }
+  }
+  return 'حدود الشقة';
+}
+
+function updateWalkRoomBadge() {
+  const badge = document.getElementById('walkRoomBadge');
+  if (badge) badge.textContent = '📍 الموقع الحالي: ' + getWalkRoomName(walkCam.x, walkCam.y);
+}
+
+function jumpWalkRoom(roomId) {
+  stopWalkTour();
+  const presets = {
+    door:      { x: 490,  y: 455, yaw: -1.57, pitch: -0.03 },
+    reception: { x: 495,  y: 215, yaw: -0.25, pitch: -0.05 },
+    kitchen:   { x: 165,  y: 270, yaw: -2.25, pitch: -0.06 },
+    entry:     { x: 335,  y: 455, yaw:  1.57, pitch: -0.04 },
+    bath:      { x: 185,  y: 585, yaw:  2.85, pitch: -0.06 },
+    salon:     { x: 325,  y: 855, yaw:  2.35, pitch: -0.05 },
+    kids:      { x: 655,  y: 865, yaw:  1.45, pitch: -0.05 },
+    master:    { x: 1020, y: 840, yaw:  0.72, pitch: -0.05 },
+    balcony:   { x: 1255, y: 840, yaw: -1.65, pitch: -0.04 },
+  };
+  const p = presets[roomId] || presets.door;
+  walkCam.x = p.x;
+  walkCam.y = p.y;
+  walkCam.z = 162;
+  walkCam.yaw = p.yaw;
+  walkCam.pitch = p.pitch;
+  if (currentMode !== 'walk') setMode('walk');
+  else { updateWalkRoomBadge(); redraw(); }
+}
+
+function lerpAngle(a, b, t) {
+  let d = b - a;
+  while (d > Math.PI) d -= Math.PI * 2;
+  while (d < -Math.PI) d += Math.PI * 2;
+  return a + d * t;
+}
+
+window.setTourProgress = function(t) {
+  const clamped = Math.max(0, Math.min(1, t));
+  const segCount = WALK_TOUR_PATH.length - 1;
+  const scaled = clamped * segCount;
+  const idx = Math.min(segCount - 1, Math.floor(scaled));
+  const f = scaled - idx;
+  const p0 = WALK_TOUR_PATH[idx];
+  const p1 = WALK_TOUR_PATH[idx + 1];
+  const smoothF = 0.5 - 0.5 * Math.cos(f * Math.PI);
+  walkCam.x = p0.x + (p1.x - p0.x) * f;
+  walkCam.y = p0.y + (p1.y - p0.y) * f;
+  walkCam.z = 162;
+  walkCam.yaw = lerpAngle(p0.yaw, p1.yaw, smoothF);
+  walkCam.pitch = p0.pitch + (p1.pitch - p0.pitch) * smoothF;
+  updateWalkRoomBadge();
+  redraw();
+};
+
+function updateWalkTourUI() {
+  const btn = document.getElementById('walkTourBtn');
+  const hudBtn = document.getElementById('walkHudTourBtn');
+  if (btn) btn.textContent = walkTourActive ? '⏸️ إيقاف الجولة' : '🎬 جولة تلقائية';
+  if (hudBtn) hudBtn.textContent = walkTourActive ? '⏸️ إيقاف جولة الفيديو التلقائية' : '🎬 تشغيل / إيقاف جولة الفيديو التلقائية';
+}
+
+function stopWalkTour() {
+  if (walkTourActive) {
+    walkTourActive = false;
+    updateWalkTourUI();
+  }
+}
+
+function toggleAutoTour() {
+  walkTourActive = !walkTourActive;
+  if (walkTourActive) {
+    if (walkTourT >= 0.99) walkTourT = 0;
+    ensureWalkLoop();
+  }
+  updateWalkTourUI();
+}
+
+function toggleVideoRecord() {
+  const btn = document.getElementById('walkRecordBtn');
+  if (walkMediaRecorder && walkMediaRecorder.state === 'recording') {
+    walkMediaRecorder.stop();
+    return;
+  }
+  if (typeof canvas.captureStream !== 'function' || typeof MediaRecorder === 'undefined') {
+    alert('متصفحك لا يدعم التسجيل المباشر من اللوحة. استخدم ملف MP4 المرفق بالمجلد.');
+    return;
+  }
+  const stream = canvas.captureStream(30);
+  const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+  walkRecordedChunks = [];
+  walkMediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 4000000 });
+  walkMediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) walkRecordedChunks.push(e.data); };
+  walkMediaRecorder.onstop = () => {
+    const blob = new Blob(walkRecordedChunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Zedan_Apartment_Walkthrough.webm';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (btn) btn.textContent = '🎥 تسجيل فيديو';
+  };
+  walkMediaRecorder.start();
+  if (btn) btn.textContent = '⏹️ إيقاف وحفظ';
+  if (!walkTourActive) {
+    walkTourT = 0;
+    walkTourActive = true;
+    updateWalkTourUI();
+    ensureWalkLoop();
+  }
+}
+
+function ensureWalkLoop() {
+  if (walkRafId) return;
+  walkLastTs = 0;
+  walkRafId = requestAnimationFrame(stepWalkLoop);
+}
+
+function stepWalkLoop(ts) {
+  walkRafId = null;
+  if (currentMode !== 'walk') return;
+  const dt = walkLastTs ? Math.min(0.06, (ts - walkLastTs) / 1000) : 0.016;
+  walkLastTs = ts;
+
+  let dirty = false;
+  if (walkTourActive) {
+    walkTourT += dt / 18.0; // 18-second full apartment walkthrough
+    if (walkTourT >= 1) {
+      walkTourT = 1;
+      window.setTourProgress(1);
+      stopWalkTour();
+      if (walkMediaRecorder && walkMediaRecorder.state === 'recording') {
+        walkMediaRecorder.stop();
+      }
+      return;
+    }
+    window.setTourProgress(walkTourT);
+    walkRafId = requestAnimationFrame(stepWalkLoop);
+    return;
+  }
+
+  const moveSpeed = 165 * dt;
+  const turnSpeed = 1.65 * dt;
+  const fx = Math.cos(walkCam.yaw), fy = Math.sin(walkCam.yaw);
+  const rx = -fy, ry = fx;
+  let mx = 0, my = 0;
+
+  if (walkKeys['KeyW'] || walkKeys['ArrowUp'])    { mx += fx * moveSpeed; my += fy * moveSpeed; dirty = true; }
+  if (walkKeys['KeyS'] || walkKeys['ArrowDown'])  { mx -= fx * moveSpeed; my -= fy * moveSpeed; dirty = true; }
+  if (walkKeys['KeyD'])                           { mx += rx * moveSpeed; my += ry * moveSpeed; dirty = true; }
+  if (walkKeys['KeyA'])                           { mx -= rx * moveSpeed; my -= ry * moveSpeed; dirty = true; }
+  if (walkKeys['KeyQ'] || walkKeys['ArrowLeft'])  { walkCam.yaw -= turnSpeed; dirty = true; }
+  if (walkKeys['KeyE'] || walkKeys['ArrowRight']) { walkCam.yaw += turnSpeed; dirty = true; }
+
+  if (mx !== 0 || my !== 0) moveWalkCamera(mx, my);
+  if (dirty) redraw();
+  if (Object.keys(walkKeys).length > 0 || walkTourActive) {
+    walkRafId = requestAnimationFrame(stepWalkLoop);
+  }
+}
+
+function renderWalkScene(W, H) {
+  const wallH = 270;
+  const showCeiling = document.getElementById('chkWalkCeiling').checked;
+  const showFurn = document.getElementById('chkWalkFurn').checked;
+  const focal = H * 0.88;
+  const NEAR_Z = 16;
+
+  // Orthonormal camera basis in floorplan coordinates (x East, y South, z Up)
+  const fx0 = Math.cos(walkCam.yaw), fy0 = Math.sin(walkCam.yaw);
+  const rx = -fy0, ry = fx0; // Right vector
+  const cp = Math.cos(walkCam.pitch), sp = Math.sin(walkCam.pitch);
+  const fx = fx0 * cp, fy = fy0 * cp, fz = sp; // Forward vector
+  const ux = -fx0 * sp, uy = -fy0 * sp, uz = cp; // Up vector
+
+  // Sky & Outdoor Ground Horizon Background
+  const horizonY = Math.max(-H, Math.min(2 * H, H / 2 + Math.tan(walkCam.pitch) * focal));
+  const skyGrad = ctx.createLinearGradient(0, Math.max(0, horizonY - H * 0.8), 0, Math.max(10, horizonY));
+  skyGrad.addColorStop(0, '#0284c7');
+  skyGrad.addColorStop(0.55, '#38bdf8');
+  skyGrad.addColorStop(1, '#e0f2fe');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, W, Math.max(0, horizonY + 2));
+
+  const groundGrad = ctx.createLinearGradient(0, Math.max(0, horizonY), 0, H);
+  groundGrad.addColorStop(0, '#334155');
+  groundGrad.addColorStop(1, '#0f172a');
+  ctx.fillStyle = groundGrad;
+  ctx.fillRect(0, Math.max(0, horizonY), W, H - Math.max(0, horizonY));
+
+  const faces = [];
+
+  function toCam(px, py, pz) {
+    const dx = px - walkCam.x, dy = py - walkCam.y, dz = pz - walkCam.z;
+    return {
+      vx: dx * rx + dy * ry,
+      vy: dx * ux + dy * uy + dz * uz,
+      vz: dx * fx + dy * fy + dz * fz
+    };
+  }
+
+  function pushWalkQuad(pts3D, col, strokeCol, layer, lineW = 0.7) {
+    // Convert vertices to camera space & Sutherland-Hodgman near-plane clip (vz >= NEAR_Z)
+    let poly = pts3D.map(p => toCam(p[0], p[1], p[2]));
+    const clipped = [];
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i];
+      const b = poly[(i + 1) % poly.length];
+      const inA = a.vz >= NEAR_Z;
+      const inB = b.vz >= NEAR_Z;
+      if (inA && inB) {
+        clipped.push(b);
+      } else if (inA && !inB) {
+        const t = (NEAR_Z - a.vz) / (b.vz - a.vz);
+        clipped.push({ vx: a.vx + (b.vx - a.vx) * t, vy: a.vy + (b.vy - a.vy) * t, vz: NEAR_Z });
+      } else if (!inA && inB) {
+        const t = (NEAR_Z - a.vz) / (b.vz - a.vz);
+        clipped.push({ vx: a.vx + (b.vx - a.vx) * t, vy: a.vy + (b.vy - a.vy) * t, vz: NEAR_Z });
+        clipped.push(b);
+      }
+    }
+    if (clipped.length < 3) return;
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    let sumVx = 0, sumVy = 0, sumVz = 0;
+    const screenPts = [];
+    for (let i = 0; i < clipped.length; i++) {
+      const c = clipped[i];
+      sumVx += c.vx; sumVy += c.vy; sumVz += c.vz;
+      const sx = W / 2 + (c.vx / c.vz) * focal;
+      const sy = H / 2 - (c.vy / c.vz) * focal;
+      if (sx < minX) minX = sx; if (sx > maxX) maxX = sx;
+      if (sy < minY) minY = sy; if (sy > maxY) maxY = sy;
+      screenPts.push([sx, sy]);
+    }
+    if (maxX < -60 || minX > W + 60 || maxY < -60 || minY > H + 60) return;
+
+    const n = clipped.length;
+    const avgVx = sumVx / n, avgVy = sumVy / n, avgVz = sumVz / n;
+    const horizFwd = avgVz * cp - avgVy * sp;
+    const vertUp = avgVz * sp + avgVy * cp;
+    const depth = Math.hypot(avgVx, horizFwd) + Math.abs(vertUp) * 0.0005;
+    faces.push({ layer, depth, pts: screenPts, col, stroke: strokeCol || col, lineW });
+  }
+
+  function addSubQuad(p0, uVec, vVec, nu, nv, col, strokeCol, layer, lineW) {
+    for (let iu = 0; iu < nu; iu++) {
+      const u1 = iu / nu, u2 = (iu + 1) / nu;
+      for (let iv = 0; iv < nv; iv++) {
+        const v1 = iv / nv, v2 = (iv + 1) / nv;
+        const a = [p0[0] + uVec[0]*u1 + vVec[0]*v1, p0[1] + uVec[1]*u1 + vVec[1]*v1, p0[2] + uVec[2]*u1 + vVec[2]*v1];
+        const b = [p0[0] + uVec[0]*u2 + vVec[0]*v1, p0[1] + uVec[1]*u2 + vVec[1]*v1, p0[2] + uVec[2]*u2 + vVec[2]*v1];
+        const c = [p0[0] + uVec[0]*u2 + vVec[0]*v2, p0[1] + uVec[1]*u2 + vVec[1]*v2, p0[2] + uVec[2]*u2 + vVec[2]*v2];
+        const d = [p0[0] + uVec[0]*u1 + vVec[0]*v2, p0[1] + uVec[1]*u1 + vVec[1]*v2, p0[2] + uVec[2]*u1 + vVec[2]*v2];
+        pushWalkQuad([a, b, c, d], col, strokeCol, layer, lineW);
+      }
+    }
+  }
+
+  function addWalkBox(x, y, z, w, d, h, cols, layer = 2, maxXY = 70, maxZ = 95, strokeCol = null) {
+    const x1 = x, x2 = x + w, y1 = y, y2 = y + d, z1 = z, z2 = z + h;
+    const nx = Math.max(1, Math.ceil(w / maxXY));
+    const ny = Math.max(1, Math.ceil(d / maxXY));
+    const nz = Math.max(1, Math.ceil(h / maxZ));
+    if (cols.top && walkCam.z > z2)       addSubQuad([x1, y1, z2], [w, 0, 0], [0, d, 0], nx, ny, cols.top, strokeCol || cols.top, layer, 0.7);
+    if (cols.bottom && walkCam.z < z1)    addSubQuad([x1, y1, z1], [w, 0, 0], [0, d, 0], nx, ny, cols.bottom, strokeCol || cols.bottom, layer, 0.7);
+    if (cols.north && walkCam.y < y1)     addSubQuad([x1, y1, z1], [w, 0, 0], [0, 0, h], nx, nz, cols.north, strokeCol || cols.north, layer, 0.7);
+    if (cols.south && walkCam.y > y2)     addSubQuad([x1, y2, z1], [w, 0, 0], [0, 0, h], nx, nz, cols.south, strokeCol || cols.south, layer, 0.7);
+    if (cols.west && walkCam.x < x1)      addSubQuad([x1, y1, z1], [0, d, 0], [0, 0, h], ny, nz, cols.west, strokeCol || cols.west, layer, 0.7);
+    if (cols.east && walkCam.x > x2)      addSubQuad([x2, y1, z1], [0, d, 0], [0, 0, h], ny, nz, cols.east, strokeCol || cols.east, layer, 0.7);
+  }
+
+  // 1. Room Floors (60cm architectural tile grid) & Ceilings (layer 1)
+  APT.rooms.forEach(r => {
+    let fCol = '#e7d9c4';
+    if (r.floor === 'kitchen_tile') fCol = '#a67b5b';
+    else if (r.floor === 'bath_tile') fCol = '#9b7152';
+    else if (r.floor === 'white_marble') fCol = '#e2e8f0';
+    else if (r.floor === 'balcony') fCol = '#d29478';
+    else if (r.floor === 'stair') fCol = '#94a3b8';
+    else if (r.floor === 'corridor') fCol = '#dccbb2';
+
+    const nx = Math.max(1, Math.ceil(r.w / 60));
+    const ny = Math.max(1, Math.ceil(r.h / 60));
+    addSubQuad([r.x, r.y, 3], [r.w, 0, 0], [0, r.h, 0], nx, ny, fCol, 'rgba(100,82,62,0.28)', 1, 0.7);
+
+    // Interior Ceilings (skip open-air balconies)
+    if (showCeiling && !r.id.startsWith('balcony')) {
+      const ceilCol = r.gypsum ? '#f1f5f9' : '#e2e8f0';
+      const cNx = Math.max(1, Math.ceil(r.w / 85));
+      const cNy = Math.max(1, Math.ceil(r.h / 85));
+      addSubQuad([r.x, r.y, wallH], [r.w, 0, 0], [0, r.h, 0], cNx, cNy, ceilCol, 'rgba(148,163,184,0.18)', 1, 0.6);
+      if (r.gypsum && r.w > 180 && r.h > 180) {
+        const m = 45;
+        addSubQuad([r.x + m, r.y + m, wallH - 3], [r.w - m * 2, 0, 0], [0, r.h - m * 2, 0],
+          Math.max(1, Math.ceil((r.w - m*2)/90)), Math.max(1, Math.ceil((r.h - m*2)/90)),
+          '#f8fafc', 'rgba(253, 224, 71, 0.35)', 1, 1.1);
+      }
+    }
+  });
+
+  // 2. Full-Height Architectural Walls (layer 2)
+  function wallColors(mat) {
+    if (mat === 'striped_brown') return { top: '#cbd5e1', bottom: '#6f4b32', north: '#8c6244', south: '#855c3f', west: '#6f4b32', east: '#785136' };
+    if (mat === 'terracotta')    return { top: '#cbd5e1', bottom: '#bd6f53', north: '#d98a6c', south: '#cf8063', west: '#bd6f53', east: '#c47558' };
+    return { top: '#e2e8f0', bottom: '#d4c392', north: '#efe2b8', south: '#e9dbb0', west: '#dacb9b', east: '#dfd0a0' };
+  }
+
+  APT.walls.forEach(w => {
+    const isH = Math.abs(w.y2 - w.y1) < 1;
+    const bx = isH ? Math.min(w.x1, w.x2) : w.x1 - w.t / 2;
+    const by = isH ? w.y1 - w.t / 2 : Math.min(w.y1, w.y2);
+    const bw = isH ? Math.abs(w.x2 - w.x1) : w.t;
+    let bd = isH ? w.t : Math.abs(w.y2 - w.y1);
+    if (!isH && w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) bd -= 7;
+    const baseCols = w.mat === 'striped_brown'
+      ? { north: '#593d28', south: '#543925', west: '#452e1d', east: '#4c3321' }
+      : (w.mat === 'terracotta'
+        ? { north: '#9e5840', south: '#96523b', west: '#854631', east: '#8c4b35' }
+        : { north: '#b89f74', south: '#b0976c', west: '#9e865d', east: '#a68d64' });
+    addWalkBox(bx, by, 3, bw, bd, 10, baseCols, 2, 65, 20);
+    addWalkBox(bx, by, 13, bw, bd, wallH - 13, wallColors(w.mat), 2, 65, 90);
+  });
+
+  // Stairwell decorative steps on East side of stair hall (clear of doorway x=440..540)
+  for (let st = 0; st < 7; st++) {
+    const sx = 595 + st * 26;
+    const sh = (st + 1) * 16;
+    addWalkBox(sx, 405, 3, 26, 115, sh, {
+      top: '#cbd5e1', bottom: '#64748b', north: '#94a3b8', south: '#94a3b8', west: '#64748b', east: '#94a3b8'
+    }, 2, 40, 40, 'rgba(30,41,59,0.28)');
+  }
+
+  // 3. Doorway Lintels (z = 215..270) & Wooden Door Frames + Archways
+  if (showCeiling) {
+    const cCream = wallColors('cream');
+    const wood = { top: '#78350f', bottom: '#78350f', north: '#92400e', south: '#92400e', west: '#78350f', east: '#78350f' };
+    const alum = { top: '#475569', bottom: '#475569', north: '#334155', south: '#334155', west: '#1e293b', east: '#1e293b' };
+
+    // Reception-to-Entry Decorative Arch Header (x=245..422, y=388)
+    addWalkBox(245, 381, 225, 177, 14, wallH - 225, cCream, 2, 65, 50);
+    // Washer Alcove Header (x=245, y=355..465)
+    addWalkBox(239, 355, 222, 12, 110, wallH - 222, cCream, 2, 65, 50);
+
+    APT.doors.forEach(d => {
+      const lintelZ = 215;
+      const isAlum = d.name === 'باب البلكونة';
+      const frameCol = isAlum ? alum : wood;
+      if (d.dir === 'h') {
+        addWalkBox(d.hx, d.hy - 7, lintelZ, d.w, 14, wallH - lintelZ, cCream, 2, 55, 55);
+        addWalkBox(d.hx, d.hy - 8, 3, 4, 16, lintelZ - 3, frameCol, 2, 20, 75);
+        addWalkBox(d.hx + d.w - 4, d.hy - 8, 3, 4, 16, lintelZ - 3, frameCol, 2, 20, 75);
+        addWalkBox(d.hx, d.hy - 8, lintelZ - 4, d.w, 16, 4, frameCol, 2, 55, 20);
+      } else {
+        addWalkBox(d.hx - 7, d.hy, lintelZ, 14, d.w, wallH - lintelZ, cCream, 2, 55, 55);
+        addWalkBox(d.hx - 8, d.hy, 3, 16, 4, lintelZ - 3, frameCol, 2, 20, 75);
+        addWalkBox(d.hx - 8, d.hy + d.w - 4, 3, 16, 4, lintelZ - 3, frameCol, 2, 20, 75);
+        addWalkBox(d.hx - 8, d.hy, lintelZ - 4, 16, d.w, 4, frameCol, 2, 55, 20);
+      }
+    });
+  }
+
+  // 4. Windows: Lower Sill Wall + Center Translucent Glass + Upper Header Wall
+  APT.windows.forEach(win => {
+    const isH = win.y1 === win.y2;
+    const bx = isH ? win.x1 : win.x1 - 7;
+    const by = isH ? win.y1 - 7 : win.y1;
+    const bw = isH ? (win.x2 - win.x1) : 14;
+    const bd = isH ? 14 : (win.y2 - win.y1);
+    const cSill = wallColors('cream');
+    addWalkBox(bx, by, 3, bw, bd, win.sill - 3, cSill, 2, 65, 65);
+    const topZ = win.sill + win.wh;
+    if (showCeiling && topZ < wallH) {
+      addWalkBox(bx, by, topZ, bw, bd, wallH - topZ, cSill, 2, 65, 55);
+    }
+    // Single centered glass sheet + frame mullions
+    const glassZ = win.sill;
+    const glassSeg = Math.max(1, Math.ceil((isH ? bw : bd) / 60));
+    if (isH) {
+      addSubQuad([win.x1, win.y1, glassZ], [bw, 0, 0], [0, 0, win.wh], glassSeg, 1, 'rgba(56, 189, 248, 0.19)', 'rgba(14, 165, 233, 0.72)', 2, 1.3);
+    } else {
+      addSubQuad([win.x1, win.y1, glassZ], [0, bd, 0], [0, 0, win.wh], glassSeg, 1, 'rgba(56, 189, 248, 0.19)', 'rgba(14, 165, 233, 0.72)', 2, 1.3);
+    }
+  });
+
+  // 5. Structural Columns
+  APT.columns.forEach(c => {
+    addWalkBox(c.x, c.y, 3, c.w, c.h, wallH - 3, wallColors('cream'), 2, 50, 90, 'rgba(15,23,42,0.22)');
+  });
+
+  // 6. Stepped Balcony Parapet & Iron Handrail
+  const parapetCols = wallColors('terracotta');
+  const ironCols = { top: '#0f172a', bottom: '#0f172a', north: '#1e293b', south: '#1e293b', west: '#0f172a', east: '#0f172a' };
+  addWalkBox(885, 0, 3, 12, 570, 52, parapetCols, 2, 65, 60);
+  addWalkBox(888, 0, 95, 6, 570, 5, ironCols, 2, 65, 20);
+  addWalkBox(885, 570, 3, 415, 12, 52, parapetCols, 2, 65, 60);
+  addWalkBox(885, 573, 95, 415, 6, 5, ironCols, 2, 65, 20);
+  addWalkBox(1288, 570, 3, 12, 610, 52, parapetCols, 2, 65, 60);
+  addWalkBox(1291, 570, 95, 6, 610, 5, ironCols, 2, 65, 20);
+  addWalkBox(1210, 1168, 3, 90, 12, 52, parapetCols, 2, 65, 60);
+
+  // 7. Optional Interior Furniture
+  if (showFurn) {
+    const sofaDark = { top: '#475569', bottom: '#1e293b', north: '#334155', south: '#334155', west: '#1e293b', east: '#334155' };
+    const oak = { top: '#92400e', bottom: '#451a03', north: '#78350f', south: '#78350f', west: '#451a03', east: '#78350f' };
+    const emerald = { top: '#10b981', bottom: '#065f46', north: '#047857', south: '#047857', west: '#065f46', east: '#047857' };
+    const kidsBlue = { top: '#38bdf8', bottom: '#0369a1', north: '#0284c7', south: '#0284c7', west: '#0369a1', east: '#0284c7' };
+    const goldBed = { top: '#f59e0b', bottom: '#78350f', north: '#b45309', south: '#b45309', west: '#78350f', east: '#b45309' };
+    addWalkBox(275, 25, 3, 290, 85, 72, sofaDark);
+    addWalkBox(275, 110, 3, 85, 165, 72, sofaDark);
+    addWalkBox(435, 155, 3, 105, 65, 42, oak);
+    addWalkBox(645, 295, 3, 145, 38, 48, oak);
+    addWalkBox(10, 12, 3, 56, 285, 85, oak);
+    addWalkBox(66, 12, 3, 110, 56, 85, oak);
+    addWalkBox(178, 12, 3, 55, 56, 165, { top: '#cbd5e1', bottom: '#64748b', north: '#94a3b8', south: '#94a3b8', west: '#64748b', east: '#94a3b8' });
+    addWalkBox(160, 375, 3, 62, 62, 85, { top: '#f8fafc', bottom: '#cbd5e1', north: '#e2e8f0', south: '#e2e8f0', west: '#cbd5e1', east: '#e2e8f0' });
+    addWalkBox(28, 865, 3, 78, 225, 74, emerald);
+    addWalkBox(445, 855, 3, 78, 210, 74, emerald);
+    addWalkBox(155, 1082, 3, 235, 72, 74, emerald);
+    addWalkBox(578, 865, 3, 95, 195, 48, kidsBlue);
+    addWalkBox(700, 865, 3, 95, 195, 48, kidsBlue);
+    addWalkBox(805, 845, 3, 50, 210, 205, oak);
+    addWalkBox(995, 855, 3, 195, 175, 55, goldBed);
+    addWalkBox(882, 815, 3, 55, 240, 210, oak);
+  }
+
+  // Sort strictly by Layer (1 floors/ceilings before 2 walls/doors), then back-to-front radial depth
+  faces.sort((a, b) => (a.layer !== b.layer ? a.layer - b.layer : b.depth - a.depth));
+
+  for (let i = 0; i < faces.length; i++) {
+    const f = faces[i];
+    ctx.beginPath();
+    ctx.moveTo(f.pts[0][0], f.pts[0][1]);
+    for (let j = 1; j < f.pts.length; j++) ctx.lineTo(f.pts[j][0], f.pts[j][1]);
+    ctx.closePath();
+    ctx.fillStyle = f.col;
+    ctx.fill();
+    ctx.strokeStyle = f.stroke;
+    ctx.lineWidth = f.lineW;
+    ctx.stroke();
+  }
+
+  // 8. Interactive 2D Radar Mini-Map (Bottom-Right)
+  drawWalkMiniMap(W, H);
+}
+
+function drawWalkMiniMap(W, H) {
+  const mapW = 216;
+  const pad = 12;
+  const s = (mapW - pad * 2) / APT.W;
+  const mapH = Math.round(APT.H * s + pad * 2 + 16);
+  const bx = W - mapW - 18;
+  const by = H - mapH - 18;
+  const ox = bx + pad;
+  const oy = by + pad + 14;
+  miniMapRect = { x: ox, y: oy, s: s, boxX: bx, boxY: by, boxW: mapW, boxH: mapH };
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(9, 14, 26, 0.86)';
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, bx, by, mapW, mapH, 10, true, true);
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = 'bold 10px Segoe UI';
+  ctx.textAlign = 'center';
+  ctx.fillText('📍 ' + getWalkRoomName(walkCam.x, walkCam.y) + ' (رادار تفاعلي)', bx + mapW / 2, by + 13);
+
+  APT.rooms.forEach(r => {
+    ctx.fillStyle = r.id.startsWith('balcony') ? 'rgba(217, 138, 108, 0.25)'
+      : (r.id === 'stairwell' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(239, 226, 184, 0.16)');
+    ctx.fillRect(ox + r.x * s, oy + r.y * s, r.w * s, r.h * s);
+  });
+
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1.6;
+  APT.walls.forEach(w => {
+    ctx.beginPath();
+    ctx.moveTo(ox + w.x1 * s, oy + w.y1 * s);
+    ctx.lineTo(ox + w.x2 * s, oy + w.y2 * s);
+    ctx.stroke();
+  });
+
+  // View Cone & Player Marker
+  const px = ox + walkCam.x * s;
+  const py = oy + walkCam.y * s;
+  const coneLen = 175 * s;
+  ctx.fillStyle = 'rgba(250, 204, 21, 0.34)';
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  ctx.lineTo(px + Math.cos(walkCam.yaw - 0.45) * coneLen, py + Math.sin(walkCam.yaw - 0.45) * coneLen);
+  ctx.lineTo(px + Math.cos(walkCam.yaw + 0.45) * coneLen, py + Math.sin(walkCam.yaw + 0.45) * coneLen);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#06b6d4';
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
 // Helpers
 function roundRect(ctx, x, y, w, h, r, fill, stroke) {
   ctx.beginPath();
@@ -1531,16 +2334,42 @@ function shadeColor(hex, percent) {
   return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
 }
 
-// URL query param automation for clean PNG capture
+function bindWalkPadButtons() {
+  document.querySelectorAll('[data-walk-key]').forEach(btn => {
+    const code = btn.dataset.walkKey;
+    const startHold = e => {
+      e.preventDefault();
+      stopWalkTour();
+      walkKeys[code] = true;
+      btn.classList.add('pressed');
+      ensureWalkLoop();
+    };
+    const endHold = () => {
+      delete walkKeys[code];
+      btn.classList.remove('pressed');
+    };
+    btn.addEventListener('pointerdown', startHold);
+    btn.addEventListener('pointerup', endHold);
+    btn.addEventListener('pointerleave', endHold);
+    btn.addEventListener('pointercancel', endHold);
+  });
+}
+
+// URL query param automation for clean PNG capture & MP4 frame rendering
 (function init() {
+  bindWalkPadButtons();
   const params = new URLSearchParams(window.location.search);
   const mode = params.get('mode');
   const capture = params.get('capture');
+  const tourT = params.get('t');
   if (capture === '1') document.body.classList.add('capture-mode');
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
-  if (mode && ['blueprint', 'colored', '3d'].includes(mode)) {
+  if (mode && ['blueprint', 'colored', '3d', 'walk'].includes(mode)) {
     setMode(mode);
+    if (mode === 'walk' && tourT !== null && !isNaN(parseFloat(tourT))) {
+      window.setTourProgress(parseFloat(tourT));
+    }
   }
 })();
 </script>
