@@ -1,0 +1,6 @@
+*.MOV
+*.mov
+*.mp4
+صور/
+.DS_Store
+Thumbs.db
