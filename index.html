@@ -404,7 +404,7 @@ const APT = {
     // Left Service Wing (Top-to-Bottom)
     { id: 'kitchen', name: 'المطبخ', sub: 'Kitchen', x: 0, y: 0, w: 245, h: 355, dimLabel: '245 × 465 سم', area: '11.39 م²', floor: 'kitchen_tile', wallStyle: 'striped_brown', gypsum: false },
     { id: 'washer', name: 'غسالة', sub: 'Washer', x: 140, y: 355, w: 105, h: 110, dimLabel: '80 × 105', area: '0.84 م²', floor: 'white_marble', wallStyle: 'white_tile', gypsum: false },
-    { id: 'bath', name: 'الحمام', sub: 'Bathroom', x: 0, y: 465, w: 245, h: 195, dimLabel: '240 × 195 سم', area: '4.68 م²', floor: 'bath_tile', wallStyle: 'striped_brown', gypsum: false },
+    { id: 'bath', name: 'الحمام', sub: 'Bathroom', x: 0, y: 465, w: 245, h: 295, dimLabel: '240 × 195 سم', area: '4.68 م²', floor: 'bath_tile', wallStyle: 'striped_brown', gypsum: false },
 
     // Top-Right Reception & Center Hatched Stairwell
     { id: 'reception', name: 'الصالة', sub: 'Reception', x: 245, y: 0, w: 560, h: 388, dimLabel: '560 × 470 سم', area: '26.32 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
@@ -414,10 +414,10 @@ const APT = {
     { id: 'entry', name: 'ممر (المدخل)', sub: 'Entry Corridor', x: 245, y: 355, w: 177, h: 305, dimLabel: '260 × 177 سم', area: '4.60 م²', floor: 'corridor', wallStyle: 'cream', gypsum: false },
     { id: 'corridor', name: 'ممر (الطرقة)', sub: 'Corridor', x: 245, y: 660, w: 620, h: 100, dimLabel: '575 × 100 سم', area: '5.75 م²', floor: 'corridor', wallStyle: 'cream', gypsum: false },
 
-    // Bottom Row of 3 Rooms (Left-to-Right: Master -> Kids -> Salon)
-    { id: 'master', name: 'الماستر', sub: 'Master Bedroom', x: 245, y: 760, w: 310, h: 420, dimLabel: '350 × 470 سم', area: '15.20 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
+    // Bottom Row of 3 Rooms (Left-to-Right: Salon -> Kids -> Master)
+    { id: 'salon', name: 'الصالون', sub: 'Salon', x: 0, y: 760, w: 555, h: 420, dimLabel: '380 × 345 سم', area: '13.20 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
     { id: 'kids', name: 'أطفال', sub: 'Kids Room', x: 555, y: 760, w: 310, h: 420, dimLabel: '420 × 350 سم', area: '14.70 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
-    { id: 'salon', name: 'الصالون', sub: 'Salon', x: 865, y: 660, w: 345, h: 520, dimLabel: '380 × 345 سم', area: '13.20 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
+    { id: 'master', name: 'الماستر', sub: 'Master Bedroom', x: 865, y: 660, w: 345, h: 520, dimLabel: '350 × 470 سم', area: '15.20 م²', floor: 'marble', wallStyle: 'cream', gypsum: true },
 
     // Far-Right Stepped Balcony (3 connected segments)
     { id: 'balcony_upper', name: 'البلكونة', sub: 'Upper Balcony', x: 805, y: 0, w: 90, h: 570, dimLabel: 'عرض 90 سم', area: '', floor: 'balcony', wallStyle: 'terracotta', gypsum: false, hideLabel: true },
@@ -437,18 +437,14 @@ const APT = {
     // North outer wall (y = 0)
     { x1: 0, y1: 0, x2: 805, y2: 0, t: 15, ext: true, mat: 'cream' },
 
-    // West outer wall of Service Wing (x = 0, y = 0..660)
-    { x1: 0, y1: 0, x2: 0, y2: 660, t: 15, ext: true, mat: 'cream' },
-    // South outer wall of Bathroom (y = 660, x = 0..245)
-    { x1: 0, y1: 660, x2: 245, y2: 660, t: 15, ext: true, mat: 'cream' },
-    // Indented West outer wall (x = 245, y = 660..1180)
-    { x1: 245, y1: 660, x2: 245, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    // Continuous West outer wall (x = 0, y = 0..1180)
+    { x1: 0, y1: 0, x2: 0, y2: 1180, t: 15, ext: true, mat: 'cream' },
 
-    // South outer facade (y = 1180, x = 245..1210 with windows for Master/Kids/Salon)
-    { x1: 245, y1: 1180, x2: 340, y2: 1180, t: 15, ext: true, mat: 'cream' },
-    { x1: 460, y1: 1180, x2: 625, y2: 1180, t: 15, ext: true, mat: 'cream' },
-    { x1: 795, y1: 1180, x2: 965, y2: 1180, t: 15, ext: true, mat: 'cream' },
-    { x1: 1115, y1: 1180, x2: 1210, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    // South outer facade (y = 1180, x = 0..1210 with windows for Salon/Kids/Master)
+    { x1: 0, y1: 1180, x2: 200, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    { x1: 350, y1: 1180, x2: 625, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    { x1: 795, y1: 1180, x2: 980, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    { x1: 1100, y1: 1180, x2: 1210, y2: 1180, t: 15, ext: true, mat: 'cream' },
 
     // East wall onto Balcony: Reception + Stairwell (x = 805, y = 0..660)
     { x1: 805, y1: 0, x2: 805, y2: 100, t: 15, ext: true, mat: 'cream' },
@@ -456,16 +452,16 @@ const APT = {
     { x1: 805, y1: 388, x2: 805, y2: 480, t: 15, ext: true, mat: 'terracotta' },
     { x1: 805, y1: 570, x2: 805, y2: 660, t: 15, ext: true, mat: 'terracotta' },
 
-    // East wall of Salon onto Lower Balcony (x = 1210, y = 660..1180 with door at 665..755)
+    // East wall of Master onto Lower Balcony (x = 1210, y = 660..1180 with door at 665..755)
     { x1: 1210, y1: 755, x2: 1210, y2: 1180, t: 15, ext: true, mat: 'cream' },
-    // North wall of Salon onto Balcony Jog (y = 660, x = 865..1210)
+    // North wall of Master onto Balcony Jog (y = 660, x = 865..1210)
     { x1: 865, y1: 660, x2: 1210, y2: 660, t: 15, ext: true, mat: 'cream' },
 
-    // Service Wing East Divider (x = 245, y = 0..660; open 355..465 at Washer)
+    // Service Wing East Divider (x = 245, y = 0..660; open 355..465 at Washer and 660..760 for Corridor)
     { x1: 245, y1: 0, x2: 245, y2: 240, t: 12, ext: false, mat: 'cream' },
     { x1: 245, y1: 330, x2: 245, y2: 355, t: 12, ext: false, mat: 'cream' },
-    { x1: 245, y1: 465, x2: 245, y2: 520, t: 12, ext: false, mat: 'cream' },
-    { x1: 245, y1: 600, x2: 245, y2: 660, t: 12, ext: false, mat: 'cream' },
+    { x1: 245, y1: 465, x2: 245, y2: 540, t: 12, ext: false, mat: 'cream' },
+    { x1: 245, y1: 620, x2: 245, y2: 660, t: 12, ext: false, mat: 'cream' },
 
     // Kitchen / Shaft / Washer / Bath Horizontal Dividers
     { x1: 0, y1: 355, x2: 40, y2: 355, t: 12, ext: false, mat: 'striped_brown' },
@@ -473,6 +469,8 @@ const APT = {
     { x1: 140, y1: 355, x2: 140, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
     { x1: 0, y1: 465, x2: 45, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
     { x1: 95, y1: 465, x2: 245, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
+    // Bathroom South wall extended flush to Corridor South wall (y = 760, x = 0..245)
+    { x1: 0, y1: 760, x2: 245, y2: 760, t: 12, ext: false, mat: 'striped_brown' },
 
     // Reception / Stairwell Divider (y = 388, open archway x = 245..422, main door 440..540)
     { x1: 422, y1: 388, x2: 440, y2: 388, t: 14, ext: false, mat: 'cream' },
@@ -482,24 +480,24 @@ const APT = {
     { x1: 422, y1: 388, x2: 422, y2: 660, t: 14, ext: false, mat: 'terracotta' },
     { x1: 422, y1: 660, x2: 865, y2: 660, t: 14, ext: false, mat: 'cream' },
 
-    // Horizontal Corridor South Wall (y = 760, Master door 285..372, Kids door 585..675)
+    // Horizontal Corridor South Wall (y = 760, Salon door 285..372, Kids door 585..675)
     { x1: 245, y1: 760, x2: 285, y2: 760, t: 12, ext: false, mat: 'cream' },
     { x1: 372, y1: 760, x2: 585, y2: 760, t: 12, ext: false, mat: 'cream' },
     { x1: 675, y1: 760, x2: 865, y2: 760, t: 12, ext: false, mat: 'cream' },
 
-    // Master / Kids Divider (x = 555, y = 760..1180)
+    // Salon / Kids Divider (x = 555, y = 760..1180)
     { x1: 555, y1: 760, x2: 555, y2: 1180, t: 12, ext: false, mat: 'cream' },
 
-    // Kids / Salon Divider (x = 865, y = 753..1180; Salon door at y = 666..753)
+    // Kids / Master Divider (x = 865, y = 753..1180; Master door at y = 666..753)
     { x1: 865, y1: 753, x2: 865, y2: 1180, t: 14, ext: false, mat: 'cream' },
   ],
   doors: [
     { name: 'باب الشقة', w: 100, hx: 440, hy: 388, dir: 'h', swing: -1, a0: -Math.PI/2, a1: 0, main: true },
     { name: 'باب المطبخ', w: 90, hx: 245, hy: 240, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
-    { name: 'باب الحمام', w: 80, hx: 245, hy: 520, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
-    { name: 'باب الماستر', w: 87, hx: 285, hy: 760, dir: 'h', swing: 1, a0: 0, a1: Math.PI/2 },
+    { name: 'باب الحمام', w: 80, hx: 245, hy: 540, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
+    { name: 'باب الصالون', w: 87, hx: 285, hy: 760, dir: 'h', swing: 1, a0: 0, a1: Math.PI/2 },
     { name: 'باب الأطفال', w: 90, hx: 585, hy: 760, dir: 'h', swing: 1, a0: 0, a1: Math.PI/2 },
-    { name: 'باب الصالون', w: 87, hx: 865, hy: 666, dir: 'v', swing: 1, a0: 0, a1: Math.PI/2 },
+    { name: 'باب الماستر', w: 87, hx: 865, hy: 666, dir: 'v', swing: 1, a0: 0, a1: Math.PI/2 },
     { name: 'باب البلكونة', w: 90, hx: 1210, hy: 665, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
   ],
   windows: [
@@ -507,9 +505,9 @@ const APT = {
     { name: 'شباك السلم', x1: 805, y1: 480, x2: 805, y2: 570, w: 90, sill: 100, wh: 110 },
     { name: 'شباك منور (مطبخ)', x1: 40, y1: 355, x2: 100, y2: 355, w: 60, sill: 115, wh: 80 },
     { name: 'شباك منور (حمام)', x1: 45, y1: 465, x2: 95, y2: 465, w: 50, sill: 125, wh: 70 },
-    { name: 'شباك الماستر', x1: 340, y1: 1180, x2: 460, y2: 1180, w: 120, sill: 95, wh: 125 },
+    { name: 'شباك الصالون', x1: 200, y1: 1180, x2: 350, y2: 1180, w: 150, sill: 95, wh: 125 },
     { name: 'شباك الأطفال', x1: 625, y1: 1180, x2: 795, y2: 1180, w: 170, sill: 95, wh: 125 },
-    { name: 'شباك الصالون', x1: 965, y1: 1180, x2: 1115, y2: 1180, w: 150, sill: 95, wh: 125 },
+    { name: 'شباك الماستر', x1: 980, y1: 1180, x2: 1100, y2: 1180, w: 120, sill: 95, wh: 125 },
   ],
   utilities: [
     { x: 315, y: 210, icon: '🔥', label: 'عداد الغاز', color: '#f59e0b', dx: 0, dy: 24 },
@@ -995,22 +993,22 @@ function render2DPlan(W, H, isBlueprint) {
     drawDimLine(245, -34, 805, -34, 'الصالة 560', dimColor, true);
     drawDimLine(805, -34, 895, -34, '90', dimColor, true);
 
-    // Bottom Room Widths (Master + Kids + Salon + Balcony)
-    drawDimLine(245, 1245, 1300, 1245, 'الطول الإجمالي للشقة: 12.50 متر (1250 سم)', dimColor, true);
-    drawDimLine(245, 1212, 555, 1212, 'الماستر 350', dimColor, true);
+    // Bottom Room Widths (Salon + Kids + Master + Balcony)
+    drawDimLine(0, 1245, 1300, 1245, 'الطول الإجمالي للشقة: 12.50 متر (1250 سم)', dimColor, true);
+    drawDimLine(0, 1212, 555, 1212, 'الصالون 380', dimColor, true);
     drawDimLine(555, 1212, 865, 1212, 'أطفال 420', dimColor, true);
-    drawDimLine(865, 1212, 1210, 1212, 'الصالون 380', dimColor, true);
+    drawDimLine(865, 1212, 1210, 1212, 'الماستر 350', dimColor, true);
     drawDimLine(1210, 1212, 1300, 1212, '90', dimColor, true);
 
-    // Left Service Wing Depths
-    drawDimLine(-58, 0, -58, 660, 'جناح الخدمات (عمق كلي)', dimColor, false);
+    // West Outer Wall Depths
+    drawDimLine(-58, 0, -58, 1180, 'الواجهة الغربية الكاملة', dimColor, false);
     drawDimLine(-28, 0, -28, 355, 'المطبخ 465', dimColor, false);
     drawDimLine(-28, 355, -28, 465, 'منور', dimColor, false);
-    drawDimLine(-28, 465, -28, 660, 'الحمام 195', dimColor, false);
+    drawDimLine(-28, 465, -28, 760, 'الحمام 195', dimColor, false);
+    drawDimLine(-28, 760, -28, 1180, 'الصالون 345', dimColor, false);
 
     // Right Wing Depths
-    drawDimLine(1345, 570, 1345, 1180, 'الصالون + البلكونة 345 / 400', dimColor, false);
-    drawDimLine(175, 760, 175, 1180, 'الماستر/أطفال 470 / 350', dimColor, false);
+    drawDimLine(1345, 570, 1345, 1180, 'الماستر + البلكونة 470 / 400', dimColor, false);
 
     // Opening widths
     ctx.fillStyle = isBlueprint ? '#22d3ee' : '#0284c7';
@@ -1018,15 +1016,15 @@ function render2DPlan(W, H, isBlueprint) {
     ctx.textAlign = 'center';
     ctx.fillText('باب 100', 490, 372);
     ctx.fillText('باب 90', 200, 285);
-    ctx.fillText('باب 80', 200, 560);
+    ctx.fillText('باب 80', 200, 580);
     ctx.fillText('باب 87', 330, 745);
     ctx.fillText('باب 90', 630, 745);
     ctx.fillText('باب 87', 910, 710);
     ctx.fillText('بلكونة 90', 1165, 710);
     ctx.fillText('شباك 180', 760, 190);
-    ctx.fillText('شباك 120', 400, 1166);
+    ctx.fillText('شباك 150', 275, 1166);
     ctx.fillText('شباك 170', 710, 1166);
-    ctx.fillText('شباك 150', 1040, 1166);
+    ctx.fillText('شباك 120', 1040, 1166);
   }
 
   // Interactive Ruler Overlay
@@ -1128,18 +1126,16 @@ function draw2DFurniture(isBlueprint) {
   roundRect(ctx, 160, 375, 62, 62, 6, true, true);
   ctx.beginPath(); ctx.arc(191, 406, 18, 0, Math.PI*2); ctx.stroke();
 
-  // Bathroom (x=0..245, y=465..660): Shower Tray + WC + Vanity
-  roundRect(ctx, 12, 575, 78, 72, 8, true, true);     // Shower
-  roundRect(ctx, 105, 602, 45, 45, 12, true, true);   // WC
-  roundRect(ctx, 168, 608, 62, 38, 6, true, true);    // Sink
+  // Bathroom (x=0..245, y=465..760): Shower Tray + WC + Vanity
+  roundRect(ctx, 12, 675, 78, 72, 8, true, true);     // Shower
+  roundRect(ctx, 105, 702, 45, 45, 12, true, true);   // WC
+  roundRect(ctx, 168, 708, 62, 38, 6, true, true);    // Sink
 
-  // Master Bedroom (x=245..555, y=760..1180): King Bed + Nightstands + Wardrobe
-  roundRect(ctx, 325, 895, 175, 200, 10, true, true);
-  roundRect(ctx, 340, 1045, 65, 40, 5, true, true);   // pillow 1
-  roundRect(ctx, 420, 1045, 65, 40, 5, true, true);   // pillow 2
-  ctx.fillRect(270, 1050, 44, 42); ctx.strokeRect(270, 1050, 44, 42);
-  ctx.fillRect(508, 1050, 40, 42); ctx.strokeRect(508, 1050, 40, 42);
-  ctx.fillRect(260, 820, 55, 205); ctx.strokeRect(260, 820, 55, 205); // Wardrobe
+  // Salon (Bottom-Left x=0..555, y=760..1180): Classic Sofas + Center Table
+  roundRect(ctx, 28, 865, 78, 225, 8, true, true);
+  roundRect(ctx, 445, 855, 78, 210, 8, true, true);
+  roundRect(ctx, 155, 1082, 235, 72, 8, true, true);
+  roundRect(ctx, 220, 895, 115, 65, 8, true, true);
 
   // Kids Room (x=555..865, y=760..1180): 2 Twin Beds + Wardrobe
   roundRect(ctx, 578, 865, 95, 195, 8, true, true);
@@ -1148,11 +1144,13 @@ function draw2DFurniture(isBlueprint) {
   roundRect(ctx, 700, 865, 95, 38, 5, true, true);    // pillow
   ctx.fillRect(805, 845, 50, 210); ctx.strokeRect(805, 845, 50, 210); // Wardrobe
 
-  // Salon (x=865..1210, y=660..1180 — single open room): Classic Sofas + Center Table
-  roundRect(ctx, 900, 800, 75, 185, 8, true, true);
-  roundRect(ctx, 1120, 810, 75, 185, 8, true, true);
-  roundRect(ctx, 975, 1045, 130, 72, 8, true, true);
-  roundRect(ctx, 1005, 855, 85, 70, 8, true, true);
+  // Master Bedroom (Bottom-Right x=865..1210, y=660..1180): King Bed + Nightstands + Wardrobe
+  roundRect(ctx, 995, 855, 195, 175, 10, true, true);
+  roundRect(ctx, 1135, 870, 42, 65, 5, true, true);   // pillow 1
+  roundRect(ctx, 1135, 950, 42, 65, 5, true, true);   // pillow 2
+  ctx.fillRect(1145, 803, 45, 42); ctx.strokeRect(1145, 803, 45, 42);
+  ctx.fillRect(1145, 1038, 45, 42); ctx.strokeRect(1145, 1038, 45, 42);
+  ctx.fillRect(882, 815, 55, 240); ctx.strokeRect(882, 815, 55, 240); // Wardrobe
 
   // Balcony Table & Chairs (Right-side Balcony)
   ctx.beginPath(); ctx.arc(1255, 920, 22, 0, Math.PI*2); ctx.fill(); ctx.stroke();
@@ -1432,23 +1430,23 @@ function render3DScene(W, H) {
     addBox(160, 375, 3, 62, 62, 85, { top: '#f8fafc', front: '#e2e8f0', back: '#cbd5e1', left: '#cbd5e1', right: '#e2e8f0' });
 
     // Bathroom Vanity & Shower
-    addBox(12, 575, 3, 78, 72, 12, { top: '#f8fafc', front: '#cbd5e1', back: '#94a3b8', left: '#94a3b8', right: '#cbd5e1' });
-    addBox(168, 608, 3, 62, 38, 80, { top: '#f8fafc', front: '#e2e8f0', back: '#cbd5e1', left: '#cbd5e1', right: '#e2e8f0' });
+    addBox(12, 675, 3, 78, 72, 12, { top: '#f8fafc', front: '#cbd5e1', back: '#94a3b8', left: '#94a3b8', right: '#cbd5e1' });
+    addBox(168, 708, 3, 62, 38, 80, { top: '#f8fafc', front: '#e2e8f0', back: '#cbd5e1', left: '#cbd5e1', right: '#e2e8f0' });
 
-    // Master King Bed & Wardrobe
-    addBox(325, 895, 3, 175, 200, 55, { top: '#f59e0b', front: '#b45309', back: '#78350f', left: '#78350f', right: '#b45309' });
-    addBox(260, 820, 3, 55, 205, Math.min(wallH - 20, 210), { top: '#92400e', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
+    // Salon Classic Sofas & Coffee Table (Bottom-Left x=0..555, y=760..1180)
+    addBox(28, 865, 3, 78, 225, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
+    addBox(445, 855, 3, 78, 210, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
+    addBox(155, 1082, 3, 235, 72, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
+    addBox(220, 895, 3, 115, 65, 42, { top: '#fde68a', front: '#d97706', back: '#b45309', left: '#b45309', right: '#d97706' });
 
     // Kids Twin Beds & Wardrobe
     addBox(578, 865, 3, 95, 195, 48, { top: '#38bdf8', front: '#0284c7', back: '#0369a1', left: '#0369a1', right: '#0284c7' });
     addBox(700, 865, 3, 95, 195, 48, { top: '#38bdf8', front: '#0284c7', back: '#0369a1', left: '#0369a1', right: '#0284c7' });
     addBox(805, 845, 3, 50, 210, Math.min(wallH - 20, 205), { top: '#a16207', front: '#854d0e', back: '#713f12', left: '#713f12', right: '#854d0e' });
 
-    // Salon Classic Sofas & Tables
-    addBox(900, 800, 3, 75, 185, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(1120, 810, 3, 75, 185, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(975, 1045, 3, 130, 72, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(1005, 855, 3, 85, 70, 42, { top: '#fde68a', front: '#d97706', back: '#b45309', left: '#b45309', right: '#d97706' });
+    // Master King Bed & Wardrobe (Bottom-Right x=865..1210, y=660..1180)
+    addBox(995, 855, 3, 195, 175, 55, { top: '#f59e0b', front: '#b45309', back: '#78350f', left: '#78350f', right: '#b45309' });
+    addBox(882, 815, 3, 55, 240, Math.min(wallH - 20, 210), { top: '#92400e', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
   }
 
   // Sort by architectural layer first, then back-to-front depth

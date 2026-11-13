@@ -68,28 +68,25 @@ def create_apartment_dxf():
             msp.add_line((cx1 + thickness / 2, cy1), (cx2 + thickness / 2, cy2), dxfattribs={"layer": "WINDOWS"})
             msp.add_line((cx1 - thickness / 2, cy1), (cx2 - thickness / 2, cy2), dxfattribs={"layer": "WINDOWS"})
 
-    # 1. Stepped Outer Perimeter Footprint (X: 0..1300, Y: 0..1180)
-    # Note: Bottom-left under Bathroom (x=0..245, y=660..1180) is indented exterior space.
-    # Top edge (y=0): x=0..805 (Main body), plus balcony_upper east wall at x=895
+    # 1. Outer Perimeter Footprint (Full West Wall x=0 from y=0..1180)
     outer_pts = [
         (0, cy(0)),
         (805, cy(0)),
         (805, cy(660)),
         (1210, cy(660)),
         (1210, cy(1180)),
-        (245, cy(1180)),
-        (245, cy(660)),
-        (0, cy(660)),
+        (0, cy(1180)),
         (0, cy(0)),
     ]
     msp.add_lwpolyline(outer_pts, dxfattribs={"layer": "WALLS_EXTERIOR"})
 
     # 2. Room Boundaries (Centerlines / Partitions)
-    # Left Service Wing (x=0..245): Kitchen (y=0..355), Shaft+Washer (y=355..465), Bathroom (y=465..660)
+    # Left Service Wing (x=0..245): Kitchen (0..355), Shaft+Washer (355..465), Bathroom (465..760)
     add_wall_rect(240, 0, 250, 660, layer="WALLS_INTERIOR")
     add_wall_rect(0, 350, 245, 360, layer="WALLS_INTERIOR")
     add_wall_rect(0, 460, 245, 470, layer="WALLS_INTERIOR")
     add_wall_rect(135, 355, 145, 465, layer="WALLS_INTERIOR")  # Shaft / Washer divider
+    add_wall_rect(0, 755, 245, 765, layer="WALLS_INTERIOR")    # Bathroom / Salon divider
 
     # Lightwell Shaft (منور): x=0..140, y=355..465
     add_hatched_zone(0, 355, 140, 465, layer="SHAFT_HATCH", pattern="ANSI37", scale=8.0, color=3)
@@ -105,11 +102,11 @@ def create_apartment_dxf():
     # Horizontal Corridor (الطرقة): x=245..865, y=660..760
     add_wall_rect(245, 755, 865, 765, layer="WALLS_INTERIOR")
 
-    # Bottom Row Rooms (y=760..1180): Master (245..555), Kids (555..865), Salon (865..1210, y=660..1180)
+    # Bottom Row Rooms (y=760..1180): Salon (0..555), Kids (555..865), Master (865..1210, y=660..1180)
     add_wall_rect(550, 760, 560, 1180, layer="WALLS_INTERIOR")
     add_wall_rect(860, 660, 870, 1180, layer="WALLS_INTERIOR")
 
-    # Right-Side Stepped Balcony (البلكونة): Upper (805..895, y=0..570), Turn (805..1300, y=570..660), Lower (1210..1300, y=660..1180)
+    # Right-Side Stepped Balcony (البلكونة)
     balc_pts = [
         (805, cy(0)),
         (895, cy(0)),
@@ -126,11 +123,11 @@ def create_apartment_dxf():
     # 3. Structural Columns
     columns = [
         (100, 465, 140, 485),    # Bath Column 20x40
-        (470, 1170, 510, 1180),  # Master Column 40x10
+        (470, 1170, 510, 1180),  # Salon South Column 40x10
         (555, 920, 567, 960),    # Kids West 40x10
         (850, 920, 865, 966),    # Kids East 46x15
-        (1198, 760, 1210, 815),  # Salon East 55x10
-        (1167, 1155, 1210, 1180),# Salon Corner 43x25
+        (1198, 760, 1210, 815),  # Master East 55x10
+        (1167, 1155, 1210, 1180),# Master Corner 43x25
     ]
     for x1, y1, x2, y2 in columns:
         add_filled_column(x1, y1, x2, y2)
@@ -140,39 +137,39 @@ def create_apartment_dxf():
     add_door(440, 388, 100, 0, 90, 0, 100)
     # Kitchen Door (90 cm) on East wall at x=245, y=240..330
     add_door(245, 240, 90, 180, 270, -90, 0)
-    # Bathroom Door (80 cm) on East wall at x=245, y=520..600
-    add_door(245, 520, 80, 180, 270, -80, 0)
-    # Master Door (87 cm) on North wall at y=760, x=285..372
+    # Bathroom Door (80 cm) on East wall at x=245, y=540..620
+    add_door(245, 540, 80, 180, 270, -80, 0)
+    # Salon Door (87 cm) on North wall at y=760, x=285..372
     add_door(285, 760, 87, 270, 360, 0, -87)
     # Kids Door (90 cm) on North wall at y=760, x=585..675
     add_door(585, 760, 90, 270, 360, 0, -90)
-    # Salon Entrance Door (87 cm) on West wall at x=865, y=666..753
+    # Master Entrance Door (87 cm) on West wall at x=865, y=666..753
     add_door(865, 666, 87, 270, 360, 87, 0)
-    # Salon Balcony Door (90 cm) on East wall at x=1210, y=665..755
+    # Master Balcony Door (90 cm) on East wall at x=1210, y=665..755
     add_door(1210, 665, 90, 180, 270, -90, 0)
 
     # Windows
-    add_window(40, 355, 100, 355)     # Kitchen Shaft Window 60 cm
-    add_window(45, 465, 95, 465)      # Bath Shaft Window 50 cm
-    add_window(805, 100, 805, 280)    # Reception Balcony Window 180 cm
-    add_window(805, 480, 805, 570)    # Stairwell Window 90 cm
-    add_window(340, 1180, 460, 1180)  # Master South Window 120 cm
-    add_window(625, 1180, 795, 1180)  # Kids South Window 170 cm
-    add_window(965, 1180, 1115, 1180) # Salon South Window 150 cm
+    add_window(40, 355, 100, 355)      # Kitchen Shaft Window 60 cm
+    add_window(45, 465, 95, 465)       # Bath Shaft Window 50 cm
+    add_window(805, 100, 805, 280)     # Reception Balcony Window 180 cm
+    add_window(805, 480, 805, 570)     # Stairwell Window 90 cm
+    add_window(200, 1180, 350, 1180)   # Salon South Window 150 cm
+    add_window(625, 1180, 795, 1180)   # Kids South Window 170 cm
+    add_window(980, 1180, 1100, 1180)  # Master South Window 120 cm
 
     # 5. Room Labels
     labels = [
         (122, 177, "KITCHEN (المطبخ)\n245 x 465 cm | 11.39 m2"),
         (70, 410, "SHAFT (منور)\n50 x 46 cm"),
         (192, 410, "WASHER\n80 x 105 cm"),
-        (122, 562, "BATHROOM (الحمام)\n240 x 195 cm | 4.68 m2"),
+        (122, 612, "BATHROOM (الحمام)\n240 x 195 cm | 4.68 m2"),
         (525, 194, "RECEPTION (الصالة)\n560 x 470 cm | 26.32 m2"),
         (613, 524, "STAIRWELL (بئر السلم)\n272 x 425 cm"),
         (333, 507, "ENTRY CORRIDOR\n260 x 177 cm"),
         (555, 710, "CORRIDOR (الطرقة) 575 x 100 cm"),
-        (400, 970, "MASTER BEDROOM\n350 x 470 cm | 15.20 m2"),
-        (710, 970, "KIDS BEDROOM\n420 x 350 cm | 14.70 m2"),
-        (1037, 920, "SALON (الصالون)\n380 x 345 cm | 13.20 m2"),
+        (277, 970, "SALON (الصالون)\n380 x 345 cm | 13.20 m2"),
+        (710, 970, "KIDS BEDROOM (أطفال)\n420 x 350 cm | 14.70 m2"),
+        (1037, 920, "MASTER BEDROOM (الماستر)\n350 x 470 cm | 15.20 m2"),
         (1255, 920, "BALCONY\n90 cm"),
     ]
     for lx, ly, txt in labels:
@@ -196,8 +193,8 @@ def create_apartment_dxf():
     dim_top.render()
 
     dim_bot = msp.add_linear_dim(
-        base=(245, cy(1250)),
-        p1=(245, cy(1180)),
+        base=(0, cy(1250)),
+        p1=(0, cy(1180)),
         p2=(1300, cy(1180)),
         dimstyle="Standard",
         override={"dimtxt": 22, "dimasz": 12},
@@ -218,7 +215,7 @@ def create_apartment_dxf():
 
     dim_left = msp.add_linear_dim(
         base=(-70, 0),
-        p1=(0, cy(660)),
+        p1=(0, cy(1180)),
         p2=(0, cy(0)),
         angle=90,
         dimstyle="Standard",
