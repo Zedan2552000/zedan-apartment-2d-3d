@@ -82,7 +82,10 @@ def create_apartment_dxf():
 
     # 2. Room Boundaries (Centerlines / Partitions)
     # Left Service Wing (x=0..245): Kitchen (0..355), Shaft+Washer (355..465), Bathroom (465..760)
-    add_wall_rect(240, 0, 250, 660, layer="WALLS_INTERIOR")
+    add_wall_rect(240, 0, 250, 240, layer="WALLS_INTERIOR")    # Kitchen East wall above door
+    add_wall_rect(240, 330, 250, 355, layer="WALLS_INTERIOR")  # Kitchen East wall below door
+    add_wall_rect(240, 465, 250, 540, layer="WALLS_INTERIOR")  # Bath East wall above door
+    add_wall_rect(240, 620, 250, 760, layer="WALLS_INTERIOR")  # Bath East wall closed to y=760
     add_wall_rect(0, 350, 245, 360, layer="WALLS_INTERIOR")
     add_wall_rect(0, 460, 245, 470, layer="WALLS_INTERIOR")
     add_wall_rect(135, 355, 145, 465, layer="WALLS_INTERIOR")  # Shaft / Washer divider
@@ -92,15 +95,18 @@ def create_apartment_dxf():
     add_hatched_zone(0, 355, 140, 465, layer="SHAFT_HATCH", pattern="ANSI37", scale=8.0, color=3)
 
     # Reception (الصالة): x=245..805, y=0..388 (with open archway to vertical corridor at x=245..422)
-    add_wall_rect(417, 383, 805, 393, layer="WALLS_INTERIOR")
+    add_wall_rect(417, 383, 440, 393, layer="WALLS_INTERIOR")
+    add_wall_rect(540, 383, 805, 393, layer="WALLS_INTERIOR")
 
     # Stairwell (بئر السلم): x=422..805, y=388..660
     add_hatched_zone(422, 388, 805, 660, layer="STAIRWELL_HATCH", pattern="ANSI31", scale=14.0, color=9)
     add_wall_rect(417, 388, 427, 660, layer="WALLS_INTERIOR")
     add_wall_rect(422, 655, 865, 665, layer="WALLS_INTERIOR")
 
-    # Horizontal Corridor (الطرقة): x=245..865, y=660..760
-    add_wall_rect(245, 755, 865, 765, layer="WALLS_INTERIOR")
+    # Horizontal Corridor (الطرقة): x=245..865, y=660..760 (openings for Salon 285..372 & Kids 585..675)
+    add_wall_rect(245, 755, 285, 765, layer="WALLS_INTERIOR")
+    add_wall_rect(372, 755, 585, 765, layer="WALLS_INTERIOR")
+    add_wall_rect(675, 755, 865, 765, layer="WALLS_INTERIOR")
 
     # Bottom Row Rooms (y=760..1180): Salon (0..555), Kids (555..865), Master (865..1210, y=660..1180)
     add_wall_rect(550, 760, 560, 1180, layer="WALLS_INTERIOR")

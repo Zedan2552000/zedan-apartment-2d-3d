@@ -397,6 +397,10 @@
           <button class="walk-key" data-walk-key="KeyS" title="رجوع للخلف (S / ↓)">▼</button>
           <button class="walk-key" data-walk-key="KeyD" title="حركة جانبية يمين (D)">▶</button>
           <button class="walk-key walk-key-wide" id="walkHudTourBtn" onclick="toggleAutoTour()">🎬 تشغيل / إيقاف جولة الفيديو التلقائية</button>
+          <div style="grid-column: span 3; display:flex; align-items:center; gap:6px; margin-top:4px; direction:rtl;">
+            <span style="font-size:10px; color:#94a3b8; white-space:nowrap;">تقدم الجولة:</span>
+            <input type="range" id="walkHudSlider" min="0" max="1000" value="0" style="width:100%; cursor:pointer;" oninput="onTourSliderInput(this.value)">
+          </div>
         </div>
       </div>
       <div class="hud-bottom" id="hudBottom">
@@ -481,6 +485,13 @@
           <button class="btn" id="walkTourBtn" style="flex:1;" onclick="toggleAutoTour()">🎬 جولة تلقائية</button>
           <button class="btn btn-gold" id="walkRecordBtn" style="flex:1;" onclick="toggleVideoRecord()">🎥 تسجيل فيديو</button>
         </div>
+        <div style="margin-top:8px;">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:4px;">
+            <span>شريط التمرير اليدوي للجولة</span>
+            <span id="walkTourPct" style="color:var(--accent-cyan); font-weight:700;">0%</span>
+          </div>
+          <input type="range" id="walkTourSlider" min="0" max="1000" value="0" style="width:100%; cursor:pointer;" oninput="onTourSliderInput(this.value)">
+        </div>
       </div>
 
       <div class="card">
@@ -563,11 +574,13 @@ const APT = {
     { x: 1167, y: 1155, w: 43, h: 25, label: '43×25' },
   ],
   walls: [
-    // North outer wall (y = 0)
-    { x1: 0, y1: 0, x2: 805, y2: 0, t: 15, ext: true, mat: 'cream' },
+    // North outer wall (y = 0, split at x = 245 for Kitchen ceramic vs Reception cream)
+    { x1: 0, y1: 0, x2: 245, y2: 0, t: 15, ext: true, mat: 'service_ext_n' },
+    { x1: 245, y1: 0, x2: 805, y2: 0, t: 15, ext: true, mat: 'cream' },
 
-    // Continuous West outer wall (x = 0, y = 0..1180)
-    { x1: 0, y1: 0, x2: 0, y2: 1180, t: 15, ext: true, mat: 'cream' },
+    // Continuous West outer wall (x = 0, y = 0..760 Kitchen/Bath tiles, y = 760..1180 Salon cream)
+    { x1: 0, y1: 0, x2: 0, y2: 760, t: 15, ext: true, mat: 'service_ext_w' },
+    { x1: 0, y1: 760, x2: 0, y2: 1180, t: 15, ext: true, mat: 'cream' },
 
     // South outer facade (y = 1180, x = 0..1210 with windows for Salon/Kids/Master)
     { x1: 0, y1: 1180, x2: 200, y2: 1180, t: 15, ext: true, mat: 'cream' },
@@ -586,20 +599,20 @@ const APT = {
     // North wall of Master onto Balcony Jog (y = 660, x = 865..1210)
     { x1: 865, y1: 660, x2: 1210, y2: 660, t: 15, ext: true, mat: 'cream' },
 
-    // Service Wing East Divider (x = 245, y = 0..660; open 355..465 at Washer and 660..760 for Corridor)
-    { x1: 245, y1: 0, x2: 245, y2: 240, t: 12, ext: false, mat: 'cream' },
-    { x1: 245, y1: 330, x2: 245, y2: 355, t: 12, ext: false, mat: 'cream' },
-    { x1: 245, y1: 465, x2: 245, y2: 540, t: 12, ext: false, mat: 'cream' },
-    { x1: 245, y1: 620, x2: 245, y2: 660, t: 12, ext: false, mat: 'cream' },
+    // Service Wing East Divider (x = 245, y = 0..760; open 240..330 Kitchen door, 355..465 Washer, 540..620 Bath door, closed 620..760)
+    { x1: 245, y1: 0, x2: 245, y2: 240, t: 12, ext: false, mat: 'service_div' },
+    { x1: 245, y1: 330, x2: 245, y2: 355, t: 12, ext: false, mat: 'service_div' },
+    { x1: 245, y1: 465, x2: 245, y2: 540, t: 12, ext: false, mat: 'service_div' },
+    { x1: 245, y1: 620, x2: 245, y2: 760, t: 12, ext: false, mat: 'service_div' },
 
-    // Kitchen / Shaft / Washer / Bath Horizontal Dividers
-    { x1: 0, y1: 355, x2: 40, y2: 355, t: 12, ext: false, mat: 'striped_brown' },
-    { x1: 100, y1: 355, x2: 245, y2: 355, t: 12, ext: false, mat: 'striped_brown' },
-    { x1: 140, y1: 355, x2: 140, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
-    { x1: 0, y1: 465, x2: 45, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
-    { x1: 95, y1: 465, x2: 245, y2: 465, t: 12, ext: false, mat: 'striped_brown' },
-    // Bathroom South wall extended flush to Corridor South wall (y = 760, x = 0..245)
-    { x1: 0, y1: 760, x2: 245, y2: 760, t: 12, ext: false, mat: 'striped_brown' },
+    // Kitchen / Shaft / Washer / Bath Horizontal & Alcove Dividers
+    { x1: 0, y1: 355, x2: 40, y2: 355, t: 12, ext: false, mat: 'service_south' },
+    { x1: 100, y1: 355, x2: 245, y2: 355, t: 12, ext: false, mat: 'service_south' },
+    { x1: 140, y1: 355, x2: 140, y2: 465, t: 12, ext: false, mat: 'service_div' },
+    { x1: 0, y1: 465, x2: 45, y2: 465, t: 12, ext: false, mat: 'service_ext_n' },
+    { x1: 95, y1: 465, x2: 245, y2: 465, t: 12, ext: false, mat: 'service_ext_n' },
+    // Bathroom South wall extended flush to Salon (North=striped_brown, South=Salon cream)
+    { x1: 0, y1: 760, x2: 245, y2: 760, t: 12, ext: false, mat: 'service_south' },
 
     // Reception / Stairwell Divider (y = 388, open archway x = 245..422, main door 440..540)
     { x1: 422, y1: 388, x2: 440, y2: 388, t: 14, ext: false, mat: 'cream' },
@@ -1548,31 +1561,55 @@ function render3DScene(W, H) {
     }, 1);
   });
 
-  // 3. Walls (with true height & video-accurate colors)
+  // 3. Walls (with true height, T-joint trim & two-sided video-accurate finishes)
   APT.walls.forEach(w => {
     const isH = Math.abs(w.y2 - w.y1) < 1;
     const bx = isH ? Math.min(w.x1, w.x2) : w.x1 - w.t / 2;
     const by = isH ? w.y1 - w.t / 2 : Math.min(w.y1, w.y2);
     const bw = isH ? Math.abs(w.x2 - w.x1) : w.t;
     let bd = isH ? w.t : Math.abs(w.y2 - w.y1);
-    if (!isH && w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) bd -= 7;
+    if (!isH && ((w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) || (w.x1 === 245 && Math.max(w.y1, w.y2) === 760))) bd -= 7;
 
-    let cWall = '#efe2b8';
-    let cSide = '#dfd0a0';
-    if (w.mat === 'striped_brown') { cWall = '#8c6244'; cSide = '#6f4b32'; }
-    else if (w.mat === 'terracotta') { cWall = '#d98a6c'; cSide = '#bd6f53'; }
+    let front = '#efe2b8', back = '#dfd0a0', left = '#dfd0a0', right = '#efe2b8';
+    if (w.mat === 'striped_brown') {
+      front = '#8c6244'; back = '#6f4b32'; left = '#6f4b32'; right = '#8c6244';
+    } else if (w.mat === 'terracotta') {
+      front = '#d98a6c'; back = '#bd6f53'; left = '#bd6f53'; right = '#d98a6c';
+    } else if (w.mat === 'service_div') {
+      front = '#dfd0a0'; back = '#8c6244'; left = '#6f4b32'; right = '#efe2b8';
+    } else if (w.mat === 'service_ext_w') {
+      front = '#dfd0a0'; back = '#8c6244'; left = '#94a3b8'; right = '#8c6244';
+    } else if (w.mat === 'service_ext_n') {
+      front = w.ext ? '#94a3b8' : '#efe2b8'; back = '#8c6244'; left = '#6f4b32'; right = '#8c6244';
+    } else if (w.mat === 'service_south') {
+      front = '#8c6244'; back = '#efe2b8'; left = '#6f4b32'; right = '#efe2b8';
+    }
 
-    if (nightMode) { cWall = shadeColor(cWall, -25); cSide = shadeColor(cSide, -25); }
+    if (nightMode) {
+      front = shadeColor(front, -25); back = shadeColor(back, -25);
+      left = shadeColor(left, -25); right = shadeColor(right, -25);
+    }
 
     addBox(bx, by, 3, bw, bd, wallH, {
       top: w.ext ? '#cbd5e1' : '#e2e8f0',
-      front: cWall,
-      back: cSide,
-      left: cSide,
-      right: cWall,
+      front, back, left, right,
       stroke: 'rgba(15,23,42,0.35)'
     });
   });
+
+  // White marble lower wall cladding inside Washer Alcove (x=140..245, y=355..465)
+  const washerH = Math.min(wallH, 122);
+  const marbleCols = {
+    top: '#cbd5e1',
+    front: nightMode ? '#cbd5e1' : '#f8fafc',
+    back: nightMode ? '#94a3b8' : '#f1f5f9',
+    left: '#e2e8f0',
+    right: nightMode ? '#cbd5e1' : '#f8fafc',
+    stroke: 'rgba(100,116,139,0.45)'
+  };
+  addBox(146, 362, 3, 2, 96, washerH, marbleCols);
+  addBox(148, 361, 3, 91, 2, washerH, marbleCols);
+  addBox(148, 457, 3, 91, 2, washerH, marbleCols);
 
   // 4. Window Sills & Glass Panes
   APT.windows.forEach(win => {
@@ -1604,20 +1641,31 @@ function render3DScene(W, H) {
     });
   });
 
-  // 6. Right-Side Stepped Balcony Parapet & Iron Railing
+  // 6. Right-Side Stepped Balcony Parapet, Vertical Iron Balusters & Handrail
   const railH = Math.min(wallH, 95);
+  const paraH = railH * 0.55;
+  const balH = Math.max(4, railH - paraH);
   const parapetCols = { top: '#bd6f53', front: '#d98a6c', back: '#c5775b', left: '#bd6f53', right: '#d98a6c' };
   const ironCols = { top: '#0f172a', front: '#1e293b', back: '#0f172a', left: '#0f172a', right: '#1e293b' };
+  // North return rail (x=805..895, y=0)
+  addBox(805, 0, 3, 90, 12, paraH, parapetCols);
+  addBox(805, 3, 3 + railH, 90, 6, 5, ironCols);
+  for (let bx = 825; bx < 890; bx += 35) addBox(bx, 4, 3 + paraH, 4, 4, balH, ironCols);
   // Upper East rail (x=885, y=0..570)
-  addBox(885, 0, 3, 12, 570, railH * 0.55, parapetCols);
+  addBox(885, 0, 3, 12, 570, paraH, parapetCols);
   addBox(888, 0, 3 + railH, 6, 570, 5, ironCols);
+  for (let by = 18; by < 565; by += 35) addBox(889, by, 3 + paraH, 4, 4, balH, ironCols);
   // Turn North rail (x=885..1300, y=570)
-  addBox(885, 570, 3, 415, 12, railH * 0.55, parapetCols);
+  addBox(885, 570, 3, 415, 12, paraH, parapetCols);
   addBox(885, 573, 3 + railH, 415, 6, 5, ironCols);
+  for (let bx = 905; bx < 1290; bx += 35) addBox(bx, 574, 3 + paraH, 4, 4, balH, ironCols);
   // Lower East rail (x=1288, y=570..1180) & South end cap (x=1210..1300, y=1168)
-  addBox(1288, 570, 3, 12, 610, railH * 0.55, parapetCols);
+  addBox(1288, 570, 3, 12, 610, paraH, parapetCols);
   addBox(1291, 570, 3 + railH, 6, 610, 5, ironCols);
-  addBox(1210, 1168, 3, 90, 12, railH * 0.55, parapetCols);
+  for (let by = 590; by < 1170; by += 35) addBox(1292, by, 3 + paraH, 4, 4, balH, ironCols);
+  addBox(1210, 1168, 3, 90, 12, paraH, parapetCols);
+  addBox(1210, 1171, 3 + railH, 90, 6, 5, ironCols);
+  for (let bx = 1222; bx < 1292; bx += 35) addBox(bx, 1172, 3 + paraH, 4, 4, balH, ironCols);
 
   // 7. 3D Furniture & Appliances (Updated for 5th Sketch Coordinates)
   if (showFurn) {
@@ -1720,26 +1768,40 @@ function render3DScene(W, H) {
 // 6. FIRST-PERSON 3D INTERIOR WALKTHROUGH ENGINE (SUTHERLAND-HODGMAN CLIP)
 // ============================================================================
 const WALK_TOUR_PATH = [
-  { x: 490,  y: 480, yaw: -1.57, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
-  { x: 490,  y: 315, yaw: -1.42, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
-  { x: 525,  y: 195, yaw: -0.35, pitch: -0.05 }, // 2: استعراض الصالة والشباك
-  { x: 445,  y: 195, yaw: -2.95, pitch: -0.05 }, // 3: الالتفات غرباً نحو المطبخ والمدخل
-  { x: 335,  y: 280, yaw: -3.12, pitch: -0.06 }, // 4: أمام باب المطبخ
-  { x: 335,  y: 420, yaw:  2.75, pitch: -0.06 }, // 5: المرور بركن الغسالة
-  { x: 335,  y: 575, yaw:  2.95, pitch: -0.06 }, // 6: أمام باب الحمام
-  { x: 335,  y: 705, yaw:  1.60, pitch: -0.05 }, // 7: نهاية المدخل أمام باب الصالون
-  { x: 328,  y: 890, yaw:  2.25, pitch: -0.05 }, // 8: داخل الصالون باتجاه الشباك
-  { x: 330,  y: 830, yaw: -1.56, pitch: -0.04 }, // 9: الالتفات شمالاً أمام باب الصالون
-  { x: 332,  y: 710, yaw: -1.56, pitch: -0.04 }, // 10: الخروج مباشرة لممر الطرقة
-  { x: 365,  y: 710, yaw:  0.04, pitch: -0.04 }, // 11: الاتجاه شرقاً عبر الطرقة
-  { x: 510,  y: 710, yaw:  0.22, pitch: -0.04 }, // 12: منتصف الطرقة
-  { x: 630,  y: 712, yaw:  1.42, pitch: -0.05 }, // 13: أمام باب غرفة الأطفال
-  { x: 785,  y: 710, yaw:  0.04, pitch: -0.04 }, // 14: التوجه لباب الماستر
-  { x: 965,  y: 710, yaw:  0.65, pitch: -0.05 }, // 15: الدخول لغرفة الماستر
-  { x: 1045, y: 865, yaw:  0.95, pitch: -0.05 }, // 16: داخل الماستر باتجاه الشباك
-  { x: 1120, y: 715, yaw:  0.02, pitch: -0.04 }, // 17: أمام باب البلكونة
-  { x: 1252, y: 715, yaw: -1.52, pitch: -0.03 }, // 18: الخروج للبلكونة والنظر شمالاً
-  { x: 1252, y: 835, yaw: -1.96, pitch: -0.04 }, // 19: لقطة ختامية للبلكونة المتدرجة وباب الماستر
+  { x: 500,  y: 505,  yaw: -1.57, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
+  { x: 490,  y: 315,  yaw: -1.55, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
+  { x: 525,  y: 205,  yaw: -0.30, pitch: -0.05 }, // 2: داخل الصالة: استعراض الواجهة والشباك
+  { x: 455,  y: 205,  yaw: -3.05, pitch: -0.05 }, // 3: الالتفات داخل الصالة نحو فتحة المطبخ والممر
+  { x: 320,  y: 285,  yaw: -3.12, pitch: -0.06 }, // 4: أمام باب المطبخ مفتوحاً
+  { x: 155,  y: 265,  yaw: -2.18, pitch: -0.06 }, // 5: الدخول إلى المطبخ: السيراميك البني المقلم
+  { x: 135,  y: 185,  yaw: -1.60, pitch: -0.06 }, // 6: عمق المطبخ باتجاه الحائط الشمالي
+  { x: 175,  y: 282,  yaw:  0.18, pitch: -0.06 }, // 7: الالتفات نحو باب المطبخ للخروج
+  { x: 318,  y: 288,  yaw:  1.52, pitch: -0.05 }, // 8: الخروج للممر والتوجه لبداية الطرقة
+  { x: 335,  y: 412,  yaw:  2.75, pitch: -0.05 }, // 9: بداية الممر: ركن الغسالة بالرخام الأبيض
+  { x: 325,  y: 575,  yaw:  3.08, pitch: -0.06 }, // 10: أمام باب الحمام
+  { x: 145,  y: 580,  yaw:  2.85, pitch: -0.06 }, // 11: الدخول داخل الحمام
+  { x: 105,  y: 655,  yaw:  0.20, pitch: -0.06 }, // 12: داخل الحمام: الحائط الشرقي المغلق والسيراميك
+  { x: 185,  y: 582,  yaw:  0.12, pitch: -0.05 }, // 13: العودة نحو باب الحمام للخروج
+  { x: 330,  y: 590,  yaw:  1.56, pitch: -0.05 }, // 14: الخروج إلى ممر المدخل باتجاه الصالون
+  { x: 328,  y: 710,  yaw:  1.57, pitch: -0.05 }, // 15: أمام باب الصالون
+  { x: 328,  y: 895,  yaw:  2.25, pitch: -0.05 }, // 16: الدخول إلى غرفة الصالون
+  { x: 255,  y: 1005, yaw:  1.45, pitch: -0.05 }, // 17: عمق الصالون أمام الشباك
+  { x: 328,  y: 845,  yaw: -1.55, pitch: -0.04 }, // 18: العودة نحو باب الصالون
+  { x: 328,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 19: الخروج لممر الطرقة والالتفات شرقاً
+  { x: 505,  y: 710,  yaw:  0.18, pitch: -0.04 }, // 20: السير في منتصف الطرقة
+  { x: 630,  y: 710,  yaw:  1.55, pitch: -0.05 }, // 21: أمام باب غرفة الأطفال
+  { x: 630,  y: 885,  yaw:  1.25, pitch: -0.05 }, // 22: الدخول إلى غرفة الأطفال
+  { x: 695,  y: 1015, yaw:  1.60, pitch: -0.05 }, // 23: عمق غرفة الأطفال أمام الشباك
+  { x: 630,  y: 835,  yaw: -1.55, pitch: -0.04 }, // 24: العودة نحو باب غرفة الأطفال
+  { x: 630,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 25: الخروج لباقي ممر الطرقة
+  { x: 785,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 26: نهاية ممر الطرقة أمام باب الماستر
+  { x: 995,  y: 725,  yaw:  0.82, pitch: -0.05 }, // 27: الدخول إلى غرفة النوم الماستر
+  { x: 1035, y: 975,  yaw:  1.45, pitch: -0.05 }, // 28: عمق غرفة الماستر أمام الشباك
+  { x: 1065, y: 735,  yaw: -0.15, pitch: -0.04 }, // 29: التوجه إلى باب البلكونة
+  { x: 1255, y: 710,  yaw: -1.57, pitch: -0.03 }, // 30: الخروج إلى البلكونة
+  { x: 1255, y: 615,  yaw: -3.10, pitch: -0.03 }, // 31: ركبة البلكونة والسور الحديدي
+  { x: 850,  y: 615,  yaw: -1.60, pitch: -0.03 }, // 32: السير بالبلكونة نحو شباك الصالة
+  { x: 850,  y: 235,  yaw: -1.65, pitch: -0.04 }, // 33: نهاية البلكونة أمام شباك الصالة والسور الحديدي
 ];
 
 function getWalkSolidBoxes() {
@@ -1857,9 +1919,23 @@ window.setTourProgress = function(t) {
   walkCam.z = 162;
   walkCam.yaw = lerpAngle(p0.yaw, p1.yaw, smoothF);
   walkCam.pitch = p0.pitch + (p1.pitch - p0.pitch) * smoothF;
+  const pctVal = Math.round(clamped * 1000);
+  const s1 = document.getElementById('walkTourSlider');
+  const s2 = document.getElementById('walkHudSlider');
+  const pctEl = document.getElementById('walkTourPct');
+  if (s1 && s1.value !== String(pctVal)) s1.value = pctVal;
+  if (s2 && s2.value !== String(pctVal)) s2.value = pctVal;
+  if (pctEl) pctEl.textContent = Math.round(clamped * 100) + '%';
   updateWalkRoomBadge();
   redraw();
 };
+
+function onTourSliderInput(val) {
+  stopWalkTour();
+  const t = Math.max(0, Math.min(1, Number(val) / 1000));
+  walkTourT = t;
+  window.setTourProgress(t);
+}
 
 function updateWalkTourUI() {
   const btn = document.getElementById('walkTourBtn');
@@ -1933,7 +2009,7 @@ function stepWalkLoop(ts) {
 
   let dirty = false;
   if (walkTourActive) {
-    walkTourT += dt / 18.0; // 18-second full apartment walkthrough
+    walkTourT += dt / 28.0; // 28-second full room-by-room apartment walkthrough
     if (walkTourT >= 1) {
       walkTourT = 1;
       window.setTourProgress(1);
@@ -2115,21 +2191,61 @@ function renderWalkScene(W, H) {
     return { top: '#e2e8f0', bottom: '#d4c392', north: '#efe2b8', south: '#e9dbb0', west: '#dacb9b', east: '#dfd0a0' };
   }
 
+  function serviceWallCols(mat, tier, isExt) {
+    const brownTiers = {
+      base:  { north: '#593d28', south: '#543925', west: '#452e1d', east: '#4c3321' },
+      lower: { north: '#7c563a', south: '#755035', west: '#63432b', east: '#6b4930' },
+      band:  { north: '#d2b494', south: '#caa988', west: '#b89674', east: '#c29f7e' },
+      upper: { north: '#8c6244', south: '#855c3f', west: '#6f4b32', east: '#785136' }
+    };
+    const creamTiers = {
+      base:  { north: '#4a2c1d', south: '#432719', west: '#3a2115', east: '#3f2417' },
+      lower: { north: '#efe2b8', south: '#e9dbb0', west: '#dacb9b', east: '#dfd0a0' },
+      band:  { north: '#efe2b8', south: '#e9dbb0', west: '#dacb9b', east: '#dfd0a0' },
+      upper: { north: '#efe2b8', south: '#e9dbb0', west: '#dacb9b', east: '#dfd0a0' }
+    };
+    const b = brownTiers[tier];
+    const c = creamTiers[tier];
+    const capTop = tier === 'upper' ? (isExt ? '#cbd5e1' : '#e2e8f0') : null;
+    if (mat === 'striped_brown') return { top: capTop, bottom: null, ...b };
+    if (mat === 'service_div')   return { top: capTop, bottom: null, north: c.north, south: c.south, west: b.west, east: c.east };
+    if (mat === 'service_ext_w') return { top: capTop, bottom: null, north: c.north, south: c.south, west: '#94a3b8', east: b.east };
+    if (mat === 'service_ext_n') return { top: capTop, bottom: null, north: isExt ? '#94a3b8' : c.north, south: b.south, west: b.west, east: c.east };
+    if (mat === 'service_south') return { top: capTop, bottom: null, north: b.north, south: c.south, west: b.west, east: c.east };
+    return { top: capTop, bottom: null, ...c };
+  }
+
   APT.walls.forEach(w => {
     const isH = Math.abs(w.y2 - w.y1) < 1;
     const bx = isH ? Math.min(w.x1, w.x2) : w.x1 - w.t / 2;
     const by = isH ? w.y1 - w.t / 2 : Math.min(w.y1, w.y2);
-    const bw = isH ? Math.abs(w.x2 - w.x1) : w.t;
+    let bw = isH ? Math.abs(w.x2 - w.x1) : w.t;
     let bd = isH ? w.t : Math.abs(w.y2 - w.y1);
-    if (!isH && w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) bd -= 7;
-    const baseCols = w.mat === 'striped_brown'
-      ? { north: '#593d28', south: '#543925', west: '#452e1d', east: '#4c3321' }
-      : (w.mat === 'terracotta'
-        ? { north: '#9e5840', south: '#96523b', west: '#854631', east: '#8c4b35' }
-        : { north: '#b89f74', south: '#b0976c', west: '#9e865d', east: '#a68d64' });
-    addWalkBox(bx, by, 3, bw, bd, 10, baseCols, 2, 65, 20);
-    addWalkBox(bx, by, 13, bw, bd, wallH - 13, wallColors(w.mat), 2, 65, 90);
+    if (isH && w.x2 === 245 && (w.y1 === 355 || w.y1 === 465)) bw -= 6;
+    if (!isH && ((w.mat === 'terracotta' && Math.max(w.y1, w.y2) === 660) || (w.x1 === 245 && Math.max(w.y1, w.y2) === 760))) bd -= 6;
+
+    if (w.mat === 'striped_brown' || w.mat.startsWith('service_')) {
+      addWalkBox(bx, by, 3,   bw, bd, 10,         serviceWallCols(w.mat, 'base',  w.ext), 2, 65, 20);
+      addWalkBox(bx, by, 13,  bw, bd, 102,        serviceWallCols(w.mat, 'lower', w.ext), 2, 65, 60);
+      addWalkBox(bx, by, 115, bw, bd, 43,         serviceWallCols(w.mat, 'band',  w.ext), 2, 65, 45);
+      addWalkBox(bx, by, 158, bw, bd, wallH - 158, serviceWallCols(w.mat, 'upper', w.ext), 2, 65, 65);
+    } else if (w.mat === 'terracotta') {
+      const baseCols = { north: '#9e5840', south: '#96523b', west: '#854631', east: '#8c4b35' };
+      addWalkBox(bx, by, 3, bw, bd, 10, baseCols, 2, 65, 20);
+      addWalkBox(bx, by, 13, bw, bd, wallH - 13, wallColors('terracotta'), 2, 65, 90);
+    } else {
+      const darkBase = { north: '#4a2c1d', south: '#432719', west: '#3a2115', east: '#3f2417' };
+      addWalkBox(bx, by, 3, bw, bd, 10, darkBase, 2, 65, 20);
+      addWalkBox(bx, by, 13, bw, bd, wallH - 13, wallColors('cream'), 2, 65, 90);
+    }
   });
+
+  // White Veined Marble Lower Wall Cladding in Open Washer Alcove (x=140..245, y=355..465)
+  const washerMarble = { top: '#cbd5e1', bottom: '#cbd5e1', north: '#f8fafc', south: '#f1f5f9', west: '#e2e8f0', east: '#f8fafc' };
+  const washerMarbleSide = { top: '#cbd5e1', bottom: '#cbd5e1', north: '#f8fafc', south: '#f1f5f9', west: '#e2e8f0', east: '#efe2b8' };
+  addWalkBox(146.8, 362,   13, 1.5, 96,  112, washerMarble, 2, 50, 60, 'rgba(148,163,184,0.38)');
+  addWalkBox(148.5, 361.8, 13, 90,  1.5, 112, washerMarbleSide, 2, 50, 60, 'rgba(148,163,184,0.38)');
+  addWalkBox(148.5, 456.7, 13, 90,  1.5, 112, washerMarbleSide, 2, 50, 60, 'rgba(148,163,184,0.38)');
 
   // Stairwell decorative steps on East side of stair hall (clear of doorway x=440..540)
   for (let st = 0; st < 7; st++) {
@@ -2197,16 +2313,29 @@ function renderWalkScene(W, H) {
     addWalkBox(c.x, c.y, 3, c.w, c.h, wallH - 3, wallColors('cream'), 2, 50, 90, 'rgba(15,23,42,0.22)');
   });
 
-  // 6. Stepped Balcony Parapet & Iron Handrail
+  // 6. Stepped Balcony Parapet, Vertical Wrought-Iron Balusters & Top Handrail
   const parapetCols = wallColors('terracotta');
   const ironCols = { top: '#0f172a', bottom: '#0f172a', north: '#1e293b', south: '#1e293b', west: '#0f172a', east: '#0f172a' };
+  // North return segment (x=805..895, y=0)
+  addWalkBox(805, 0, 3, 90, 12, 52, parapetCols, 2, 65, 60);
+  addWalkBox(805, 3, 95, 90, 6, 5, ironCols, 2, 65, 20);
+  for (let bx = 825; bx < 890; bx += 35) addWalkBox(bx, 4, 55, 4, 4, 40, ironCols, 2, 20, 45);
+  // Upper East rail (x=885, y=0..570)
   addWalkBox(885, 0, 3, 12, 570, 52, parapetCols, 2, 65, 60);
   addWalkBox(888, 0, 95, 6, 570, 5, ironCols, 2, 65, 20);
+  for (let by = 18; by < 565; by += 35) addWalkBox(889, by, 55, 4, 4, 40, ironCols, 2, 20, 45);
+  // Turn North rail (x=885..1300, y=570)
   addWalkBox(885, 570, 3, 415, 12, 52, parapetCols, 2, 65, 60);
   addWalkBox(885, 573, 95, 415, 6, 5, ironCols, 2, 65, 20);
+  for (let bx = 905; bx < 1290; bx += 35) addWalkBox(bx, 574, 55, 4, 4, 40, ironCols, 2, 20, 45);
+  // Lower East rail (x=1288, y=570..1180)
   addWalkBox(1288, 570, 3, 12, 610, 52, parapetCols, 2, 65, 60);
   addWalkBox(1291, 570, 95, 6, 610, 5, ironCols, 2, 65, 20);
+  for (let by = 590; by < 1170; by += 35) addWalkBox(1292, by, 55, 4, 4, 40, ironCols, 2, 20, 45);
+  // South end cap (x=1210..1300, y=1168)
   addWalkBox(1210, 1168, 3, 90, 12, 52, parapetCols, 2, 65, 60);
+  addWalkBox(1210, 1171, 95, 90, 6, 5, ironCols, 2, 65, 20);
+  for (let bx = 1222; bx < 1292; bx += 35) addWalkBox(bx, 1172, 55, 4, 4, 40, ironCols, 2, 20, 45);
 
   // 7. Optional Interior Furniture
   if (showFurn) {

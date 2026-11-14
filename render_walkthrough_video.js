@@ -25,7 +25,7 @@ const os = require('os');
   await page.evaluate(() => { window.dispatchEvent(new Event('resize')); });
   await new Promise(r => setTimeout(r, 250));
 
-  const totalFrames = 180;
+  const totalFrames = 240;
   for (let i = 0; i < totalFrames; i++) {
     const t = i / (totalFrames - 1);
     await page.evaluate(val => new Promise(resolve => {
