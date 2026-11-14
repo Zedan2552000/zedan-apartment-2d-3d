@@ -616,11 +616,11 @@ const APT = {
     // North wall of Master onto Balcony Jog (y = 660, x = 865..1210)
     { x1: 865, y1: 660, x2: 1210, y2: 660, t: 15, ext: true, mat: 'cream' },
 
-    // Service Wing East Divider (x = 245, y = 0..760; open 240..330 Kitchen door, 355..465 Washer, 540..620 Bath door, closed 620..760)
+    // Service Wing East Divider (x = 245, y = 0..760; open 240..330 Kitchen door, 355..465 Washer, closed 465..670, open 670..750 Bath door)
     { x1: 245, y1: 0, x2: 245, y2: 240, t: 12, ext: false, mat: 'service_div' },
     { x1: 245, y1: 330, x2: 245, y2: 355, t: 12, ext: false, mat: 'service_div' },
-    { x1: 245, y1: 465, x2: 245, y2: 540, t: 12, ext: false, mat: 'service_div' },
-    { x1: 245, y1: 620, x2: 245, y2: 760, t: 12, ext: false, mat: 'service_div' },
+    { x1: 245, y1: 465, x2: 245, y2: 670, t: 12, ext: false, mat: 'service_div' },
+    { x1: 245, y1: 750, x2: 245, y2: 760, t: 12, ext: false, mat: 'service_div' },
 
     // Kitchen / Shaft / Washer / Bath Horizontal & Alcove Dividers
     { x1: 0, y1: 355, x2: 40, y2: 355, t: 12, ext: false, mat: 'service_south' },
@@ -631,9 +631,9 @@ const APT = {
     // Bathroom South wall extended flush to Salon (North=striped_brown, South=Salon cream)
     { x1: 0, y1: 760, x2: 245, y2: 760, t: 12, ext: false, mat: 'service_south' },
 
-    // Reception / Stairwell Divider (y = 388, open archway x = 245..422, main door 440..540)
-    { x1: 422, y1: 388, x2: 440, y2: 388, t: 14, ext: false, mat: 'cream' },
-    { x1: 540, y1: 388, x2: 805, y2: 388, t: 14, ext: false, mat: 'cream' },
+    // Reception / Stairwell Divider (y = 388, open archway x = 245..422, main door 690..790)
+    { x1: 422, y1: 388, x2: 690, y2: 388, t: 14, ext: false, mat: 'cream' },
+    { x1: 790, y1: 388, x2: 805, y2: 388, t: 14, ext: false, mat: 'cream' },
 
     // Stairwell West Wall (x = 422, y = 388..660) & South Wall (y = 660, x = 422..865)
     { x1: 422, y1: 388, x2: 422, y2: 660, t: 14, ext: false, mat: 'terracotta' },
@@ -651,9 +651,9 @@ const APT = {
     { x1: 865, y1: 753, x2: 865, y2: 1180, t: 14, ext: false, mat: 'cream' },
   ],
   doors: [
-    { name: 'باب الشقة', w: 100, hx: 440, hy: 388, dir: 'h', swing: -1, a0: -Math.PI/2, a1: 0, main: true },
+    { name: 'باب الشقة', w: 100, hx: 690, hy: 388, dir: 'h', swing: -1, a0: -Math.PI/2, a1: 0, main: true },
     { name: 'باب المطبخ', w: 90, hx: 245, hy: 240, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
-    { name: 'باب الحمام', w: 80, hx: 245, hy: 540, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
+    { name: 'باب الحمام', w: 80, hx: 245, hy: 670, dir: 'v', swing: -1, a0: Math.PI*0.5, a1: Math.PI },
     { name: 'باب الصالون', w: 87, hx: 285, hy: 760, dir: 'h', swing: 1, a0: 0, a1: Math.PI/2 },
     { name: 'باب الأطفال', w: 90, hx: 585, hy: 760, dir: 'h', swing: 1, a0: 0, a1: Math.PI/2 },
     { name: 'باب الماستر', w: 87, hx: 865, hy: 666, dir: 'v', swing: 1, a0: 0, a1: Math.PI/2 },
@@ -703,10 +703,10 @@ let cam3D = {
 
 // First-Person 3D Walkthrough State
 let walkCam = {
-  x: 475,
+  x: 735,
   y: 465,
   z: 162,
-  yaw: -1.45,
+  yaw: -1.75,
   pitch: -0.04
 };
 const walkKeys = {};
@@ -1250,9 +1250,9 @@ function render2DPlan(W, H, isBlueprint) {
     ctx.fillStyle = isBlueprint ? '#22d3ee' : '#0284c7';
     ctx.font = 'bold 12px Segoe UI';
     ctx.textAlign = 'center';
-    ctx.fillText('باب 100', 490, 372);
+    ctx.fillText('باب 100', 740, 372);
     ctx.fillText('باب 90', 200, 285);
-    ctx.fillText('باب 80', 200, 580);
+    ctx.fillText('باب 80', 200, 710);
     ctx.fillText('باب 87', 330, 745);
     ctx.fillText('باب 90', 630, 745);
     ctx.fillText('باب 87', 910, 710);
@@ -1385,7 +1385,7 @@ function getActiveFurnLayout() {
     { id: 'washer',   room: 'washer',  x: 152, y: 380, w: 60, d: 60, h: 85,  kind: 'washer',          label: 'غسالة',        mat: 'white_app' },
     { id: 'b_sink',   room: 'bath',    x: 115, y: 472, w: 65, d: 46, h: 82,  kind: 'vanity',          label: 'حوض',          mat: 'white_app' },
     { id: 'b_wc',     room: 'bath',    x: 18,  y: 550, w: 50, d: 55, h: 76,  kind: 'wc',              label: 'WC',           mat: 'white_app' },
-    { id: 'b_shower', room: 'bath',    x: 12,  y: 675, w: 153,d: 75, h: 46,  kind: 'shower',          label: 'شاور / بانيو',  mat: 'white_app' },
+    { id: 'b_shower', room: 'bath',    x: 12,  y: 675, w: 135,d: 72, h: 46,  kind: 'shower',          label: 'شاور / بانيو',  mat: 'white_app' },
     { id: 'shoe',     room: 'entry',   x: 376, y: 475, w: 38, d: 100,h: 105, kind: 'shoe_cab',        label: 'جزامة',        mat: 'walnut_white' },
 
     // 3. Master Bedroom (نوم بلازا)
@@ -1414,11 +1414,11 @@ function getActiveFurnLayout() {
   // 6. Preset-Switchable Living & Salon Sets (ركنة عمولة 4×2.20 vs انترية كريمة)
   if (preset === 'preset2') {
     items.push(
-      { id: 'p2_s1',   room: 'reception', x: 495, y: 12,  w: 210, d: 84,  h: 78, kind: 'sofa', backDir: 'n', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5' },
-      { id: 'p2_s2',   room: 'reception', x: 712, y: 110, w: 84,  d: 220, h: 78, kind: 'sofa', backDir: 'e', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3' },
-      { id: 'p2_f1',   room: 'reception', x: 530, y: 298, w: 80,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted3' },
-      { id: 'p2_f2',   room: 'reception', x: 622, y: 298, w: 78,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted5' },
-      { id: 'p2_nt',   room: 'reception', x: 580, y: 145, w: 90,  d: 70,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass' },
+      { id: 'p2_s1',   room: 'reception', x: 455, y: 12,  w: 220, d: 84,  h: 78, kind: 'sofa', backDir: 'n', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5' },
+      { id: 'p2_s2',   room: 'reception', x: 708, y: 12,  w: 86,  d: 210, h: 78, kind: 'sofa', backDir: 'e', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3' },
+      { id: 'p2_f1',   room: 'reception', x: 460, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted3' },
+      { id: 'p2_f2',   room: 'reception', x: 560, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted5' },
+      { id: 'p2_nt',   room: 'reception', x: 525, y: 125, w: 90,  d: 70,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass' },
       { id: 'p2_ls',   room: 'salon',     x: 45,  y: 1082,w: 400, d: 88,  h: 76, kind: 'sofa', backDir: 's', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5' },
       { id: 'p2_lw',   room: 'salon',     x: 12,  y: 950, w: 88,  d: 220, h: 76, kind: 'sofa', backDir: 'w', label: 'ركنة 2.20م',          mat: 'alba5' },
       { id: 'p2_lt',   room: 'salon',     x: 195, y: 945, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة',             mat: 'alba5' }
@@ -2004,9 +2004,9 @@ function render3DScene(W, H) {
 // 6. FIRST-PERSON 3D INTERIOR WALKTHROUGH ENGINE (SUTHERLAND-HODGMAN CLIP)
 // ============================================================================
 const WALK_TOUR_PATH = [
-  { x: 500,  y: 505,  yaw: -1.57, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
-  { x: 490,  y: 315,  yaw: -1.55, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
-  { x: 545,  y: 245,  yaw: -0.45, pitch: -0.05 }, // 2: داخل الصالة: استعراض الواجهة والسفرة والمعيشة
+  { x: 735,  y: 495,  yaw: -1.68, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
+  { x: 735,  y: 315,  yaw: -1.85, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
+  { x: 565,  y: 255,  yaw: -2.45, pitch: -0.05 }, // 2: داخل الصالة: استعراض الواجهة والسفرة والمعيشة
   { x: 475,  y: 245,  yaw: -2.85, pitch: -0.05 }, // 3: الالتفات داخل الصالة نحو فتحة المطبخ والركن الغربي
   { x: 320,  y: 285,  yaw: -3.12, pitch: -0.06 }, // 4: أمام باب المطبخ مفتوحاً
   { x: 135,  y: 268,  yaw: -2.05, pitch: -0.06 }, // 5: الدخول إلى المطبخ: التصميم الهندسي وغسالة بيكو
@@ -2014,11 +2014,11 @@ const WALK_TOUR_PATH = [
   { x: 135,  y: 268,  yaw:  0.15, pitch: -0.06 }, // 7: الالتفات نحو باب المطبخ للخروج
   { x: 318,  y: 288,  yaw:  1.52, pitch: -0.05 }, // 8: الخروج للممر والتوجه لبداية الطرقة
   { x: 335,  y: 412,  yaw:  2.75, pitch: -0.05 }, // 9: بداية الممر: ركن الغسالة والجزامة
-  { x: 325,  y: 575,  yaw:  3.08, pitch: -0.06 }, // 10: أمام باب الحمام
-  { x: 145,  y: 580,  yaw:  2.75, pitch: -0.06 }, // 11: الدخول داخل الحمام
-  { x: 115,  y: 625,  yaw:  0.45, pitch: -0.06 }, // 12: داخل الحمام: الدش والحائط الشرقي
-  { x: 185,  y: 582,  yaw:  0.12, pitch: -0.05 }, // 13: العودة نحو باب الحمام للخروج
-  { x: 330,  y: 590,  yaw:  1.56, pitch: -0.05 }, // 14: الخروج إلى ممر المدخل باتجاه الصالون
+  { x: 325,  y: 705,  yaw:  3.10, pitch: -0.06 }, // 10: أمام باب الحمام
+  { x: 185,  y: 705,  yaw: -2.25, pitch: -0.06 }, // 11: الدخول داخل الحمام
+  { x: 135,  y: 575,  yaw: -1.65, pitch: -0.06 }, // 12: داخل الحمام: الحوض والـ WC والسيراميك
+  { x: 185,  y: 705,  yaw:  0.05, pitch: -0.05 }, // 13: العودة نحو باب الحمام للخروج
+  { x: 325,  y: 705,  yaw:  1.56, pitch: -0.05 }, // 14: الخروج إلى ممر المدخل باتجاه الصالون
   { x: 328,  y: 710,  yaw:  1.57, pitch: -0.05 }, // 15: أمام باب الصالون
   { x: 328,  y: 862,  yaw:  2.45, pitch: -0.05 }, // 16: الدخول إلى غرفة الصالون
   { x: 168,  y: 888,  yaw:  1.45, pitch: -0.05 }, // 17: الممر المفتوح بالصالون أمام الفرش والشباك
@@ -2097,7 +2097,7 @@ function moveWalkCamera(dx, dy) {
 }
 
 function getWalkRoomName(x, y) {
-  if (x >= 440 && x <= 540 && y >= 375 && y <= 415) return 'باب الشقة الرئيسي';
+  if (x >= 685 && x <= 795 && y >= 370 && y <= 415) return 'باب الشقة الرئيسي';
   for (let i = 0; i < APT.rooms.length; i++) {
     const r = APT.rooms[i];
     if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
@@ -2115,11 +2115,11 @@ function updateWalkRoomBadge() {
 function jumpWalkRoom(roomId) {
   stopWalkTour();
   const presets = {
-    door:      { x: 490,  y: 455, yaw: -1.57, pitch: -0.03 },
+    door:      { x: 735,  y: 455, yaw: -1.75, pitch: -0.03 },
     reception: { x: 535,  y: 255, yaw: -0.45, pitch: -0.05 },
     kitchen:   { x: 122,  y: 200, yaw: -2.05, pitch: -0.06 },
     entry:     { x: 335,  y: 455, yaw:  1.57, pitch: -0.04 },
-    bath:      { x: 145,  y: 580, yaw:  2.75, pitch: -0.06 },
+    bath:      { x: 185,  y: 695, yaw: -2.25, pitch: -0.06 },
     salon:     { x: 168,  y: 888, yaw:  1.45, pitch: -0.05 },
     kids:      { x: 630,  y: 862, yaw:  1.15, pitch: -0.05 },
     master:    { x: 962,  y: 815, yaw:  0.88, pitch: -0.05 },
@@ -2484,9 +2484,9 @@ function renderWalkScene(W, H) {
   addWalkBox(148.5, 361.8, 13, 90,  1.5, 112, washerMarbleSide, 2, 50, 60, 'rgba(148,163,184,0.38)');
   addWalkBox(148.5, 456.7, 13, 90,  1.5, 112, washerMarbleSide, 2, 50, 60, 'rgba(148,163,184,0.38)');
 
-  // Stairwell decorative steps on East side of stair hall (clear of doorway x=440..540)
+  // Stairwell decorative steps on West side of stair hall (clear of doorway x=690..790)
   for (let st = 0; st < 7; st++) {
-    const sx = 595 + st * 26;
+    const sx = 435 + st * 25;
     const sh = (st + 1) * 16;
     addWalkBox(sx, 405, 3, 26, 115, sh, {
       top: '#cbd5e1', bottom: '#64748b', north: '#94a3b8', south: '#94a3b8', west: '#64748b', east: '#94a3b8'

@@ -86,8 +86,8 @@ def create_apartment_dxf():
     # Left Service Wing (x=0..245): Kitchen (0..355), Shaft+Washer (355..465), Bathroom (465..760)
     add_wall_rect(240, 0, 250, 240, layer="WALLS_INTERIOR")    # Kitchen East wall above door
     add_wall_rect(240, 330, 250, 355, layer="WALLS_INTERIOR")  # Kitchen East wall below door
-    add_wall_rect(240, 465, 250, 540, layer="WALLS_INTERIOR")  # Bath East wall above door
-    add_wall_rect(240, 620, 250, 760, layer="WALLS_INTERIOR")  # Bath East wall closed to y=760
+    add_wall_rect(240, 465, 250, 670, layer="WALLS_INTERIOR")  # Bath East wall closed above door
+    add_wall_rect(240, 750, 250, 760, layer="WALLS_INTERIOR")  # Bath East wall south pier
     add_wall_rect(0, 350, 245, 360, layer="WALLS_INTERIOR")
     add_wall_rect(0, 460, 245, 470, layer="WALLS_INTERIOR")
     add_wall_rect(135, 355, 145, 465, layer="WALLS_INTERIOR")  # Shaft / Washer divider
@@ -97,8 +97,8 @@ def create_apartment_dxf():
     add_hatched_zone(0, 355, 140, 465, layer="SHAFT_HATCH", pattern="ANSI37", scale=8.0, color=3)
 
     # Reception (الصالة): x=245..805, y=0..388 (with open archway to vertical corridor at x=245..422)
-    add_wall_rect(417, 383, 440, 393, layer="WALLS_INTERIOR")
-    add_wall_rect(540, 383, 805, 393, layer="WALLS_INTERIOR")
+    add_wall_rect(417, 383, 690, 393, layer="WALLS_INTERIOR")
+    add_wall_rect(790, 383, 805, 393, layer="WALLS_INTERIOR")
 
     # Stairwell (بئر السلم): x=422..805, y=388..660
     add_hatched_zone(422, 388, 805, 660, layer="STAIRWELL_HATCH", pattern="ANSI31", scale=14.0, color=9)
@@ -141,12 +141,12 @@ def create_apartment_dxf():
         add_filled_column(x1, y1, x2, y2)
 
     # 4. Doors & Windows
-    # Main Door (100 cm) on South wall of Reception at y=388, x=440..540
-    add_door(440, 388, 100, 0, 90, 0, 100)
+    # Main Door (100 cm) on South wall of Reception at y=388, x=690..790
+    add_door(690, 388, 100, 0, 90, 0, 100)
     # Kitchen Door (90 cm) on East wall at x=245, y=240..330
     add_door(245, 240, 90, 180, 270, -90, 0)
-    # Bathroom Door (80 cm) on East wall at x=245, y=540..620
-    add_door(245, 540, 80, 180, 270, -80, 0)
+    # Bathroom Door (80 cm) on East wall at x=245, y=670..750
+    add_door(245, 670, 80, 180, 270, -80, 0)
     # Salon Door (87 cm) on North wall at y=760, x=285..372
     add_door(285, 760, 87, 270, 360, 0, -87)
     # Kids Door (90 cm) on North wall at y=760, x=585..675
@@ -208,7 +208,7 @@ def create_apartment_dxf():
     add_furn_box(152, 380, 212, 440, "غسالة ملابس", "FURNITURE", 6)
     add_furn_box(115, 472, 180, 518, "حوض", "FURNITURE", 6)
     add_furn_box(18, 550, 68, 605, "WC", "FURNITURE", 6)
-    add_furn_box(12, 675, 165, 750, "شاور / بانيو", "FURNITURE", 7)
+    add_furn_box(12, 675, 147, 747, "شاور / بانيو", "FURNITURE", 7)
     add_furn_box(376, 475, 414, 575, "جزامة", "FURNITURE", 6.5)
 
     # Reception (الصالة): ركنة عمولة 4م × 2.20م + سفرة زمردة
