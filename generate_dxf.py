@@ -110,8 +110,8 @@ def create_apartment_dxf():
     add_wall_rect(372, 755, 585, 765, layer="WALLS_INTERIOR")
     add_wall_rect(675, 755, 865, 765, layer="WALLS_INTERIOR")
 
-    # Bottom Row Rooms (y=760..1180): Salon (0..555), Kids (555..865), Master (865..1210, y=660..1180)
-    add_wall_rect(550, 760, 560, 1180, layer="WALLS_INTERIOR")
+    # Bottom Row Rooms (y=760..1180): Salon (0..422), Kids (422..865), Master (865..1210, y=660..1180)
+    add_wall_rect(417, 760, 427, 1180, layer="WALLS_INTERIOR")
     add_wall_rect(860, 660, 870, 1180, layer="WALLS_INTERIOR")
 
     # Right-Side Stepped Balcony (البلكونة)
@@ -131,8 +131,8 @@ def create_apartment_dxf():
     # 3. Structural Columns
     columns = [
         (100, 465, 140, 485),    # Bath Column 20x40
-        (470, 1170, 510, 1180),  # Salon South Column 40x10
-        (555, 920, 567, 960),    # Kids West 40x10
+        (350, 1170, 390, 1180),  # Salon South Column 40x10
+        (422, 920, 434, 960),    # Kids West 40x10
         (850, 920, 865, 966),    # Kids East 46x15
         (1198, 760, 1210, 815),  # Master East 55x10
         (1167, 1155, 1210, 1180),# Master Corner 43x25
@@ -161,8 +161,8 @@ def create_apartment_dxf():
     add_window(45, 465, 95, 465)       # Bath Shaft Window 50 cm
     add_window(805, 100, 805, 280)     # Reception Balcony Window 180 cm
     add_window(805, 480, 805, 570)     # Stairwell Window 90 cm
-    add_window(200, 1180, 350, 1180)   # Salon South Window 150 cm
-    add_window(625, 1180, 795, 1180)   # Kids South Window 170 cm
+    add_window(135, 1180, 285, 1180)   # Salon South Window 150 cm
+    add_window(560, 1180, 730, 1180)   # Kids South Window 170 cm
     add_window(980, 1180, 1100, 1180)  # Master South Window 120 cm
 
     # 4B. Engineer's Kitchen CAD Layout (kit.m2.pdf + Beko 14-place Dishwasher 60x60) & PDF Furniture
@@ -215,33 +215,33 @@ def create_apartment_dxf():
     add_furn_box(450, 10, 795, 98, "ركنة عمولة 4م (البا 5)")
     add_furn_box(705, 98, 795, 230, "ركنة 2.20م")
     add_furn_box(535, 125, 635, 185, "ترابيزة ركنة", "FURNITURE", 6)
-    add_furn_box(255, 10, 435, 55, "بوفيه زمردة 2م")
-    add_furn_box(253, 65, 298, 160, "نيش 1م", "FURNITURE", 6.5)
-    add_furn_box(295, 110, 465, 200, "سفرة 180x90 + 6 كراسي")
+    add_furn_box(440, 334, 620, 379, "بوفيه زمردة 2م")
+    add_furn_box(255, 12, 350, 56, "نيش 1م", "FURNITURE", 6.5)
+    add_furn_box(315, 95, 405, 270, "سفرة 180x90 + 6 كراسي")
 
-    # Salon (الصالون): انترية كريمة + ترابيزة دهبي
-    add_furn_box(12, 850, 98, 1070, "كنبة 2.20م (تيد 5 طوبي)")
-    add_furn_box(455, 850, 542, 1070, "كنبة 2.20م (تيد 3 كريمي)")
-    add_furn_box(155, 1075, 238, 1158, "فوتيه 1", "FURNITURE", 6.5)
-    add_furn_box(315, 1075, 398, 1158, "فوتيه 2", "FURNITURE", 6.5)
-    add_furn_box(225, 925, 325, 1005, "ترابيزة متداخلة", "FURNITURE", 6.5)
+    # Salon (الصالون x=0..422): انترية كريمة + ترابيزة دهبي
+    add_furn_box(12, 820, 94, 1030, "كنبة 2.20م (تيد 5 طوبي)")
+    add_furn_box(328, 820, 410, 1030, "كنبة 2.20م (تيد 3 كريمي)")
+    add_furn_box(32, 1072, 110, 1150, "فوتيه 1", "FURNITURE", 6.5)
+    add_furn_box(312, 1072, 390, 1150, "فوتيه 2", "FURNITURE", 6.5)
+    add_furn_box(166, 910, 256, 985, "ترابيزة متداخلة", "FURNITURE", 6.5)
 
-    # Kids Room (أطفال خفرع)
-    add_furn_box(680, 768, 855, 828, "دولاب أطفال 2م")
-    add_furn_box(563, 772, 605, 812, "مراية", "FURNITURE", 5.5)
-    add_furn_box(563, 855, 610, 950, "تسريحة خفرع", "FURNITURE", 6)
-    add_furn_box(568, 965, 688, 1168, "سرير 120سم (1)")
-    add_furn_box(688, 1120, 734, 1168, "كمود", "FURNITURE", 5.5)
-    add_furn_box(734, 965, 854, 1168, "سرير 120سم (2)")
+    # Kids Room (أطفال خفرع x=422..865)
+    add_furn_box(675, 768, 855, 828, "دولاب أطفال 2م")
+    add_furn_box(432, 772, 477, 812, "مراية", "FURNITURE", 5.5)
+    add_furn_box(432, 835, 480, 935, "تسريحة خفرع", "FURNITURE", 6)
+    add_furn_box(485, 965, 605, 1168, "سرير 120سم (1)")
+    add_furn_box(625, 1118, 675, 1168, "كمود", "FURNITURE", 5.5)
+    add_furn_box(695, 965, 815, 1168, "سرير 120سم (2)")
 
     # Master Bedroom (نوم بلازا)
-    add_furn_box(872, 795, 932, 1095, "دولاب بلازا 3م (6 ضلف)")
+    add_furn_box(872, 865, 932, 1165, "دولاب بلازا 3م (6 ضلف)")
     add_furn_box(995, 880, 1202, 1050, "سرير ميكانزم 160سم")
     add_furn_box(1154, 825, 1202, 875, "كمود 50سم", "FURNITURE", 5.5)
     add_furn_box(1154, 1055, 1202, 1105, "كمود 50سم", "FURNITURE", 5.5)
     add_furn_box(985, 668, 1105, 714, "تسريحة بلازا", "FURNITURE", 6.5)
     add_furn_box(1025, 720, 1065, 758, "بف", "FURNITURE", 5.5)
-    add_furn_box(878, 1120, 928, 1165, "مراية نص دايرة", "FURNITURE", 5.5)
+    add_furn_box(875, 765, 925, 810, "مراية نص دايرة", "FURNITURE", 5.5)
 
     # 5. Room Labels
     labels = [
@@ -253,8 +253,8 @@ def create_apartment_dxf():
         (613, 524, "STAIRWELL (بئر السلم)\n272 x 425 cm"),
         (333, 507, "ENTRY CORRIDOR\n260 x 177 cm"),
         (555, 710, "CORRIDOR (الطرقة) 575 x 100 cm"),
-        (277, 970, "SALON (الصالون)\n380 x 345 cm | 13.20 m2"),
-        (710, 970, "KIDS BEDROOM (أطفال)\n420 x 350 cm | 14.70 m2"),
+        (211, 970, "SALON (الصالون)\n380 x 345 cm | 13.20 m2"),
+        (643, 970, "KIDS BEDROOM (أطفال)\n420 x 350 cm | 14.70 m2"),
         (1037, 920, "MASTER BEDROOM (الماستر)\n350 x 470 cm | 15.20 m2"),
         (1255, 920, "BALCONY\n90 cm"),
     ]
