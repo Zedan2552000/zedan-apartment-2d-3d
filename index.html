@@ -420,7 +420,7 @@
           <label class="toggle-label"><input type="checkbox" id="chkCols" checked onchange="redraw()"> الأعمدة الخرسانية والمخدات</label>
         </div>
         <div class="control-row">
-          <label class="toggle-label"><input type="checkbox" id="chkFurn" onchange="redraw()"> توزيع الأثاث والفرش المقترح</label>
+          <label class="toggle-label"><input type="checkbox" id="chkFurn" checked onchange="redraw()"> توزيع الأثاث ومطبخ المهندس</label>
         </div>
         <div class="control-row">
           <label class="toggle-label"><input type="checkbox" id="chkUtils" checked onchange="redraw()"> المرافق (كهرباء / غاز / سخان / صرف)</label>
@@ -437,7 +437,7 @@
           <input type="range" id="wallHSlider" min="40" max="290" value="270" oninput="update3DSettings()">
         </div>
         <div class="control-row">
-          <label class="toggle-label"><input type="checkbox" id="chk3DFurn" onchange="update3DSettings()"> إظهار الفرش 3D</label>
+          <label class="toggle-label"><input type="checkbox" id="chk3DFurn" checked onchange="update3DSettings()"> إظهار الفرش والمطبخ 3D</label>
         </div>
         <div class="control-row">
           <label class="toggle-label"><input type="checkbox" id="chk3DLabels" checked onchange="update3DSettings()"> أسماء وأبعاد الغرف</label>
@@ -462,7 +462,7 @@
           <label class="toggle-label"><input type="checkbox" id="chkWalkCeiling" checked onchange="redraw()"> إظهار الأسقف والعتب</label>
         </div>
         <div class="control-row">
-          <label class="toggle-label"><input type="checkbox" id="chkWalkFurn" onchange="redraw()"> إظهار الأثاث بالداخل</label>
+          <label class="toggle-label"><input type="checkbox" id="chkWalkFurn" checked onchange="redraw()"> إظهار الأثاث والمطبخ بالداخل</label>
         </div>
         <div class="control-row">
           <label class="toggle-label"><input type="checkbox" id="chkWalkCollide" checked> منع اختراق الحوائط (اصطدام)</label>
@@ -517,6 +517,23 @@
             <tr><td>☀️ البلكونة (L)</td><td>400×90 + 50×90</td><td>4.05 م²</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="card controls-only" id="furnCatalogCard">
+        <h3><span>🛋️ كتالوج العفش ومطبخ المهندس (PDF)</span></h3>
+        <div style="margin-bottom:8px;">
+          <label for="furnLayoutSelect" style="display:block; font-size:11px; color:#94a3b8; margin-bottom:4px;">تبديل توزيع الصالة والصالون:</label>
+          <select id="furnLayoutSelect" onchange="onFurnLayoutChange()" style="width:100%; background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:6px 8px; font-family:inherit; font-size:11px; font-weight:600; cursor:pointer;">
+            <option value="preset1" selected>ركنة عمولة + سفرة بالصالة | انترية كريمة بالصالون</option>
+            <option value="preset2">انترية كريمة + سفرة بالصالة | ركنة 4×2.20 بالصالون</option>
+          </select>
+        </div>
+        <ul style="font-size:11px; color:#cbd5e1; padding-right:16px; line-height:1.65;">
+          <li><strong>المطبخ (kit.m2):</strong> دولاب تنظيف + أجهزة ومايكرويف + تربو + بيكو 14 فرد (60×60 عند 165سم) + حوض (245سم) + 3 درج + ركنة + بوتاجاز 6 شعلة + ترول زيت + خزين + فريزر أفقي + ثلاجة + نيش.</li>
+          <li><strong>الماستر (نوم بلازا):</strong> سرير 160سم ميكانزم (نيو روك 1) + 2 كمود 50سم + دولاب 3م (6 ضلف قشرة أرو/دوكو بني) + تسريحة وبف + مراية نص دايرة.</li>
+          <li><strong>أطفال (خفرع):</strong> 2 سرير 120سم (D68) + كمود + دولاب 2م + تسريحة + مراية مستطيل.</li>
+          <li><strong>المعيشة (زمردة / كريمة / عمولة):</strong> سفرة 180×90 (6 كراسي) + بوفيه 2م + نيش 1م، انترية (2 كنبة 2.20 تيد 5/3 + 2 فوتيه)، ركنة 4×2.20 (البا 5/10)، جزامة، وترابيزة دهبي.</li>
+        </ul>
       </div>
 
       <div class="card">
@@ -686,10 +703,10 @@ let cam3D = {
 
 // First-Person 3D Walkthrough State
 let walkCam = {
-  x: 458,
-  y: 420,
+  x: 475,
+  y: 465,
   z: 162,
-  yaw: -0.85,
+  yaw: -1.45,
   pitch: -0.04
 };
 const walkKeys = {};
@@ -1317,63 +1334,310 @@ function drawStairs(x, y, w, h, isBlueprint) {
   ctx.restore();
 }
 
+function onFurnLayoutChange() {
+  _walkSolidCache = null;
+  redraw();
+}
+
+function getFurnPalette() {
+  return {
+    wood_cabinet:   { top: '#f8fafc', north: '#8a6240', south: '#785233', west: '#6a472b', east: '#805a3a', fill2d: 'rgba(138, 98, 64, 0.25)', stroke2d: '#6a472b' },
+    inox:           { top: '#e2e8f0', north: '#94a3b8', south: '#64748b', west: '#475569', east: '#94a3b8', fill2d: 'rgba(148, 163, 184, 0.30)', stroke2d: '#475569' },
+    white_app:      { top: '#f8fafc', north: '#e2e8f0', south: '#cbd5e1', west: '#cbd5e1', east: '#f1f5f9', fill2d: 'rgba(226, 232, 240, 0.42)', stroke2d: '#64748b' },
+    graphite_app:   { top: '#94a3b8', north: '#64748b', south: '#475569', west: '#334155', east: '#64748b', fill2d: 'rgba(71, 85, 105, 0.30)', stroke2d: '#334155' },
+    glass_wood:     { top: '#785233', north: '#cbd5e1', south: '#cbd5e1', west: '#6a472b', east: '#93c5fd', fill2d: 'rgba(56, 189, 248, 0.20)', stroke2d: '#6a472b' },
+    walnut_white:   { top: '#7c4d2b', north: '#f8fafc', south: '#f1f5f9', west: '#e2e8f0', east: '#7c4d2b', fill2d: 'rgba(124, 77, 43, 0.24)', stroke2d: '#7c4d2b' },
+    plaza_oak:      { top: '#9c7149', north: '#8c6239', south: '#7c532e', west: '#6e4724', east: '#8c6239', fill2d: 'rgba(140, 98, 57, 0.26)', stroke2d: '#6e4724' },
+    plaza_duco:     { top: '#7d6352', north: '#6b5344', south: '#5c4638', west: '#4f3b2e', east: '#6b5344', fill2d: 'rgba(107, 83, 68, 0.26)', stroke2d: '#4f3b2e' },
+    new_rock1:      { top: '#efe8da', north: '#e2d7c5', south: '#d4c7b3', west: '#c8b9a3', east: '#e2d7c5', fill2d: 'rgba(232, 223, 209, 0.45)', stroke2d: '#8c775c' },
+    kids_wood:      { top: '#c48b54', north: '#b47b44', south: '#a16b38', west: '#8f5d2d', east: '#b47b44', fill2d: 'rgba(180, 123, 68, 0.25)', stroke2d: '#8f5d2d' },
+    zemerda:        { top: '#8c552b', north: '#ece4d5', south: '#dfd5c3', west: '#784620', east: '#8c552b', fill2d: 'rgba(140, 85, 43, 0.25)', stroke2d: '#784620' },
+    alba5:          { top: '#f1ece1', north: '#e6dfd0', south: '#d9d0be', west: '#cfc5b2', east: '#e6dfd0', fill2d: 'rgba(236, 228, 213, 0.48)', stroke2d: '#9c8669' },
+    ted5:           { top: '#a64424', north: '#8f3b22', south: '#782f19', west: '#692713', east: '#8f3b22', fill2d: 'rgba(143, 59, 34, 0.30)', stroke2d: '#782f19' },
+    ted3:           { top: '#efe9de', north: '#e5ddd0', south: '#d8cebf', west: '#ccc0af', east: '#e5ddd0', fill2d: 'rgba(229, 221, 208, 0.48)', stroke2d: '#8c7a65' },
+    gold_glass:     { top: '#e2e8f0', north: '#d97706', south: '#b45309', west: '#b45309', east: '#d97706', fill2d: 'rgba(217, 119, 6, 0.22)', stroke2d: '#b45309' },
+    walnut:         { top: '#8b5a2b', north: '#74481e', south: '#5c3714', west: '#5c3714', east: '#74481e', fill2d: 'rgba(139, 90, 43, 0.28)', stroke2d: '#5c3714' }
+  };
+}
+
+function getActiveFurnLayout() {
+  const el = document.getElementById('furnLayoutSelect');
+  const preset = el ? el.value : 'preset1';
+
+  const items = [
+    // 1. Engineer's Kitchen CAD (kit.m2.pdf + Beko 14-Place Dishwasher + Electrical Map)
+    { id: 'k_clean',  room: 'kitchen', x: 8,   y: 315, w: 58, d: 33, h: 215, kind: 'tall',            label: 'تنظيف',        mat: 'wood_cabinet' },
+    { id: 'k_micro',  room: 'kitchen', x: 8,   y: 256, w: 58, d: 59, h: 215, kind: 'microwave_tower', label: 'أجهزة/مايكرويف', mat: 'wood_cabinet', elec: 'بريزة 150' },
+    { id: 'k_turbo',  room: 'kitchen', x: 8,   y: 218, w: 58, d: 38, h: 85,  kind: 'counter',         label: 'تربو',         mat: 'wood_cabinet' },
+    { id: 'k_beko',   room: 'kitchen', x: 8,   y: 158, w: 60, d: 60, h: 85,  kind: 'dishwasher',      label: 'بيكو 60×60',   mat: 'inox', dimRef: 165 },
+    { id: 'k_sink',   room: 'kitchen', x: 8,   y: 94,  w: 58, d: 64, h: 85,  kind: 'sink',            label: 'حوض',          mat: 'wood_cabinet', upper: true, dimRef: 245 },
+    { id: 'k_3dr',    room: 'kitchen', x: 8,   y: 58,  w: 58, d: 36, h: 85,  kind: 'counter',         label: '3 درج',        mat: 'wood_cabinet', upper: true },
+    { id: 'k_cor',    room: 'kitchen', x: 8,   y: 8,   w: 58, d: 50, h: 85,  kind: 'counter',         label: 'خزين',         mat: 'wood_cabinet', upper: true },
+    { id: 'k_stove',  room: 'kitchen', x: 66,  y: 8,   w: 86, d: 60, h: 85,  kind: 'stove6',          label: 'بوتاجاز + شفاط', mat: 'inox', elec: 'بريزة' },
+    { id: 'k_oil',    room: 'kitchen', x: 152, y: 8,   w: 30, d: 58, h: 85,  kind: 'counter',         label: 'زيت',          mat: 'wood_cabinet' },
+    { id: 'k_nstore', room: 'kitchen', x: 182, y: 8,   w: 56, d: 58, h: 85,  kind: 'counter',         label: 'خزين',         mat: 'wood_cabinet', upper: true },
+    { id: 'k_estore', room: 'kitchen', x: 182, y: 66,  w: 56, d: 48, h: 85,  kind: 'counter',         label: 'خزين',         mat: 'wood_cabinet', upper: true, elec: '2 فيشة' },
+    { id: 'k_freez',  room: 'kitchen', x: 178, y: 114, w: 60, d: 48, h: 88,  kind: 'freezer',         label: 'فريزر أفقي',   mat: 'white_app', elec: 'فيشة هوائية' },
+    { id: 'k_fridge', room: 'kitchen', x: 174, y: 162, w: 64, d: 50, h: 182, kind: 'fridge',          label: 'ثلاجة',        mat: 'graphite_app', elec: 'بريزة 150' },
+    { id: 'k_niche',  room: 'kitchen', x: 192, y: 212, w: 46, d: 26, h: 210, kind: 'glass_tall',      label: 'نيش',          mat: 'glass_wood' },
+
+    // 2. Washer Alcove, Bathroom & Entry Shoe Cabinet (كمليات)
+    { id: 'washer',   room: 'washer',  x: 152, y: 380, w: 60, d: 60, h: 85,  kind: 'washer',          label: 'غسالة',        mat: 'white_app' },
+    { id: 'b_sink',   room: 'bath',    x: 115, y: 472, w: 65, d: 46, h: 82,  kind: 'vanity',          label: 'حوض',          mat: 'white_app' },
+    { id: 'b_wc',     room: 'bath',    x: 18,  y: 550, w: 50, d: 55, h: 76,  kind: 'wc',              label: 'WC',           mat: 'white_app' },
+    { id: 'b_shower', room: 'bath',    x: 12,  y: 675, w: 153,d: 75, h: 46,  kind: 'shower',          label: 'شاور / بانيو',  mat: 'white_app' },
+    { id: 'shoe',     room: 'entry',   x: 376, y: 475, w: 38, d: 100,h: 105, kind: 'shoe_cab',        label: 'جزامة',        mat: 'walnut_white' },
+
+    // 3. Master Bedroom (نوم بلازا)
+    { id: 'm_ward',   room: 'master',  x: 872, y: 795, w: 60, d: 300,h: 220, kind: 'wardrobe_plaza',  label: 'دولاب بلازا 3م', mat: 'plaza_oak' },
+    { id: 'm_bed',    room: 'master',  x: 995, y: 880, w: 207,d: 170,h: 52,  kind: 'bed', headDir:'e', label: 'سرير 160 ميكانزم', mat: 'new_rock1' },
+    { id: 'm_kom1',   room: 'master',  x: 1154,y: 825, w: 48, d: 50, h: 50,  kind: 'nightstand',      label: 'كمود',         mat: 'plaza_oak' },
+    { id: 'm_kom2',   room: 'master',  x: 1154,y: 1055,w: 48, d: 50, h: 50,  kind: 'nightstand',      label: 'كمود',         mat: 'plaza_oak' },
+    { id: 'm_dress',  room: 'master',  x: 985, y: 668, w: 120,d: 46, h: 80,  kind: 'dresser_h', dir:'n', label: 'تسريحة بلازا', mat: 'plaza_oak' },
+    { id: 'm_pouf',   room: 'master',  x: 1025,y: 720, w: 40, d: 38, h: 44,  kind: 'pouf',            label: 'بف',           mat: 'new_rock1' },
+    { id: 'm_mirr',   room: 'master',  x: 878, y: 1120,w: 50, d: 45, h: 170, kind: 'stand_mirror_arch', label: 'مراية نص دايرة', mat: 'walnut' },
+
+    // 4. Kids Bedroom (أطفال خفرع)
+    { id: 'kd_ward',  room: 'kids',    x: 680, y: 768, w: 175,d: 60, h: 215, kind: 'wardrobe_kids',   label: 'دولاب 2م',     mat: 'white_app' },
+    { id: 'kd_mirr',  room: 'kids',    x: 563, y: 772, w: 42, d: 40, h: 170, kind: 'stand_mirror_rect', label: 'مراية',      mat: 'white_app' },
+    { id: 'kd_dress', room: 'kids',    x: 563, y: 855, w: 47, d: 95, h: 82,  kind: 'dresser_v', dir:'w', label: 'تسريحة',     mat: 'kids_wood' },
+    { id: 'kd_bed1',  room: 'kids',    x: 568, y: 965, w: 120,d: 203,h: 48,  kind: 'bed', headDir:'s', label: 'سرير 120',     mat: 'kids_wood' },
+    { id: 'kd_kom',   room: 'kids',    x: 688, y: 1120,w: 46, d: 48, h: 48,  kind: 'nightstand',      label: 'كمود',         mat: 'kids_wood' },
+    { id: 'kd_bed2',  room: 'kids',    x: 734, y: 965, w: 120,d: 203,h: 48,  kind: 'bed', headDir:'s', label: 'سرير 120',     mat: 'kids_wood' },
+
+    // 5. Dining Set (سفرة زمردة — Reception West Zone)
+    { id: 'd_buffet', room: 'reception', x: 255, y: 10,  w: 180, d: 45, h: 85,  kind: 'buffet',      label: 'بوفيه زمردة 2م', mat: 'zemerda' },
+    { id: 'd_niche',  room: 'reception', x: 253, y: 65,  w: 45,  d: 95, h: 200, kind: 'niche_glass', label: 'نيش 1م',         mat: 'zemerda' },
+    { id: 'd_table',  room: 'reception', x: 295, y: 110, w: 170, d: 90, h: 76,  kind: 'dining_6',    label: 'سفرة 180×90',    mat: 'zemerda' }
+  ];
+
+  // 6. Preset-Switchable Living & Salon Sets (ركنة عمولة 4×2.20 vs انترية كريمة)
+  if (preset === 'preset2') {
+    items.push(
+      { id: 'p2_s1',   room: 'reception', x: 495, y: 12,  w: 210, d: 84,  h: 78, kind: 'sofa', backDir: 'n', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5' },
+      { id: 'p2_s2',   room: 'reception', x: 712, y: 110, w: 84,  d: 220, h: 78, kind: 'sofa', backDir: 'e', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3' },
+      { id: 'p2_f1',   room: 'reception', x: 530, y: 298, w: 80,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted3' },
+      { id: 'p2_f2',   room: 'reception', x: 622, y: 298, w: 78,  d: 78,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',        mat: 'ted5' },
+      { id: 'p2_nt',   room: 'reception', x: 580, y: 145, w: 90,  d: 70,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass' },
+      { id: 'p2_ls',   room: 'salon',     x: 45,  y: 1082,w: 400, d: 88,  h: 76, kind: 'sofa', backDir: 's', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5' },
+      { id: 'p2_lw',   room: 'salon',     x: 12,  y: 950, w: 88,  d: 220, h: 76, kind: 'sofa', backDir: 'w', label: 'ركنة 2.20م',          mat: 'alba5' },
+      { id: 'p2_lt',   room: 'salon',     x: 195, y: 945, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة',             mat: 'alba5' }
+    );
+  } else {
+    items.push(
+      { id: 'p1_ln',   room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa', backDir: 'n', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5' },
+      { id: 'p1_le',   room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, kind: 'sofa', backDir: 'e', label: 'ركنة 2.20م',            mat: 'alba5' },
+      { id: 'p1_lt',   room: 'reception', x: 535, y: 125, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة',              mat: 'alba5' },
+      { id: 'p1_s1',   room: 'salon',     x: 12,  y: 850, w: 86,  d: 220, h: 78, kind: 'sofa', backDir: 'w', label: 'كنبة 2.20 (تيد 5)',     mat: 'ted5' },
+      { id: 'p1_s2',   room: 'salon',     x: 455, y: 850, w: 87,  d: 220, h: 78, kind: 'sofa', backDir: 'e', label: 'كنبة 2.20 (تيد 3)',     mat: 'ted3' },
+      { id: 'p1_f1',   room: 'salon',     x: 155, y: 1075,w: 83,  d: 83,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',            mat: 'ted3' },
+      { id: 'p1_f2',   room: 'salon',     x: 315, y: 1075,w: 83,  d: 83,  h: 76, kind: 'fauteuil', backDir: 's', label: 'فوتيه',            mat: 'ted5' },
+      { id: 'p1_nt',   room: 'salon',     x: 225, y: 925, w: 100, d: 80,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي',   mat: 'gold_glass' }
+    );
+  }
+  return items;
+}
+
+function getFurn3DBoxes(wallH) {
+  const pal = getFurnPalette();
+  const items = getActiveFurnLayout();
+  const boxes = [];
+  const capZ = (z, h) => Math.max(0, Math.min(h, wallH - 5 - z));
+  const pushB = (x, y, z, w, d, h, c, stroke = 'rgba(15,23,42,0.28)') => {
+    const ch = capZ(z, h);
+    if (ch < 2 || w < 1 || d < 1) return;
+    boxes.push({ x, y, z, w, d, h: ch, top: c.top, north: c.north, south: c.south, west: c.west, east: c.east, stroke });
+  };
+
+  items.forEach(it => {
+    const c = pal[it.mat] || pal.wood_cabinet;
+    if (it.kind === 'tall' || it.kind === 'microwave_tower') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, c);
+      if (it.kind === 'microwave_tower') {
+        const darkGlass = { top: '#334155', north: '#0f172a', south: '#0f172a', west: '#020617', east: '#1e293b' };
+        pushB(it.x + it.w - 3, it.y + 8, 108, 4, it.d - 16, 36, darkGlass);
+      }
+    } else if (it.kind === 'counter' || it.kind === 'sink' || it.kind === 'dishwasher') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h - 4, c);
+      pushB(it.x, it.y, 3 + it.h - 4, it.w, it.d, 4, pal.white_app);
+      if (it.kind === 'sink') {
+        const basin = { top: '#94a3b8', north: '#64748b', south: '#64748b', west: '#475569', east: '#475569' };
+        pushB(it.x + 8, it.y + 8, 3 + it.h, it.w - 18, it.d - 16, 2, basin);
+      }
+      if (it.upper && wallH >= 220) {
+        const uw = (it.x < 100 && it.y > 50) ? 34 : (it.x > 160 ? 34 : it.w);
+        const ux = it.x > 160 ? (it.x + it.w - uw) : it.x;
+        const ud = (it.y < 70 && it.x >= 180) ? 34 : it.d;
+        pushB(ux, it.y, 148, uw, ud, 67, pal.wood_cabinet);
+      }
+    } else if (it.kind === 'stove6') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h - 2, pal.inox);
+      pushB(it.x + 4, it.y + 4, 3 + it.h - 2, it.w - 8, it.d - 8, 3, { top: '#0f172a', north: '#1e293b', south: '#1e293b', west: '#0f172a', east: '#0f172a' });
+      if (wallH >= 210) {
+        pushB(it.x + 2, it.y + 2, 162, it.w - 4, 46, 24, pal.inox);
+        pushB(it.x + 28, it.y + 2, 186, it.w - 56, 24, 80, pal.inox);
+      }
+    } else if (it.kind === 'fridge' || it.kind === 'freezer' || it.kind === 'washer') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, c);
+      if (it.kind === 'fridge') {
+        pushB(it.x - 1, it.y + 4, 3 + 115, 3, it.d - 8, 3, { top: '#e2e8f0', north: '#94a3b8', south: '#94a3b8', west: '#cbd5e1', east: '#cbd5e1' });
+      }
+    } else if (it.kind === 'glass_tall' || it.kind === 'niche_glass') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, pal.zemerda);
+      pushB(it.x + 3, it.y + 3, 25, it.w - 6, it.d - 6, it.h - 32, { top: '#bae6fd', north: 'rgba(186,230,253,0.45)', south: 'rgba(186,230,253,0.45)', west: 'rgba(147,197,253,0.45)', east: 'rgba(186,230,253,0.45)' });
+    } else if (it.kind === 'shoe_cab') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, pal.walnut);
+      pushB(it.x - 1, it.y + 6, 12, 3, it.d * 0.62, it.h - 26, pal.white_app);
+    } else if (it.kind === 'wardrobe_plaza') {
+      pushB(it.x, it.y, 3, it.w, it.d / 2, it.h, pal.plaza_oak);
+      pushB(it.x, it.y + it.d / 2, 3, it.w, it.d / 2, it.h, pal.plaza_duco);
+    } else if (it.kind === 'wardrobe_kids') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, pal.kids_wood);
+      pushB(it.x + 4, it.y + it.d - 3, 10, it.w - 8, 4, it.h - 14, pal.white_app);
+    } else if (it.kind === 'bed') {
+      const cream = pal.new_rock1;
+      const duvet = { top: '#f8fafc', north: '#e2e8f0', south: '#e2e8f0', west: '#cbd5e1', east: '#e2e8f0' };
+      pushB(it.x, it.y, 3, it.w, it.d, it.h - 18, c);
+      pushB(it.x + 4, it.y + 4, 3 + it.h - 18, it.w - 8, it.d - 8, 18, duvet);
+      if (it.headDir === 'e') {
+        pushB(it.x + it.w - 12, it.y - 2, 3, 12, it.d + 4, 114, cream);
+        pushB(it.x + it.w - 52, it.y + 18, 3 + it.h, 34, 58, 10, pal.alba5);
+        pushB(it.x + it.w - 52, it.y + it.d - 76, 3 + it.h, 34, 58, 10, pal.alba5);
+      } else {
+        pushB(it.x - 2, it.y + it.d - 12, 3, it.w + 4, 12, 110, cream);
+        pushB(it.x + 22, it.y + it.d - 52, 3 + it.h, it.w - 44, 34, 10, pal.alba5);
+      }
+    } else if (it.kind === 'nightstand' || it.kind === 'pouf' || it.kind === 'coffee_table') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, c);
+    } else if (it.kind === 'dresser_h' || it.kind === 'dresser_v' || it.kind === 'buffet') {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, c);
+      const mirCol = { top: '#785233', north: '#bae6fd', south: '#bae6fd', west: '#93c5fd', east: '#bae6fd' };
+      if (it.kind === 'dresser_h' || it.kind === 'buffet') {
+        pushB(it.x + 15, it.y + 2, 3 + it.h + 4, it.w - 30, 5, 68, mirCol);
+      } else {
+        pushB(it.x + 2, it.y + 10, 3 + it.h + 4, 5, it.d - 20, 62, mirCol);
+      }
+    } else if (it.kind === 'stand_mirror_arch' || it.kind === 'stand_mirror_rect') {
+      pushB(it.x, it.y, 3, it.w, it.d, 10, c);
+      pushB(it.x + 6, it.y + 8, 13, it.w - 12, it.d - 16, it.h - 13, { top: c.top, north: '#bae6fd', south: '#bae6fd', west: c.west, east: '#bae6fd' });
+    } else if (it.kind === 'dining_6') {
+      pushB(it.x + 35, it.y + 20, 3, it.w - 70, it.d - 40, it.h - 5, pal.alba5);
+      pushB(it.x, it.y, 3 + it.h - 5, it.w, it.d, 5, pal.walnut);
+      const chair = pal.alba5;
+      for (const cx of [it.x + 18, it.x + 70, it.x + 122]) {
+        pushB(cx, it.y - 24, 3, 36, 28, 46, chair);
+        pushB(cx, it.y - 24, 49, 36, 6, 32, pal.walnut);
+        pushB(cx, it.y + it.d - 4, 3, 36, 28, 46, chair);
+        pushB(cx, it.y + it.d + 18, 49, 36, 6, 32, pal.walnut);
+      }
+    } else if (it.kind === 'sofa' || it.kind === 'fauteuil') {
+      pushB(it.x, it.y, 3, it.w, it.d, 42, c);
+      const bk = 22, bh = 36;
+      if (it.backDir === 'n') pushB(it.x, it.y, 45, it.w, bk, bh, c);
+      else if (it.backDir === 's') pushB(it.x, it.y + it.d - bk, 45, it.w, bk, bh, c);
+      else if (it.backDir === 'w') pushB(it.x, it.y, 45, bk, it.d, bh, c);
+      else pushB(it.x + it.w - bk, it.y, 45, bk, it.d, bh, c);
+      const cushCol = it.mat === 'ted5' ? pal.ted3 : (it.mat === 'ted3' ? pal.ted5 : { top: '#d8a39d', north: '#c98e87', south: '#c98e87', west: '#b97e77', east: '#c98e87' });
+      const cw = it.w > it.d ? 26 : 16;
+      const cd = it.d > it.w ? 26 : 16;
+      pushB(it.x + it.w / 2 - cw / 2, it.y + it.d / 2 - cd / 2, 45, cw, cd, 16, cushCol);
+    } else if (it.kind === 'nested_gold_table') {
+      pushB(it.x, it.y, 3, 56, 56, it.h, pal.gold_glass);
+      pushB(it.x + 42, it.y + 24, 3, 56, 56, it.h - 9, pal.gold_glass);
+    } else {
+      pushB(it.x, it.y, 3, it.w, it.d, it.h, c);
+    }
+  });
+  return boxes;
+}
+
 function draw2DFurniture(isBlueprint) {
   ctx.save();
-  const fill = isBlueprint ? 'rgba(56, 189, 248, 0.14)' : 'rgba(120, 82, 51, 0.22)';
-  const stroke = isBlueprint ? 'rgba(56, 189, 248, 0.65)' : '#573b26';
-  ctx.fillStyle = fill;
-  ctx.strokeStyle = stroke;
-  ctx.lineWidth = 2;
+  const pal = getFurnPalette();
+  const items = getActiveFurnLayout();
 
-  // Reception (x=245..805, y=0..388): L-Shaped Sofa + Coffee Table + TV Unit
-  roundRect(ctx, 275, 25, 290, 85, 8, true, true);    // Sofa North
-  roundRect(ctx, 275, 110, 85, 165, 8, true, true);    // Sofa West chaise
-  roundRect(ctx, 435, 155, 105, 65, 6, true, true);    // Coffee table
-  roundRect(ctx, 645, 295, 145, 38, 4, true, true);    // TV console
+  items.forEach(it => {
+    const p = pal[it.mat] || pal.wood_cabinet;
+    const fill = isBlueprint ? 'rgba(56, 189, 248, 0.13)' : p.fill2d;
+    const stroke = isBlueprint ? 'rgba(56, 189, 248, 0.72)' : p.stroke2d;
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.6;
 
-  // Kitchen (x=0..245, y=0..355): L-Counter West + North + Fridge + Sink + Stove
-  ctx.fillRect(10, 12, 56, 285); ctx.strokeRect(10, 12, 56, 285);
-  ctx.fillRect(66, 12, 165, 56); ctx.strokeRect(66, 12, 165, 56);
-  ctx.strokeRect(16, 120, 44, 58); // Stove
-  for (let bx of [27, 49]) for (let by of [135, 160]) {
-    ctx.beginPath(); ctx.arc(bx, by, 7, 0, Math.PI*2); ctx.stroke();
-  }
-  ctx.strokeRect(110, 19, 55, 40); // Sink
-  ctx.fillRect(178, 12, 55, 56); ctx.strokeRect(178, 12, 55, 56); // Fridge
+    if (it.kind === 'pouf') {
+      ctx.beginPath();
+      ctx.ellipse(it.x + it.w / 2, it.y + it.d / 2, it.w / 2, it.d / 2, 0, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+    } else if (it.kind === 'nested_gold_table') {
+      ctx.beginPath(); ctx.arc(it.x + 28, it.y + 28, 27, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(it.x + 70, it.y + 52, 26, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    } else if (it.kind === 'dining_6') {
+      roundRect(ctx, it.x, it.y, it.w, it.d, 26, true, true);
+      for (const cx of [it.x + 18, it.x + 70, it.x + 122]) {
+        roundRect(ctx, cx, it.y - 22, 34, 20, 5, true, true);
+        roundRect(ctx, cx, it.y + it.d + 2, 34, 20, 5, true, true);
+      }
+    } else {
+      roundRect(ctx, it.x, it.y, it.w, it.d, (it.kind === 'sofa' || it.kind === 'fauteuil' || it.kind === 'bed') ? 6 : 2, true, true);
+    }
 
-  // Washer Alcove (x=140..245, y=355..465)
-  roundRect(ctx, 160, 375, 62, 62, 6, true, true);
-  ctx.beginPath(); ctx.arc(191, 406, 18, 0, Math.PI*2); ctx.stroke();
+    // Sub-details for kitchen & bedrooms
+    if (it.kind === 'stove6') {
+      for (const bx of [it.x + 20, it.x + 43, it.x + 66]) {
+        for (const by of [it.y + 20, it.y + 42]) {
+          ctx.beginPath(); ctx.arc(bx, by, 6.5, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
+    } else if (it.kind === 'sink') {
+      roundRect(ctx, it.x + 10, it.y + 10, it.w - 20, it.d - 20, 4, false, true);
+      ctx.beginPath(); ctx.arc(it.x + it.w / 2, it.y + it.d / 2, 4, 0, Math.PI * 2); ctx.stroke();
+    } else if (it.kind === 'washer') {
+      ctx.beginPath(); ctx.arc(it.x + it.w / 2, it.y + it.d / 2, 16, 0, Math.PI * 2); ctx.stroke();
+    } else if (it.kind === 'wardrobe_plaza') {
+      ctx.beginPath(); ctx.moveTo(it.x, it.y + it.d / 2); ctx.lineTo(it.x + it.w, it.y + it.d / 2); ctx.stroke();
+    } else if (it.kind === 'bed') {
+      if (it.headDir === 'e') {
+        roundRect(ctx, it.x + it.w - 42, it.y + 14, 30, 58, 5, true, true);
+        roundRect(ctx, it.x + it.w - 42, it.y + it.d - 72, 30, 58, 5, true, true);
+      } else {
+        roundRect(ctx, it.x + 18, it.y + it.d - 42, it.w - 36, 30, 5, true, true);
+      }
+    }
 
-  // Bathroom (x=0..245, y=465..760): Shower Tray + WC + Vanity
-  roundRect(ctx, 12, 675, 78, 72, 8, true, true);     // Shower
-  roundRect(ctx, 105, 702, 45, 45, 12, true, true);   // WC
-  roundRect(ctx, 168, 708, 62, 38, 6, true, true);    // Sink
+    // Crisp Arabic Label inside furniture/unit
+    if (it.label) {
+      ctx.fillStyle = isBlueprint ? '#bae6fd' : '#0f172a';
+      const isKitchen = it.room === 'kitchen';
+      ctx.font = isKitchen ? 'bold 7.5px Cairo, Segoe UI' : 'bold 8.5px Cairo, Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(it.label, it.x + it.w / 2, it.y + it.d / 2, Math.max(it.w - 4, 48));
+    }
 
-  // Salon (Bottom-Left x=0..555, y=760..1180): Classic Sofas + Center Table
-  roundRect(ctx, 28, 865, 78, 225, 8, true, true);
-  roundRect(ctx, 445, 855, 78, 210, 8, true, true);
-  roundRect(ctx, 155, 1082, 235, 72, 8, true, true);
-  roundRect(ctx, 220, 895, 115, 65, 8, true, true);
+    // Electrical symbol marker from خريطة كهرباء المطبخ
+    if (it.elec) {
+      ctx.fillStyle = isBlueprint ? '#fb923c' : '#c2410c';
+      const ex = it.x + (it.x > 160 ? 6 : it.w - 6);
+      const ey = it.y < 70 ? it.y + it.d - 6 : it.y + it.d / 2;
+      ctx.beginPath(); ctx.arc(ex, ey, 3.2, 0, Math.PI * 2); ctx.fill();
+    }
+  });
 
-  // Kids Room (x=555..865, y=760..1180): 2 Twin Beds + Wardrobe
-  roundRect(ctx, 578, 865, 95, 195, 8, true, true);
-  roundRect(ctx, 578, 865, 95, 38, 5, true, true);    // pillow
-  roundRect(ctx, 700, 865, 95, 195, 8, true, true);
-  roundRect(ctx, 700, 865, 95, 38, 5, true, true);    // pillow
-  ctx.fillRect(805, 845, 50, 210); ctx.strokeRect(805, 845, 50, 210); // Wardrobe
+  // Kitchen Plumbing/Dishwasher Reference Callouts (165 & 245 cm from South wall y=355)
+  ctx.fillStyle = isBlueprint ? '#38bdf8' : '#0369a1';
+  ctx.strokeStyle = isBlueprint ? 'rgba(56,189,248,0.6)' : 'rgba(3,105,161,0.6)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(68, 190); ctx.lineTo(96, 190); ctx.lineTo(96, 355);
+  ctx.moveTo(68, 110); ctx.lineTo(118, 110); ctx.lineTo(118, 355);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font = 'bold 8px Segoe UI';
+  ctx.textAlign = 'center';
+  ctx.fillText('165', 96, 275);
+  ctx.fillText('245', 118, 240);
 
-  // Master Bedroom (Bottom-Right x=865..1210, y=660..1180): King Bed + Nightstands + Wardrobe
-  roundRect(ctx, 995, 855, 195, 175, 10, true, true);
-  roundRect(ctx, 1135, 870, 42, 65, 5, true, true);   // pillow 1
-  roundRect(ctx, 1135, 950, 42, 65, 5, true, true);   // pillow 2
-  ctx.fillRect(1145, 803, 45, 42); ctx.strokeRect(1145, 803, 45, 42);
-  ctx.fillRect(1145, 1038, 45, 42); ctx.strokeRect(1145, 1038, 45, 42);
-  ctx.fillRect(882, 815, 55, 240); ctx.strokeRect(882, 815, 55, 240); // Wardrobe
-
-  // Balcony Table & Chairs (Right-side Balcony)
-  ctx.beginPath(); ctx.arc(1255, 920, 22, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(850, 260, 20, 0, Math.PI*2); ctx.fill(); ctx.stroke();
   ctx.restore();
 }
 
@@ -1667,41 +1931,13 @@ function render3DScene(W, H) {
   addBox(1210, 1171, 3 + railH, 90, 6, 5, ironCols);
   for (let bx = 1222; bx < 1292; bx += 35) addBox(bx, 1172, 3 + paraH, 4, 4, balH, ironCols);
 
-  // 7. 3D Furniture & Appliances (Updated for 5th Sketch Coordinates)
+  // 7. 3D Furniture & Appliances (Synced with Engineer's Kitchen CAD + Furniture PDF)
   if (showFurn) {
-    // Reception L-Sofa + Coffee Table + TV Console
-    addBox(275, 25, 3, 290, 85, 72, { top: '#475569', front: '#334155', back: '#1e293b', left: '#1e293b', right: '#334155' });
-    addBox(275, 110, 3, 85, 165, 72, { top: '#475569', front: '#334155', back: '#1e293b', left: '#1e293b', right: '#334155' });
-    addBox(435, 155, 3, 105, 65, 42, { top: '#92400e', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
-    addBox(645, 295, 3, 145, 38, 48, { top: '#78350f', front: '#451a03', back: '#451a03', left: '#451a03', right: '#451a03' });
-    addBox(665, 310, 52, 105, 8, 62, { top: '#020617', front: '#0f172a', back: '#0f172a', left: '#020617', right: '#020617' });
-
-    // Kitchen Counter + Fridge
-    addBox(10, 12, 3, 56, 285, 85, { top: '#e2e8f0', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
-    addBox(66, 12, 3, 110, 56, 85, { top: '#e2e8f0', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
-    addBox(178, 12, 3, 55, 56, 165, { top: '#cbd5e1', front: '#94a3b8', back: '#64748b', left: '#64748b', right: '#94a3b8' });
-
-    // Washer in Alcove
-    addBox(160, 375, 3, 62, 62, 85, { top: '#f8fafc', front: '#e2e8f0', back: '#cbd5e1', left: '#cbd5e1', right: '#e2e8f0' });
-
-    // Bathroom Vanity & Shower
-    addBox(12, 675, 3, 78, 72, 12, { top: '#f8fafc', front: '#cbd5e1', back: '#94a3b8', left: '#94a3b8', right: '#cbd5e1' });
-    addBox(168, 708, 3, 62, 38, 80, { top: '#f8fafc', front: '#e2e8f0', back: '#cbd5e1', left: '#cbd5e1', right: '#e2e8f0' });
-
-    // Salon Classic Sofas & Coffee Table (Bottom-Left x=0..555, y=760..1180)
-    addBox(28, 865, 3, 78, 225, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(445, 855, 3, 78, 210, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(155, 1082, 3, 235, 72, 74, { top: '#10b981', front: '#047857', back: '#065f46', left: '#065f46', right: '#047857' });
-    addBox(220, 895, 3, 115, 65, 42, { top: '#fde68a', front: '#d97706', back: '#b45309', left: '#b45309', right: '#d97706' });
-
-    // Kids Twin Beds & Wardrobe
-    addBox(578, 865, 3, 95, 195, 48, { top: '#38bdf8', front: '#0284c7', back: '#0369a1', left: '#0369a1', right: '#0284c7' });
-    addBox(700, 865, 3, 95, 195, 48, { top: '#38bdf8', front: '#0284c7', back: '#0369a1', left: '#0369a1', right: '#0284c7' });
-    addBox(805, 845, 3, 50, 210, Math.min(wallH - 20, 205), { top: '#a16207', front: '#854d0e', back: '#713f12', left: '#713f12', right: '#854d0e' });
-
-    // Master King Bed & Wardrobe (Bottom-Right x=865..1210, y=660..1180)
-    addBox(995, 855, 3, 195, 175, 55, { top: '#f59e0b', front: '#b45309', back: '#78350f', left: '#78350f', right: '#b45309' });
-    addBox(882, 815, 3, 55, 240, Math.min(wallH - 20, 210), { top: '#92400e', front: '#78350f', back: '#451a03', left: '#451a03', right: '#78350f' });
+    getFurn3DBoxes(wallH).forEach(b => {
+      addBox(b.x, b.y, b.z, b.w, b.d, b.h, {
+        top: b.top, front: b.north, back: b.south, left: b.west, right: b.east, stroke: b.stroke
+      });
+    });
   }
 
   // Sort by architectural layer first, then back-to-front depth
@@ -1770,38 +2006,39 @@ function render3DScene(W, H) {
 const WALK_TOUR_PATH = [
   { x: 500,  y: 505,  yaw: -1.57, pitch: -0.02 }, // 0: بئر السلم أمام باب الشقة
   { x: 490,  y: 315,  yaw: -1.55, pitch: -0.04 }, // 1: الدخول من باب الشقة إلى الصالة
-  { x: 525,  y: 205,  yaw: -0.30, pitch: -0.05 }, // 2: داخل الصالة: استعراض الواجهة والشباك
-  { x: 455,  y: 205,  yaw: -3.05, pitch: -0.05 }, // 3: الالتفات داخل الصالة نحو فتحة المطبخ والممر
+  { x: 545,  y: 245,  yaw: -0.45, pitch: -0.05 }, // 2: داخل الصالة: استعراض الواجهة والسفرة والمعيشة
+  { x: 475,  y: 245,  yaw: -2.85, pitch: -0.05 }, // 3: الالتفات داخل الصالة نحو فتحة المطبخ والركن الغربي
   { x: 320,  y: 285,  yaw: -3.12, pitch: -0.06 }, // 4: أمام باب المطبخ مفتوحاً
-  { x: 155,  y: 265,  yaw: -2.18, pitch: -0.06 }, // 5: الدخول إلى المطبخ: السيراميك البني المقلم
-  { x: 135,  y: 185,  yaw: -1.60, pitch: -0.06 }, // 6: عمق المطبخ باتجاه الحائط الشمالي
-  { x: 175,  y: 282,  yaw:  0.18, pitch: -0.06 }, // 7: الالتفات نحو باب المطبخ للخروج
+  { x: 135,  y: 268,  yaw: -2.05, pitch: -0.06 }, // 5: الدخول إلى المطبخ: التصميم الهندسي وغسالة بيكو
+  { x: 122,  y: 155,  yaw: -1.60, pitch: -0.06 }, // 6: عمق المطبخ باتجاه الحوض والبوتاجاز والشفاط
+  { x: 135,  y: 268,  yaw:  0.15, pitch: -0.06 }, // 7: الالتفات نحو باب المطبخ للخروج
   { x: 318,  y: 288,  yaw:  1.52, pitch: -0.05 }, // 8: الخروج للممر والتوجه لبداية الطرقة
-  { x: 335,  y: 412,  yaw:  2.75, pitch: -0.05 }, // 9: بداية الممر: ركن الغسالة بالرخام الأبيض
+  { x: 335,  y: 412,  yaw:  2.75, pitch: -0.05 }, // 9: بداية الممر: ركن الغسالة والجزامة
   { x: 325,  y: 575,  yaw:  3.08, pitch: -0.06 }, // 10: أمام باب الحمام
-  { x: 145,  y: 580,  yaw:  2.85, pitch: -0.06 }, // 11: الدخول داخل الحمام
-  { x: 105,  y: 655,  yaw:  0.20, pitch: -0.06 }, // 12: داخل الحمام: الحائط الشرقي المغلق والسيراميك
+  { x: 145,  y: 580,  yaw:  2.75, pitch: -0.06 }, // 11: الدخول داخل الحمام
+  { x: 115,  y: 625,  yaw:  0.45, pitch: -0.06 }, // 12: داخل الحمام: الدش والحائط الشرقي
   { x: 185,  y: 582,  yaw:  0.12, pitch: -0.05 }, // 13: العودة نحو باب الحمام للخروج
   { x: 330,  y: 590,  yaw:  1.56, pitch: -0.05 }, // 14: الخروج إلى ممر المدخل باتجاه الصالون
   { x: 328,  y: 710,  yaw:  1.57, pitch: -0.05 }, // 15: أمام باب الصالون
-  { x: 328,  y: 895,  yaw:  2.25, pitch: -0.05 }, // 16: الدخول إلى غرفة الصالون
-  { x: 255,  y: 1005, yaw:  1.45, pitch: -0.05 }, // 17: عمق الصالون أمام الشباك
-  { x: 328,  y: 845,  yaw: -1.55, pitch: -0.04 }, // 18: العودة نحو باب الصالون
+  { x: 328,  y: 862,  yaw:  2.45, pitch: -0.05 }, // 16: الدخول إلى غرفة الصالون
+  { x: 168,  y: 888,  yaw:  1.45, pitch: -0.05 }, // 17: الممر المفتوح بالصالون أمام الفرش والشباك
+  { x: 328,  y: 838,  yaw: -1.55, pitch: -0.04 }, // 18: العودة نحو باب الصالون
   { x: 328,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 19: الخروج لممر الطرقة والالتفات شرقاً
   { x: 505,  y: 710,  yaw:  0.18, pitch: -0.04 }, // 20: السير في منتصف الطرقة
   { x: 630,  y: 710,  yaw:  1.55, pitch: -0.05 }, // 21: أمام باب غرفة الأطفال
-  { x: 630,  y: 885,  yaw:  1.25, pitch: -0.05 }, // 22: الدخول إلى غرفة الأطفال
-  { x: 695,  y: 1015, yaw:  1.60, pitch: -0.05 }, // 23: عمق غرفة الأطفال أمام الشباك
-  { x: 630,  y: 835,  yaw: -1.55, pitch: -0.04 }, // 24: العودة نحو باب غرفة الأطفال
+  { x: 630,  y: 862,  yaw:  1.15, pitch: -0.05 }, // 22: الدخول إلى غرفة أطفال خفرع
+  { x: 755,  y: 895,  yaw:  1.65, pitch: -0.05 }, // 23: الممر المفتوح بين الدولاب والسرائر أمام الشباك
+  { x: 630,  y: 842,  yaw: -1.55, pitch: -0.04 }, // 24: العودة نحو باب غرفة الأطفال
   { x: 630,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 25: الخروج لباقي ممر الطرقة
   { x: 785,  y: 710,  yaw:  0.02, pitch: -0.04 }, // 26: نهاية ممر الطرقة أمام باب الماستر
-  { x: 995,  y: 725,  yaw:  0.82, pitch: -0.05 }, // 27: الدخول إلى غرفة النوم الماستر
-  { x: 1035, y: 975,  yaw:  1.45, pitch: -0.05 }, // 28: عمق غرفة الماستر أمام الشباك
-  { x: 1065, y: 735,  yaw: -0.15, pitch: -0.04 }, // 29: التوجه إلى باب البلكونة
-  { x: 1255, y: 710,  yaw: -1.57, pitch: -0.03 }, // 30: الخروج إلى البلكونة
-  { x: 1255, y: 615,  yaw: -3.10, pitch: -0.03 }, // 31: ركبة البلكونة والسور الحديدي
-  { x: 850,  y: 615,  yaw: -1.60, pitch: -0.03 }, // 32: السير بالبلكونة نحو شباك الصالة
-  { x: 850,  y: 235,  yaw: -1.65, pitch: -0.04 }, // 33: نهاية البلكونة أمام شباك الصالة والسور الحديدي
+  { x: 960,  y: 780,  yaw:  0.95, pitch: -0.05 }, // 27: الدخول إلى غرفة نوم بلازا الماستر (أمام الدولاب 3م)
+  { x: 964,  y: 1095, yaw:  0.45, pitch: -0.05 }, // 28: الممر الغربي بين دولاب بلازا والسرير 160سم باتجاه الشباك
+  { x: 964,  y: 805,  yaw: -0.15, pitch: -0.04 }, // 29: العودة بالممر الغربي قبل الالتفات لباب البلكونة
+  { x: 1135, y: 770,  yaw: -0.15, pitch: -0.04 }, // 30: الممر الشمالي نحو باب البلكونة
+  { x: 1255, y: 710,  yaw: -1.57, pitch: -0.03 }, // 31: الخروج إلى البلكونة
+  { x: 1255, y: 615,  yaw: -3.10, pitch: -0.03 }, // 32: ركبة البلكونة والسور الحديدي
+  { x: 850,  y: 615,  yaw: -1.60, pitch: -0.03 }, // 33: السير بالبلكونة نحو شباك الصالة
+  { x: 850,  y: 235,  yaw: -1.65, pitch: -0.04 }, // 34: نهاية البلكونة أمام شباك الصالة والسور الحديدي
 ];
 
 function getWalkSolidBoxes() {
@@ -1879,13 +2116,13 @@ function jumpWalkRoom(roomId) {
   stopWalkTour();
   const presets = {
     door:      { x: 490,  y: 455, yaw: -1.57, pitch: -0.03 },
-    reception: { x: 495,  y: 215, yaw: -0.25, pitch: -0.05 },
-    kitchen:   { x: 165,  y: 270, yaw: -2.25, pitch: -0.06 },
+    reception: { x: 535,  y: 255, yaw: -0.45, pitch: -0.05 },
+    kitchen:   { x: 122,  y: 200, yaw: -2.05, pitch: -0.06 },
     entry:     { x: 335,  y: 455, yaw:  1.57, pitch: -0.04 },
-    bath:      { x: 185,  y: 585, yaw:  2.85, pitch: -0.06 },
-    salon:     { x: 325,  y: 855, yaw:  2.35, pitch: -0.05 },
-    kids:      { x: 655,  y: 865, yaw:  1.45, pitch: -0.05 },
-    master:    { x: 1020, y: 840, yaw:  0.72, pitch: -0.05 },
+    bath:      { x: 145,  y: 580, yaw:  2.75, pitch: -0.06 },
+    salon:     { x: 168,  y: 888, yaw:  1.45, pitch: -0.05 },
+    kids:      { x: 630,  y: 862, yaw:  1.15, pitch: -0.05 },
+    master:    { x: 962,  y: 815, yaw:  0.88, pitch: -0.05 },
     balcony:   { x: 1255, y: 840, yaw: -1.65, pitch: -0.04 },
   };
   const p = presets[roomId] || presets.door;
@@ -2337,29 +2574,13 @@ function renderWalkScene(W, H) {
   addWalkBox(1210, 1171, 95, 90, 6, 5, ironCols, 2, 65, 20);
   for (let bx = 1222; bx < 1292; bx += 35) addWalkBox(bx, 1172, 55, 4, 4, 40, ironCols, 2, 20, 45);
 
-  // 7. Optional Interior Furniture
+  // 7. Optional Interior Furniture (Synced with Engineer's Kitchen CAD + Furniture PDF)
   if (showFurn) {
-    const sofaDark = { top: '#475569', bottom: '#1e293b', north: '#334155', south: '#334155', west: '#1e293b', east: '#334155' };
-    const oak = { top: '#92400e', bottom: '#451a03', north: '#78350f', south: '#78350f', west: '#451a03', east: '#78350f' };
-    const emerald = { top: '#10b981', bottom: '#065f46', north: '#047857', south: '#047857', west: '#065f46', east: '#047857' };
-    const kidsBlue = { top: '#38bdf8', bottom: '#0369a1', north: '#0284c7', south: '#0284c7', west: '#0369a1', east: '#0284c7' };
-    const goldBed = { top: '#f59e0b', bottom: '#78350f', north: '#b45309', south: '#b45309', west: '#78350f', east: '#b45309' };
-    addWalkBox(275, 25, 3, 290, 85, 72, sofaDark);
-    addWalkBox(275, 110, 3, 85, 165, 72, sofaDark);
-    addWalkBox(435, 155, 3, 105, 65, 42, oak);
-    addWalkBox(645, 295, 3, 145, 38, 48, oak);
-    addWalkBox(10, 12, 3, 56, 285, 85, oak);
-    addWalkBox(66, 12, 3, 110, 56, 85, oak);
-    addWalkBox(178, 12, 3, 55, 56, 165, { top: '#cbd5e1', bottom: '#64748b', north: '#94a3b8', south: '#94a3b8', west: '#64748b', east: '#94a3b8' });
-    addWalkBox(160, 375, 3, 62, 62, 85, { top: '#f8fafc', bottom: '#cbd5e1', north: '#e2e8f0', south: '#e2e8f0', west: '#cbd5e1', east: '#e2e8f0' });
-    addWalkBox(28, 865, 3, 78, 225, 74, emerald);
-    addWalkBox(445, 855, 3, 78, 210, 74, emerald);
-    addWalkBox(155, 1082, 3, 235, 72, 74, emerald);
-    addWalkBox(578, 865, 3, 95, 195, 48, kidsBlue);
-    addWalkBox(700, 865, 3, 95, 195, 48, kidsBlue);
-    addWalkBox(805, 845, 3, 50, 210, 205, oak);
-    addWalkBox(995, 855, 3, 195, 175, 55, goldBed);
-    addWalkBox(882, 815, 3, 55, 240, 210, oak);
+    getFurn3DBoxes(wallH).forEach(b => {
+      addWalkBox(b.x, b.y, b.z, b.w, b.d, b.h, {
+        top: b.top, bottom: b.west, north: b.north, south: b.south, west: b.west, east: b.east
+      }, 2, 70, 95, b.stroke);
+    });
   }
 
   // Sort strictly by Layer (1 floors/ceilings before 2 walls/doors), then back-to-front radial depth
@@ -2418,6 +2639,16 @@ function drawWalkMiniMap(W, H) {
     ctx.lineTo(ox + w.x2 * s, oy + w.y2 * s);
     ctx.stroke();
   });
+
+  const chkWalkFurnEl = document.getElementById('chkWalkFurn');
+  if (!chkWalkFurnEl || chkWalkFurnEl.checked) {
+    getActiveFurnLayout().forEach(item => {
+      if (item.kind === 'hood') return;
+      ctx.fillStyle = item.room === 'kitchen' ? 'rgba(56, 189, 248, 0.36)'
+        : (item.kind === 'table' || item.kind === 'chair' ? 'rgba(245, 158, 11, 0.34)' : 'rgba(251, 191, 36, 0.28)');
+      ctx.fillRect(ox + item.x * s, oy + item.y * s, Math.max(1.5, item.w * s), Math.max(1.5, item.d * s));
+    });
+  }
 
   // View Cone & Player Marker
   const px = ox + walkCam.x * s;

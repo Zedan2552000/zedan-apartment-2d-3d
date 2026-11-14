@@ -21,6 +21,8 @@ def create_apartment_dxf():
         ("STAIRWELL_HATCH", 9, 18),
         ("SHAFT_HATCH", 3, 20),
         ("UTILITIES", 3, 20),
+        ("KITCHEN_CAD", 140, 20),
+        ("FURNITURE", 42, 20),
         ("DIMENSIONS", 2, 18),
         ("LABELS", 7, 18),
     ]
@@ -162,6 +164,84 @@ def create_apartment_dxf():
     add_window(200, 1180, 350, 1180)   # Salon South Window 150 cm
     add_window(625, 1180, 795, 1180)   # Kids South Window 170 cm
     add_window(980, 1180, 1100, 1180)  # Master South Window 120 cm
+
+    # 4B. Engineer's Kitchen CAD Layout (kit.m2.pdf + Beko 14-place Dishwasher 60x60) & PDF Furniture
+    def add_furn_box(x1, y1, x2, y2, label="", layer="FURNITURE", th=7):
+        pts = [(x1, cy(y1)), (x2, cy(y1)), (x2, cy(y2)), (x1, cy(y2)), (x1, cy(y1))]
+        msp.add_lwpolyline(pts, dxfattribs={"layer": layer})
+        if label:
+            t = msp.add_text(label, dxfattribs={"layer": layer, "height": th})
+            t.set_placement(((x1 + x2) / 2.0, cy((y1 + y2) / 2.0)), align=TextEntityAlignment.MIDDLE_CENTER)
+
+    # Kitchen West Wall (x=8..66, South-to-North):
+    add_furn_box(8, 315, 66, 348, "دولاب تنظيف", "KITCHEN_CAD", 6)
+    add_furn_box(8, 256, 66, 315, "دولاب خزين ومايكرويف", "KITCHEN_CAD", 6)
+    add_furn_box(8, 218, 66, 256, "تربو", "KITCHEN_CAD", 6)
+    add_furn_box(8, 158, 68, 218, "غسالة اطباق بيكو 60x60", "KITCHEN_CAD", 6)
+    add_furn_box(8, 94, 66, 158, "حوض مطبخ", "KITCHEN_CAD", 6)
+    add_furn_box(8, 58, 66, 94, "3 درج", "KITCHEN_CAD", 6)
+    add_furn_box(8, 8, 66, 58, "خزين ركنة", "KITCHEN_CAD", 6)
+    # Kitchen North Wall (y=8..68):
+    add_furn_box(66, 8, 152, 68, "بوتاجاز 6 شعلة + شفاط", "KITCHEN_CAD", 6)
+    add_furn_box(152, 8, 182, 66, "ترول زيت", "KITCHEN_CAD", 5.5)
+    add_furn_box(182, 8, 238, 66, "وحدة خزين", "KITCHEN_CAD", 6)
+    # Kitchen East Wall (x=174..238, y=66..238):
+    add_furn_box(182, 66, 238, 114, "وحدة خزين", "KITCHEN_CAD", 6)
+    add_furn_box(178, 114, 238, 162, "فريزر افقي", "KITCHEN_CAD", 6)
+    add_furn_box(174, 162, 238, 212, "ثلاجة", "KITCHEN_CAD", 6)
+    add_furn_box(192, 212, 238, 238, "نيش", "KITCHEN_CAD", 6)
+
+    # Kitchen 165 & 245 cm reference dimensions from South wall (y=355)
+    for dy_ref, off_x, txt_dim in [(165, -24, "165"), (245, -48, "245")]:
+        d_k = msp.add_linear_dim(
+            base=(off_x, 0),
+            p1=(0, cy(355)),
+            p2=(0, cy(355 - dy_ref)),
+            angle=90,
+            dimstyle="Standard",
+            override={"dimtxt": 11, "dimasz": 7},
+            dxfattribs={"layer": "DIMENSIONS"},
+        )
+        d_k.render()
+
+    # Washer Alcove & Bathroom Fixtures
+    add_furn_box(152, 380, 212, 440, "غسالة ملابس", "FURNITURE", 6)
+    add_furn_box(115, 472, 180, 518, "حوض", "FURNITURE", 6)
+    add_furn_box(18, 550, 68, 605, "WC", "FURNITURE", 6)
+    add_furn_box(12, 675, 165, 750, "شاور / بانيو", "FURNITURE", 7)
+    add_furn_box(376, 475, 414, 575, "جزامة", "FURNITURE", 6.5)
+
+    # Reception (الصالة): ركنة عمولة 4م × 2.20م + سفرة زمردة
+    add_furn_box(450, 10, 795, 98, "ركنة عمولة 4م (البا 5)")
+    add_furn_box(705, 98, 795, 230, "ركنة 2.20م")
+    add_furn_box(535, 125, 635, 185, "ترابيزة ركنة", "FURNITURE", 6)
+    add_furn_box(255, 10, 435, 55, "بوفيه زمردة 2م")
+    add_furn_box(253, 65, 298, 160, "نيش 1م", "FURNITURE", 6.5)
+    add_furn_box(295, 110, 465, 200, "سفرة 180x90 + 6 كراسي")
+
+    # Salon (الصالون): انترية كريمة + ترابيزة دهبي
+    add_furn_box(12, 850, 98, 1070, "كنبة 2.20م (تيد 5 طوبي)")
+    add_furn_box(455, 850, 542, 1070, "كنبة 2.20م (تيد 3 كريمي)")
+    add_furn_box(155, 1075, 238, 1158, "فوتيه 1", "FURNITURE", 6.5)
+    add_furn_box(315, 1075, 398, 1158, "فوتيه 2", "FURNITURE", 6.5)
+    add_furn_box(225, 925, 325, 1005, "ترابيزة متداخلة", "FURNITURE", 6.5)
+
+    # Kids Room (أطفال خفرع)
+    add_furn_box(680, 768, 855, 828, "دولاب أطفال 2م")
+    add_furn_box(563, 772, 605, 812, "مراية", "FURNITURE", 5.5)
+    add_furn_box(563, 855, 610, 950, "تسريحة خفرع", "FURNITURE", 6)
+    add_furn_box(568, 965, 688, 1168, "سرير 120سم (1)")
+    add_furn_box(688, 1120, 734, 1168, "كمود", "FURNITURE", 5.5)
+    add_furn_box(734, 965, 854, 1168, "سرير 120سم (2)")
+
+    # Master Bedroom (نوم بلازا)
+    add_furn_box(872, 795, 932, 1095, "دولاب بلازا 3م (6 ضلف)")
+    add_furn_box(995, 880, 1202, 1050, "سرير ميكانزم 160سم")
+    add_furn_box(1154, 825, 1202, 875, "كمود 50سم", "FURNITURE", 5.5)
+    add_furn_box(1154, 1055, 1202, 1105, "كمود 50سم", "FURNITURE", 5.5)
+    add_furn_box(985, 668, 1105, 714, "تسريحة بلازا", "FURNITURE", 6.5)
+    add_furn_box(1025, 720, 1065, 758, "بف", "FURNITURE", 5.5)
+    add_furn_box(878, 1120, 928, 1165, "مراية نص دايرة", "FURNITURE", 5.5)
 
     # 5. Room Labels
     labels = [
