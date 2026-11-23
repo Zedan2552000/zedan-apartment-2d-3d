@@ -630,7 +630,7 @@
 // ============================================================================
 // 1. PARAMETRIC APARTMENT GEOMETRY (SINGLE SOURCE OF TRUTH)
 // ============================================================================
-const STORAGE_KEY = 'zedan_apt_v6';
+const STORAGE_KEY = 'zedan_apt_v6_3';
 
 const APT = {
   W: 1300,
@@ -691,7 +691,7 @@ const APT = {
     { id: 'd_kitchen', name: 'باب المطبخ',   w: 90,  hx: 245,  hy: 240, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: false, wallId: 'w_kit_e' },
     { id: 'd_bath',    name: 'باب الحمام',   w: 80,  hx: 245,  hy: 670, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: false, wallId: 'w_bth_e' },
     { id: 'd_salon',   name: 'باب الصالون',  w: 87,  hx: 285,  hy: 760, dir: 'h', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_cor_s' },
-    { id: 'd_kids',    name: 'باب الأطفال',  w: 90,  hx: 585,  hy: 760, dir: 'h', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_cor_s' },
+    { id: 'd_kids',    name: 'باب الأطفال',  w: 90,  hx: 435,  hy: 760, dir: 'h', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_cor_s' },
     { id: 'd_master',  name: 'باب الماستر',  w: 87,  hx: 865,  hy: 666, dir: 'v', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_mst_w' },
     { id: 'd_balc',    name: 'باب البلكونة', w: 90,  hx: 1210, hy: 665, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: true,  wallId: 'w_mst_e' }
   ],
@@ -735,12 +735,12 @@ const WALK_TOUR_PATH = [
   { x: 265,  y: 885,  yaw:  2.35, pitch: -0.11 },
   { x: 315,  y: 830,  yaw: -1.55, pitch: -0.08 },
   { x: 328,  y: 710,  yaw:  0.02, pitch: -0.07 },
-  { x: 505,  y: 710,  yaw:  0.04, pitch:  0.05 },
-  { x: 630,  y: 710,  yaw:  1.55, pitch: -0.09 },
-  { x: 630,  y: 865,  yaw:  1.55, pitch: -0.11 },
-  { x: 535,  y: 895,  yaw:  1.35, pitch: -0.11 },
-  { x: 630,  y: 845,  yaw: -1.55, pitch: -0.08 },
-  { x: 630,  y: 710,  yaw:  0.02, pitch: -0.07 },
+  { x: 480,  y: 710,  yaw:  1.52, pitch: -0.09 },
+  { x: 480,  y: 845,  yaw:  1.25, pitch: -0.11 },
+  { x: 585,  y: 895,  yaw:  1.45, pitch: -0.11 },
+  { x: 480,  y: 845,  yaw: -1.55, pitch: -0.08 },
+  { x: 480,  y: 710,  yaw:  0.02, pitch: -0.07 },
+  { x: 650,  y: 710,  yaw:  0.02, pitch: -0.07 },
   { x: 785,  y: 710,  yaw:  0.02, pitch: -0.07 },
   { x: 960,  y: 780,  yaw:  0.95, pitch: -0.10 },
   { x: 964,  y: 1095, yaw:  0.45, pitch: -0.11 },
@@ -788,8 +788,8 @@ function getPresetDefaultFurniture(preset) {
 
     // 4. Kids (أطفال خفرع)
     { id: 'kd_ward',  room: 'kids',    x: 675, y: 768, w: 180,d: 60, h: 215, kind: 'wardrobe_kids',   label: 'دولاب أطفال 2م',  mat: 'white_app', spec: 'أطفال خفرع — 4 ضلف فلاش أوف وايت بجوانب خشب المنارة D68 (مطابق للمصنع)' },
-    { id: 'kd_mirr',  room: 'kids',    x: 432, y: 772, w: 45, d: 40, h: 172, kind: 'stand_mirror_rect', label: 'مراية مستطيل',   mat: 'white_app', spec: 'كمليات العقد — مراية استاند مستطيل إطار أبيض' },
-    { id: 'kd_dress', room: 'kids',    x: 432, y: 835, w: 48, d: 100,h: 82,  kind: 'dresser_kids',    label: 'تسريحة خفرع',     mat: 'kids_wood', spec: 'أطفال خفرع — خشب المنارة D68 + مراية برواز خشبي' },
+    { id: 'kd_mirr',  room: 'kids',    x: 590, y: 772, w: 45, d: 40, h: 172, kind: 'stand_mirror_rect', label: 'مراية مستطيل',   mat: 'white_app', spec: 'كمليات العقد — مراية استاند مستطيل إطار أبيض' },
+    { id: 'kd_dress', room: 'kids',    x: 432, y: 856, w: 48, d: 100,h: 82,  kind: 'dresser_kids',    label: 'تسريحة خفرع',     mat: 'kids_wood', spec: 'أطفال خفرع — خشب المنارة D68 + مراية برواز خشبي' },
     { id: 'kd_bed1',  room: 'kids',    x: 485, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
     { id: 'kd_kom',   room: 'kids',    x: 625, y: 1118,w: 50, d: 50, h: 48,  kind: 'nightstand_kids', label: 'كمود',            mat: 'kids_wood', spec: 'أطفال خفرع — كمود خشب المنارة D68 بدرج أبيض فلاش (مطابق للمصنع)' },
     { id: 'kd_bed2',  room: 'kids',    x: 695, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
@@ -807,13 +807,13 @@ function getPresetDefaultFurniture(preset) {
       { id: 'p2_f1', room: 'reception', x: 460, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil',    backDir: 's', label: 'فوتيه كريمة',       mat: 'ted3', spec: 'انترية كريمة — فوتيه مودرن تيد 3 رائف' },
       { id: 'p2_f2', room: 'reception', x: 560, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil',    backDir: 's', label: 'فوتيه كريمة',       mat: 'ted5', spec: 'انترية كريمة — فوتيه مودرن تيد 5 رائف' },
       { id: 'p2_nt', room: 'reception', x: 525, y: 125, w: 96,  d: 76,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass', spec: 'كمليات — ترابيزتان متداخلتان ذهبي وزجاج' },
-      { id: 'p2_ls', room: 'salon',     x: 12,  y: 1082,w: 396, d: 86,  h: 76, kind: 'sofa_sectional', backDir: 's', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — بسرير سحارة يفتح للأمام — قماش البا 5/10' },
+      { id: 'p2_ls', room: 'salon',     x: 12,  y: 1082,w: 396, d: 86,  h: 76, kind: 'sofa_sectional', backDir: 's', roundEnd: 'e', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — دوران بالناحيتين وسرير سحارة يفتح للأمام — قماش البا 5/10' },
       { id: 'p2_lw', room: 'salon',     x: 12,  y: 862, w: 86,  d: 220, h: 76, kind: 'sofa_chaise',    backDir: 'w', roundEnd: 'n', label: 'شيزلونج ركنة 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
       { id: 'p2_lt', room: 'salon',     x: 165, y: 945, w: 95,  d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة ركنة',     mat: 'alba5', spec: 'ترابيزة وسط مودرن حواف دائرية وفازة' }
     );
   } else {
     items.push(
-      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa_sectional', backDir: 'n', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — بسرير سحارة يفتح للأمام — قماش البا 5/10' },
+      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa_sectional', backDir: 'n', roundEnd: 'w', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — دوران بالناحيتين وسرير سحارة يفتح للأمام — قماش البا 5/10' },
       { id: 'p1_le', room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, kind: 'sofa_chaise',    backDir: 'e', roundEnd: 's', label: 'شيزلونج 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
       { id: 'p1_lt', room: 'reception', x: 535, y: 125, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة ركنة',     mat: 'alba5', spec: 'ترابيزة وسط مودرن حواف دائرية وفازة' },
       { id: 'p1_s1', room: 'salon',     x: 106, y: 1082,w: 210, d: 82,  h: 78, kind: 'sofa_tufted', backDir: 's', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 5 طوبي' },
@@ -2250,7 +2250,7 @@ function buildFurnitureGroup3D(it) {
     const isArch = it.kind === 'stand_mirror_arch';
     const fMat = isArch ? m.walnut : m.ducoWhite;
     const mGrp = new THREE.Group();
-    mGrp.rotation.y = isArch ? (Math.PI * 0.35) : (Math.PI * 0.25);
+    mGrp.rotation.y = isArch ? (Math.PI * 0.35) : (-Math.PI * 0.08);
     mGrp.rotation.x = -0.09;
     if (isArch) {
       addMesh(mGrp, rBox(46, 138, 4.5, 2), fMat, 0, 72, 0);
@@ -2353,21 +2353,41 @@ function buildFurnitureGroup3D(it) {
     const fMat = it.mat === 'ted5' ? m.ted5 : (it.mat === 'ted3' ? m.ted3 : m.alba5);
     const isHoriz = it.backDir ? (it.backDir === 'n' || it.backDir === 's') : (bw >= bd);
     const seatH = 38;
-    addMesh(grp, rBox(bw - 8, 5, bd - 8, 2), m.walnut, 0, 2.5, 0);
     if (it.kind === 'sofa_chaise' && it.roundEnd) {
       const rad = (isHoriz ? bd : bw) / 2;
       const boxLen = (isHoriz ? bw : bd) - rad;
       const dzOff = it.roundEnd === 's' ? (-bd / 2 + boxLen / 2) : (bd / 2 - boxLen / 2);
       const czCyl = it.roundEnd === 's' ? (-bd / 2 + boxLen) : (-bd / 2 + rad);
+      addMesh(grp, rBox(bw - 8, 5, boxLen - 4, 2), m.walnut, 0, 2.5, dzOff);
+      const bCyl = new THREE.Mesh(new THREE.CylinderGeometry(rad - 4, rad - 4, 5, 28), m.walnut);
+      bCyl.position.set(0, 2.5, czCyl); grp.add(bCyl);
       addMesh(grp, rBox(bw, seatH, boxLen, 6), fMat, 0, 5 + seatH / 2, dzOff);
       const cyl = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, seatH, 28), fMat);
       cyl.position.set(0, 5 + seatH / 2, czCyl); cyl.castShadow = true; grp.add(cyl);
       addMesh(grp, rBox(bw * 0.72, 4, rad * 0.85, 3), m.alba10, 0, 5 + seatH + 1.5, czCyl);
+    } else if (it.kind === 'sofa_sectional' && it.roundEnd) {
+      const rad = bd / 2;
+      const boxLen = bw - rad;
+      const dxOff = it.roundEnd === 'w' ? (bw / 2 - boxLen / 2) : (-bw / 2 + boxLen / 2);
+      const cxCyl = it.roundEnd === 'w' ? (-bw / 2 + rad) : (bw / 2 - rad);
+      addMesh(grp, rBox(boxLen - 4, 5, bd - 8, 2), m.walnut, dxOff, 2.5, 0);
+      const bCyl = new THREE.Mesh(new THREE.CylinderGeometry(rad - 4, rad - 4, 5, 28), m.walnut);
+      bCyl.position.set(cxCyl, 2.5, 0); grp.add(bCyl);
+      addMesh(grp, rBox(boxLen, 14, bd, 4), fMat, dxOff, 12, 0);
+      const apZ = it.backDir === 'n' ? (bd / 2 + 0.2) : (-bd / 2 - 0.2);
+      addMesh(grp, new THREE.BoxGeometry(boxLen - 12, 1.4, 0.8), m.walnut, dxOff, 14, apZ, false, true);
+      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, seatH, 28), fMat);
+      cyl.position.set(cxCyl, 5 + seatH / 2, 0); cyl.castShadow = true; grp.add(cyl);
+      const segs = 3, sw = (boxLen - 2) / segs;
+      const startX = it.roundEnd === 'w' ? (-bw / 2 + rad) : (-bw / 2 + 2);
+      for (let i = 0; i < segs; i++) {
+        addMesh(grp, rBox(sw - 1.5, 24, bd - 2, 6), fMat, startX + sw * (i + 0.5), 31, 0);
+      }
     } else {
+      addMesh(grp, rBox(bw - 8, 5, bd - 8, 2), m.walnut, 0, 2.5, 0);
       const segs = it.kind === 'fauteuil' ? 1 : (Math.max(bw, bd) > 260 ? 4 : 3);
       addMesh(grp, rBox(bw, 14, bd, 4), fMat, 0, 12, 0);
       if (it.kind === 'sofa_sectional') {
-        // Pull-out sofa-bed lower front drawer seam (162f6340.MP4)
         const apZ = it.backDir === 'n' ? (bd / 2 + 0.2) : (-bd / 2 - 0.2);
         addMesh(grp, new THREE.BoxGeometry(bw - 14, 1.4, 0.8), m.walnut, 0, 14, apZ, false, true);
       }
@@ -2388,6 +2408,12 @@ function buildFurnitureGroup3D(it) {
       const bkZ = it.roundEnd === 's' ? (-bd / 2 + bkLen / 2) : (bd / 2 - bkLen / 2);
       const bkX = it.backDir === 'w' ? (-bw / 2 + bk / 2) : (bw / 2 - bk / 2);
       addMesh(grp, rBox(bk, bh, bkLen, 7), fMat, bkX, 5 + seatH + bh / 2 - 4, bkZ);
+    } else if (it.kind === 'sofa_sectional' && it.roundEnd) {
+      const rad = bd / 2;
+      const bkLen = bw - rad - 12;
+      const bkX = it.roundEnd === 'w' ? (bw / 2 - bkLen / 2) : (-bw / 2 + bkLen / 2);
+      const bkZ = it.backDir === 'n' ? (-bd / 2 + bk / 2) : (bd / 2 - bk / 2);
+      addMesh(grp, rBox(bkLen, bh, bk, 7), fMat, bkX, 5 + seatH + bh / 2 - 4, bkZ);
     } else {
       if (it.backDir === 'n') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, -bd / 2 + bk / 2);
       else if (it.backDir === 's') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, bd / 2 - bk / 2);
@@ -2961,17 +2987,25 @@ function draw2DFurnitureCAD(isBlueprint) {
         roundRect(ctx, -22, cyy, 20, 34, 6, true, true);
         roundRect(ctx, bw + 2, cyy, 20, 34, 6, true, true);
       }
-    } else if (it.kind === 'sofa_chaise' && it.roundEnd) {
-      // True semi-circular bullnose CAD footprint matching factory frame
+    } else if ((it.kind === 'sofa_chaise' || it.kind === 'sofa_sectional') && it.roundEnd) {
+      // True semi-circular bullnose CAD footprint on curved ends
       const rad = Math.min(bw, bd) / 2;
       ctx.beginPath();
       if (it.roundEnd === 's') {
         ctx.moveTo(0, 0); ctx.lineTo(bw, 0); ctx.lineTo(bw, bd - rad);
         ctx.arc(bw / 2, bd - rad, rad, 0, Math.PI, false);
         ctx.closePath();
-      } else {
+      } else if (it.roundEnd === 'n') {
         ctx.moveTo(0, bd); ctx.lineTo(bw, bd); ctx.lineTo(bw, rad);
         ctx.arc(bw / 2, rad, rad, 0, Math.PI, true);
+        ctx.closePath();
+      } else if (it.roundEnd === 'w') {
+        ctx.moveTo(bw, 0); ctx.lineTo(bw, bd); ctx.lineTo(rad, bd);
+        ctx.arc(rad, bd / 2, rad, Math.PI / 2, -Math.PI / 2, false);
+        ctx.closePath();
+      } else if (it.roundEnd === 'e') {
+        ctx.moveTo(0, 0); ctx.lineTo(0, bd); ctx.lineTo(bw - rad, bd);
+        ctx.arc(bw - rad, bd / 2, rad, Math.PI / 2, -Math.PI / 2, true);
         ctx.closePath();
       }
       ctx.fill(); ctx.stroke();
@@ -3021,6 +3055,12 @@ function draw2DFurnitureCAD(isBlueprint) {
         const by = it.roundEnd === 's' ? 0 : (bd - bkLen);
         if (it.backDir === 'e') ctx.strokeRect(bw - 16, by, 16, bkLen);
         else ctx.strokeRect(0, by, 16, bkLen);
+      } else if (it.kind === 'sofa_sectional' && it.roundEnd) {
+        const rad = bd / 2;
+        const bkLen = bw - rad - 12;
+        const bx = it.roundEnd === 'w' ? (bw - bkLen) : 0;
+        const by = it.backDir === 'n' ? 0 : (bd - 16);
+        ctx.strokeRect(bx, by, bkLen, 16);
       } else {
         if (it.backDir === 'n') ctx.strokeRect(0, 0, bw, 16);
         else if (it.backDir === 's') ctx.strokeRect(0, bd - 16, bw, 16);
