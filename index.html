@@ -414,21 +414,27 @@
       <!-- Interactive Editor Card -->
       <div class="card controls-only" id="editorCard">
         <h3>
-          <span>🛠️ محرر الأثاث والبيبان</span>
+          <span>🛠️ محرر الأثاث واللمبات والحيطان</span>
           <span id="editBadgeState" style="font-size:10.5px; color:#94a3b8;">معاينة</span>
         </h3>
-        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;">
+        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:6px;">
           <button class="btn btn-sm" onclick="undoEdit()">↩️ تراجع</button>
           <button class="btn btn-sm" onclick="exportEditsJSON()">💾 حفظ JSON</button>
           <button class="btn btn-sm" onclick="document.getElementById('importJsonInput').click()">📂 استيراد</button>
           <button class="btn btn-sm btn-danger" onclick="resetAllEdits()">🔄 استعادة الكل</button>
           <input type="file" id="importJsonInput" accept="application/json" style="display:none;" onchange="importEditsJSON(this)">
         </div>
+        <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px;">
+          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewLamp()">💡 + لمبة</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewWall()">🧱 + حائط</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewDoor()">🚪 + باب</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px; color:#fca5a5;" onclick="deleteSelectedAny()">🗑️ حذف (Del)</button>
+        </div>
         <div id="editorEmptyMsg" style="font-size:11px; color:#94a3b8; line-height:1.55;">
-          اضغط على أي <strong>قطعة عفش</strong> أو <strong>باب</strong> في 2D أو 3D، أو فعّل <strong>✏️ وضع التعديل</strong> واسحب بالماوس لتحريكه فوراً وتفريغ مكانه في الحوائط.
+          فعّل <strong>✏️ وضع التعديل</strong> ثم اضغط على أي <strong>قطعة عفش، لمبة، سخان/مرفق، باب، أو حائط</strong> في 2D أو 3D لسحبه بالماوس، تغيير أبعاده، أو حذفه بزر <strong>🗑️ حذف (Delete)</strong>.
         </div>
 
-        <!-- Selected Furniture Editor -->
+        <!-- Selected Furniture / Lamp / Utility Editor -->
         <div id="furnEditorFields" style="display:none;">
           <div style="font-size:12px; font-weight:800; color:#10b981; margin-bottom:6px;" id="edFurnName">—</div>
           <div class="control-row">
@@ -436,8 +442,8 @@
             <span>Y (سم): <input type="number" id="edFurnY" class="ed-num" step="5" onchange="applyFurnInputs()"></span>
           </div>
           <div class="control-row">
-            <span>عرض W: <input type="number" id="edFurnW" class="ed-num" step="5" min="15" onchange="applyFurnInputs()"></span>
-            <span>عمق D: <input type="number" id="edFurnD" class="ed-num" step="5" min="15" onchange="applyFurnInputs()"></span>
+            <span>عرض W: <input type="number" id="edFurnW" class="ed-num" step="5" min="5" onchange="applyFurnInputs()"></span>
+            <span>عمق D: <input type="number" id="edFurnD" class="ed-num" step="5" min="5" onchange="applyFurnInputs()"></span>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0;">
             <div class="nudge-pad">
@@ -453,7 +459,9 @@
             </div>
             <div style="display:flex; flex-direction:column; gap:5px; flex:1;">
               <button class="btn btn-sm" onclick="rotateSelectedFurn()">↻ تدوير 90° (<span id="edFurnRot">0°</span>)</button>
-              <button class="btn btn-sm btn-danger" onclick="resetSelectedItem()">🔄 إرجاع لمكانه</button>
+              <button class="btn btn-sm" onclick="duplicateSelectedItem()">📋 نسخ العنصر</button>
+              <button class="btn btn-sm" onclick="resetSelectedItem()">🔄 إرجاع لمكانه</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteSelectedItem()">🗑️ حذف العنصر</button>
             </div>
           </div>
         </div>
@@ -485,7 +493,44 @@
             <button class="preset-btn" onclick="flipDoorSwing()">⇄ عكس جهة الفتح</button>
             <button class="preset-btn" onclick="flipDoorHinge()">↔️ تبديل المفصلة</button>
           </div>
-          <button class="btn btn-sm btn-danger" style="width:100%; margin-top:6px;" onclick="resetSelectedDoor()">🔄 إرجاع الباب لمكانه</button>
+          <div style="display:flex; gap:5px; margin-top:6px;">
+            <button class="btn btn-sm" style="flex:1;" onclick="resetSelectedDoor()">🔄 إرجاع الباب</button>
+            <button class="btn btn-sm btn-danger" style="flex:1;" onclick="deleteSelectedDoor()">🗑️ حذف الباب</button>
+          </div>
+        </div>
+
+        <!-- Selected Wall Editor -->
+        <div id="wallEditorFields" style="display:none;">
+          <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:6px;" id="edWallName">—</div>
+          <div class="control-row">
+            <span>الطول (سم): <input type="number" id="edWallLen" class="ed-num" step="5" min="20" onchange="applyWallLength(this.value)"></span>
+            <span>السمك: <input type="number" id="edWallThick" class="ed-num" step="1" min="6" max="60" onchange="applyWallInputs()"></span>
+          </div>
+          <div class="control-row">
+            <span>X1: <input type="number" id="edWallX1" class="ed-num" step="5" onchange="applyWallInputs()"></span>
+            <span>Y1: <input type="number" id="edWallY1" class="ed-num" step="5" onchange="applyWallInputs()"></span>
+          </div>
+          <div class="control-row">
+            <span>X2: <input type="number" id="edWallX2" class="ed-num" step="5" onchange="applyWallInputs()"></span>
+            <span>Y2: <input type="number" id="edWallY2" class="ed-num" step="5" onchange="applyWallInputs()"></span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0;">
+            <div class="nudge-pad">
+              <div></div>
+              <button class="preset-btn" onclick="nudgeSelected(0, -5)" title="تحريك الحائط لأعلى 5سم">▲</button>
+              <div></div>
+              <button class="preset-btn" onclick="nudgeSelected(-5, 0)" title="تحريك الحائط ليسار 5سم">◀</button>
+              <button class="preset-btn" onclick="resetSelectedWall()" title="إرجاع الحائط">🔄</button>
+              <button class="preset-btn" onclick="nudgeSelected(5, 0)" title="تحريك الحائط ليمين 5سم">▶</button>
+              <div></div>
+              <button class="preset-btn" onclick="nudgeSelected(0, 5)" title="تحريك الحائط لأسفل 5سم">▼</button>
+              <div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:5px; flex:1;">
+              <button class="btn btn-sm" onclick="resetSelectedWall()">🔄 إرجاع الحائط لأصله</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteSelectedWall()">🗑️ حذف الحائط</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -630,7 +675,7 @@
 // ============================================================================
 // 1. PARAMETRIC APARTMENT GEOMETRY (SINGLE SOURCE OF TRUTH)
 // ============================================================================
-const STORAGE_KEY = 'zedan_apt_v6_3';
+const STORAGE_KEY = 'zedan_apt_v7';
 
 const APT = {
   W: 1300,
@@ -641,7 +686,7 @@ const APT = {
     { id: 'bath', name: 'الحمام', sub: 'Bathroom', x: 0, y: 465, w: 245, h: 295, dimLabel: '240 × 195 سم', area: '4.68 م²', floor: 'bath_tile', gypsum: false },
     { id: 'reception', name: 'الصالة', sub: 'Reception', x: 245, y: 0, w: 560, h: 388, dimLabel: '560 × 470 سم', area: '26.32 م²', floor: 'marble', gypsum: true },
     { id: 'stairwell', name: 'بئر السلم', sub: 'Stairwell', x: 422, y: 388, w: 383, h: 272, dimLabel: '272 × 425 سم', area: 'مشترك', floor: 'stair', gypsum: false },
-    { id: 'entry', name: 'ممر (المدخل)', sub: 'Entry Corridor', x: 245, y: 355, w: 177, h: 305, dimLabel: '260 × 177 سم', area: '4.60 م²', floor: 'corridor', gypsum: false, labelY: 432, labelX: 314 },
+    { id: 'entry', name: 'ممر (المدخل)', sub: 'Entry Corridor', x: 245, y: 355, w: 177, h: 305, dimLabel: '260 × 177 سم', area: '4.60 م²', floor: 'corridor', gypsum: false, labelY: 525, labelX: 333 },
     { id: 'corridor', name: 'ممر (الطرقة)', sub: 'Corridor', x: 245, y: 660, w: 620, h: 100, dimLabel: '575 × 100 سم', area: '5.75 م²', floor: 'corridor', gypsum: false },
     { id: 'salon', name: 'الصالون', sub: 'Salon', x: 0, y: 760, w: 422, h: 420, dimLabel: '380 × 345 سم', area: '13.20 م²', floor: 'marble', gypsum: true },
     { id: 'kids', name: 'أطفال', sub: 'Kids Room', x: 422, y: 760, w: 443, h: 420, dimLabel: '420 × 350 سم', area: '14.70 م²', floor: 'marble', gypsum: true },
@@ -774,8 +819,8 @@ function getPresetDefaultFurniture(preset) {
     { id: 'washer',   room: 'washer',  x: 152, y: 380, w: 60, d: 60, h: 85,  kind: 'washer',          label: 'غسالة ملابس',     mat: 'white_app', spec: 'غسالة فول أوتوماتيك داخل تجليد رخام أبيض' },
     { id: 'b_sink',   room: 'bath',    x: 115, y: 472, w: 65, d: 46, h: 82,  kind: 'vanity',          label: 'وحدة حوض',        mat: 'white_app', spec: 'حوض بورسلين بخزانة جوزي ومراية ليد' },
     { id: 'b_wc',     room: 'bath',    x: 18,  y: 550, w: 50, d: 55, h: 78,  kind: 'wc',              label: 'قاعدة WC',        mat: 'white_app', spec: 'مرحاض بورسلين بصندوق طرد مزدوج' },
-    { id: 'b_shower', room: 'bath',    x: 12,  y: 675, w: 135,d: 72, h: 195, kind: 'shower',          label: 'كابينة شاور',      mat: 'white_app', spec: 'بانيو / شاور بزجاج سيكوريت ودش مطري' },
-    { id: 'shoe',     room: 'entry',   x: 376, y: 475, w: 38, d: 100,h: 108, kind: 'shoe_cab',        label: 'جزامة مودرن',     mat: 'walnut_white', spec: 'كمليات العقد — خشب جوزي × أبيض دوكو وأرفف' },
+    { id: 'b_shower', room: 'bath',      x: 12,  y: 675, w: 135,d: 72, h: 195, kind: 'shower',          label: 'كابينة شاور',      mat: 'white_app', spec: 'بانيو / شاور بزجاج سيكوريت ودش مطري' },
+    { id: 'shoe',     room: 'stairwell', x: 545, y: 612, w: 100,d: 38, h: 108, kind: 'shoe_cab',        label: 'جزامة مودرن',     mat: 'walnut_white', spec: 'كمليات العقد — خشب جوزي × أبيض دوكو وأرفف (على السلم)' },
 
     // 3. Master (نوم بلازا)
     { id: 'm_ward',   room: 'master',  x: 872, y: 865, w: 60, d: 300,h: 222, kind: 'wardrobe_plaza',  label: 'دولاب بلازا 3م',  mat: 'plaza_oak', spec: 'نوم بلازا — 6 ضلف (قشرة أرو + دوكو بني سادة)' },
@@ -797,7 +842,36 @@ function getPresetDefaultFurniture(preset) {
     // 5. Dining (سفرة زمردة)
     { id: 'd_buffet', room: 'reception', x: 440, y: 334, w: 180, d: 45, h: 85,  kind: 'buffet', dir: 's', label: 'بوفيه زمردة 2م + شاشة 55"', mat: 'zemerda', spec: 'سفرة زمردة — 4 ضلف فلاش + ركن مفتوح مائل + تلفزيون سامسونج 55 بوصة' },
     { id: 'd_niche',  room: 'reception', x: 255, y: 12,  w: 95,  d: 44, h: 202, kind: 'niche_glass',     label: 'نيش زمردة 1م',    mat: 'zemerda', spec: 'سفرة زمردة — ضلف ألوميتال أسود وزجاج + 4 أرفف مضيئة (مطابق للمصنع)' },
-    { id: 'd_table',  room: 'reception', x: 315, y: 95,  w: 90,  d: 175,h: 76,  kind: 'dining_6',        label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي بحافة مشطوفة 180×90سم + 6 كراسي' }
+    { id: 'd_table',  room: 'reception', x: 315, y: 95,  w: 90,  d: 175,h: 76,  kind: 'dining_6',        label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي بحافة مشطوفة 180×90سم + 6 كراسي' },
+
+    // 6. Movable & Deletable Utilities & Decor (المرافق والديكور)
+    { id: 'u_plant',  room: 'kids',      x: 434, y: 1124,w: 28,  d: 28, h: 86,  elev: 3,   cat: 'util', kind: 'decor_plant', label: 'زرعة ديكور',    mat: 'kids_wood', spec: 'ديكور — زرعة داخلية قابلة للتحريك والحذف' },
+    { id: 'u_gas',    room: 'reception', x: 254, y: 194, w: 24,  d: 24, h: 24,  elev: 180, cat: 'util', kind: 'util_gas',    label: 'عداد الغاز',    mat: 'zemerda',   icon: '🔥', color: '#f59e0b', dx: 18,  dy: 22, spec: 'مرافق — عداد الغاز الطبيعي (قابل للتحريك والحذف)' },
+    { id: 'u_elec',   room: 'entry',     x: 396, y: 405, w: 24,  d: 34, h: 64,  elev: 145, cat: 'util', kind: 'util_elec',   label: 'لوحة الكهرباء', mat: 'white_app', icon: '⚡', color: '#ef4444', dx: -44, dy: 22, spec: 'مرافق — لوحة الكهرباء الرئيسية (قابلة للتحريك والحذف)' },
+    { id: 'u_drain',  room: 'washer',    x: 215, y: 439, w: 24,  d: 24, h: 14,  elev: 4,   cat: 'util', kind: 'util_drain',  label: 'صرف الغسالة',   mat: 'inox',      icon: '🧺', color: '#38bdf8', dx: -44, dy: 0,  spec: 'مرافق — نقطة صرف الغسالة (قابلة للتحريك والحذف)' },
+    { id: 'u_heater', room: 'bath',      x: 195, y: 472, w: 36,  d: 36, h: 52,  elev: 168, cat: 'util', kind: 'util_heater', label: 'السخان',        mat: 'white_app', icon: '♨️', color: '#fb923c', dx: 0,   dy: 22, spec: 'مرافق — سخان المياه الكهربائي (قابل للتحريك والحذف)' },
+
+    // 7. Movable & Deletable Ceiling Lamps, Chandeliers & Linear LEDs (اللمبات والإضاءة)
+    { id: 'l_rec_ch',   room: 'reception', x: 546, y: 171, w: 48,  d: 48,  h: 12, elev: 243, cat: 'light', kind: 'lamp_chandelier', label: 'نجفة الصالة',         mat: 'gold_glass', spec: 'إضاءة — نجفة ليد دائرية ذهبية 3000K قابلة للتحريك والحذف' },
+    { id: 'l_rec_s1',   room: 'reception', x: 334, y: 74,  w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_rec_s2',   room: 'reception', x: 714, y: 84,  w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_rec_s3',   room: 'reception', x: 694, y: 284, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 3',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_cor_led1', room: 'entry',     x: 275, y: 380, w: 6,   d: 355, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك والحذف' },
+    { id: 'l_cor_led2', room: 'entry',     x: 383, y: 380, w: 6,   d: 304, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك والحذف' },
+    { id: 'l_cor_led3', room: 'corridor',  x: 278, y: 733, w: 574, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك والحذف' },
+    { id: 'l_cor_led4', room: 'corridor',  x: 386, y: 681, w: 466, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك والحذف' },
+    { id: 'l_ent_s1',   room: 'entry',     x: 323, y: 471, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_ent_s2',   room: 'entry',     x: 323, y: 641, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_cor_s1',   room: 'corridor',  x: 541, y: 701, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الطرقة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_cor_s2',   room: 'corridor',  x: 751, y: 701, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الطرقة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_sal_s1',   room: 'salon',     x: 74,  y: 834, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_sal_s2',   room: 'salon',     x: 326, y: 1084,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_kid_s1',   room: 'kids',      x: 544, y: 883, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_kid_s2',   room: 'kids',      x: 721, y: 1034,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_mst_s1',   room: 'master',    x: 958, y: 815, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_mst_s2',   room: 'master',    x: 1095,y: 1002,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_kit_s1',   room: 'kitchen',   x: 110, y: 165, w: 24,  d: 24,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المطبخ',         mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_bth_s1',   room: 'bath',      x: 110, y: 600, w: 24,  d: 24,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الحمام',         mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' }
   ];
 
   if (preset === 'preset2') {
@@ -841,9 +915,10 @@ let dragStart = { x: 0, y: 0 };
 let rulerActive = false;
 let rulerPts = [];
 let editMode = false;
-let activeDrag = null; // { type: 'furn'|'door', item|door, startX, startY, offsetX, offsetY }
+let activeDrag = null; // { type: 'furn'|'door'|'wall', ... }
 let selectedItem = null;
 let selectedDoor = null;
+let selectedWall = null;
 let doorOpenRatio = 0.82;
 let lightingTheme = 'warm_real';
 let activePreset = 'preset1';
@@ -864,6 +939,63 @@ let miniMapRect = null;
 let _walkSolidCache = null;
 
 function cloneObj(o) { return JSON.parse(JSON.stringify(o)); }
+
+APT.defaultBaseWalls = cloneObj(APT.baseWalls);
+APT.defaultRooms = cloneObj(APT.rooms);
+
+function syncRoomsFromWalls() {
+  const findW = id => APT.baseWalls.find(w => w.id === id);
+  const findR = id => APT.rooms.find(r => r.id === id);
+  const wSalKid = findW('w_sal_kid');
+  const wMstW   = findW('w_mst_w');
+  const wCorS   = findW('w_cor_s');
+  const wKitE   = findW('w_kit_e');
+  const wBthE   = findW('w_bth_e');
+  const wBthSal = findW('w_bth_sal');
+
+  const xSalKid = wSalKid ? wSalKid.x1 : 422;
+  const xMstW   = wMstW   ? wMstW.x1   : 865;
+  const yCorS   = wCorS   ? wCorS.y1   : 760;
+  const xKitE   = wKitE   ? wKitE.x1   : 245;
+  const xBthE   = wBthE   ? wBthE.x1   : 245;
+  const yBthSal = wBthSal ? wBthSal.y1 : 760;
+
+  const rSal = findR('salon'), rKid = findR('kids'), rMst = findR('master');
+  const rCor = findR('corridor'), rKit = findR('kitchen'), rRec = findR('reception'), rBth = findR('bath');
+
+  if (rSal) {
+    rSal.y = yCorS; rSal.w = Math.max(80, xSalKid); rSal.h = Math.max(80, 1180 - yCorS);
+    if (xSalKid !== 422 || yCorS !== 760) rSal.dimLabel = `${Math.round(rSal.w * 380 / 422)} × ${Math.round(rSal.h * 345 / 420)} سم`;
+  }
+  if (rKid) {
+    rKid.x = xSalKid; rKid.y = yCorS; rKid.w = Math.max(80, xMstW - xSalKid); rKid.h = Math.max(80, 1180 - yCorS);
+    if (xSalKid !== 422 || xMstW !== 865 || yCorS !== 760) rKid.dimLabel = `${Math.round(rKid.w * 420 / 443)} × ${Math.round(rKid.h * 350 / 420)} سم`;
+  }
+  if (rMst) {
+    rMst.x = xMstW; rMst.w = Math.max(80, 1210 - xMstW);
+    if (xMstW !== 865) rMst.dimLabel = `${Math.round(rMst.w * 350 / 345)} × 470 سم`;
+  }
+  if (rCor) {
+    rCor.w = Math.max(80, xMstW - rCor.x); rCor.h = Math.max(50, yCorS - rCor.y);
+  }
+  if (rKit && rRec) {
+    rKit.w = Math.max(80, xKitE);
+    rRec.x = xKitE; rRec.w = Math.max(120, 805 - xKitE);
+  }
+  if (rBth) {
+    rBth.w = Math.max(80, xBthE); rBth.h = Math.max(80, yBthSal - rBth.y);
+  }
+}
+
+function syncDoorsOnWall(bw) {
+  if (!bw) return;
+  const isH = Math.abs(bw.y2 - bw.y1) < 0.5;
+  APT.doors.forEach(d => {
+    if (d.wallId === bw.id) {
+      clampDoorOnWall(d, bw, isH ? d.hx : d.hy);
+    }
+  });
+}
 
 function getDoorSwingGeometry(d) {
   const isH = d.dir === 'h';
@@ -933,6 +1065,7 @@ function computeCutWalls() {
 }
 
 function syncWallsFromDoors(rebuildGLArch = false) {
+  syncRoomsFromWalls();
   APT.walls = computeCutWalls();
   _walkSolidCache = null;
   if (rebuildGLArch && gl) {
@@ -944,7 +1077,10 @@ function syncWallsFromDoors(rebuildGLArch = false) {
 function loadSavedState() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
-  APT.doors = (saved && Array.isArray(saved.doors) && saved.doors.length === APT.defaultDoors.length)
+  APT.baseWalls = (saved && Array.isArray(saved.baseWalls) && saved.baseWalls.length > 0)
+    ? cloneObj(saved.baseWalls)
+    : cloneObj(APT.defaultBaseWalls);
+  APT.doors = (saved && Array.isArray(saved.doors))
     ? cloneObj(saved.doors)
     : cloneObj(APT.defaultDoors);
 
@@ -961,6 +1097,7 @@ function loadSavedState() {
 function persistState() {
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch { saved = {}; }
+  saved.baseWalls = cloneObj(APT.baseWalls);
   saved.doors = cloneObj(APT.doors);
   saved.presets = saved.presets || {};
   saved.presets[activePreset] = cloneObj(activeFurniture);
@@ -970,6 +1107,7 @@ function persistState() {
 function pushUndoSnapshot() {
   undoStack.push({
     preset: activePreset,
+    baseWalls: cloneObj(APT.baseWalls),
     doors: cloneObj(APT.doors),
     furniture: cloneObj(activeFurniture)
   });
@@ -980,12 +1118,12 @@ function getActiveFurnLayout() {
   return activeFurniture;
 }
 
-// Populate door walls selector once
+// Populate door walls selector
 function populateDoorWallDropdown() {
   const sel = document.getElementById('edDoorWall');
   if (!sel) return;
   sel.innerHTML = '';
-  APT.baseWalls.filter(w => w.allowDoor).forEach(w => {
+  APT.baseWalls.filter(w => w.allowDoor !== false).forEach(w => {
     const opt = document.createElement('option');
     opt.value = w.id;
     opt.textContent = w.name;
@@ -1012,7 +1150,7 @@ function snapDoorToNearestWall(d, wx, wy) {
   let bestWall = null;
   let bestDist = Infinity;
   let bestPos = 0;
-  APT.baseWalls.filter(bw => bw.allowDoor).forEach(bw => {
+  APT.baseWalls.filter(bw => bw.allowDoor !== false).forEach(bw => {
     const isH = Math.abs(bw.y2 - bw.y1) < 0.5;
     const minP = isH ? Math.min(bw.x1, bw.x2) : Math.min(bw.y1, bw.y2);
     const maxP = isH ? Math.max(bw.x1, bw.x2) : Math.max(bw.y1, bw.y2);
@@ -1118,8 +1256,8 @@ function applyFurnInputs() {
   pushUndoSnapshot();
   selectedItem.x = Math.max(0, Math.min(APT.W, Number(document.getElementById('edFurnX').value) || 0));
   selectedItem.y = Math.max(0, Math.min(APT.H, Number(document.getElementById('edFurnY').value) || 0));
-  const nw = Math.max(15, Number(document.getElementById('edFurnW').value) || selectedItem.w);
-  const nd = Math.max(15, Number(document.getElementById('edFurnD').value) || selectedItem.d);
+  const nw = Math.max(4, Number(document.getElementById('edFurnW').value) || selectedItem.w);
+  const nd = Math.max(4, Number(document.getElementById('edFurnD').value) || selectedItem.d);
   selectedItem.w = nw;
   selectedItem.d = nd;
   if ((selectedItem.rotDeg || 0) % 180 === 90) {
@@ -1134,13 +1272,196 @@ function applyFurnInputs() {
   redraw();
 }
 
+window.applyWallLength = function(val) {
+  if (!selectedWall) return;
+  const newLen = Math.max(20, Math.round(Number(val) || 100));
+  pushUndoSnapshot();
+  const isH = Math.abs(selectedWall.y2 - selectedWall.y1) < 0.5;
+  if (isH) {
+    const minX = Math.min(selectedWall.x1, selectedWall.x2);
+    selectedWall.x1 = minX;
+    selectedWall.x2 = minX + newLen;
+  } else {
+    const minY = Math.min(selectedWall.y1, selectedWall.y2);
+    selectedWall.y1 = minY;
+    selectedWall.y2 = minY + newLen;
+  }
+  syncDoorsOnWall(selectedWall);
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(selectedWall);
+  redraw();
+};
+
+window.applyWallInputs = function() {
+  if (!selectedWall) return;
+  pushUndoSnapshot();
+  const x1 = Math.round(Number(document.getElementById('edWallX1').value) || 0);
+  const y1 = Math.round(Number(document.getElementById('edWallY1').value) || 0);
+  let x2 = Math.round(Number(document.getElementById('edWallX2').value) || 0);
+  let y2 = Math.round(Number(document.getElementById('edWallY2').value) || 0);
+  const t = Math.max(6, Math.min(60, Math.round(Number(document.getElementById('edWallThick').value) || selectedWall.t)));
+  // Keep wall orthogonal (horizontal or vertical) for clean door carving
+  if (Math.abs(x2 - x1) >= Math.abs(y2 - y1)) y2 = y1;
+  else x2 = x1;
+  selectedWall.x1 = x1; selectedWall.y1 = y1;
+  selectedWall.x2 = x2; selectedWall.y2 = y2;
+  selectedWall.t = t;
+  syncDoorsOnWall(selectedWall);
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(selectedWall);
+  redraw();
+};
+
+window.resetSelectedWall = function() {
+  if (!selectedWall) return;
+  const def = APT.defaultBaseWalls.find(w => w.id === selectedWall.id);
+  if (!def) return;
+  pushUndoSnapshot();
+  Object.assign(selectedWall, cloneObj(def));
+  syncDoorsOnWall(selectedWall);
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(selectedWall);
+  redraw();
+};
+
+window.deleteSelectedWall = function() {
+  if (!selectedWall) return;
+  pushUndoSnapshot();
+  const wid = selectedWall.id;
+  APT.baseWalls = APT.baseWalls.filter(w => w.id !== wid);
+  APT.doors = APT.doors.filter(d => d.wallId !== wid);
+  selectedWall = null;
+  populateDoorWallDropdown();
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(null);
+  redraw();
+};
+
+window.deleteSelectedItem = function() {
+  if (!selectedItem) return;
+  pushUndoSnapshot();
+  activeFurniture = activeFurniture.filter(i => i.id !== selectedItem.id);
+  selectedItem = null;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(null);
+  redraw();
+};
+
+window.deleteSelectedDoor = function() {
+  if (!selectedDoor) return;
+  pushUndoSnapshot();
+  APT.doors = APT.doors.filter(d => d.id !== selectedDoor.id);
+  selectedDoor = null;
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(null);
+  redraw();
+};
+
+window.deleteSelectedAny = function() {
+  if (selectedItem) deleteSelectedItem();
+  else if (selectedDoor) deleteSelectedDoor();
+  else if (selectedWall) deleteSelectedWall();
+};
+
+window.duplicateSelectedItem = function() {
+  if (!selectedItem) return;
+  pushUndoSnapshot();
+  const copy = cloneObj(selectedItem);
+  copy.id = selectedItem.id + '_c' + Date.now().toString(36).slice(-3);
+  copy.x = Math.min(APT.W - copy.w, copy.x + 25);
+  copy.y = Math.min(APT.H - copy.d, copy.y + 25);
+  activeFurniture.push(copy);
+  selectedItem = copy;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(copy);
+  redraw();
+};
+
+window.addNewLamp = function() {
+  if (!editMode) toggleEditMode();
+  pushUndoSnapshot();
+  const nl = {
+    id: 'l_custom_' + Date.now().toString(36).slice(-4),
+    room: 'reception',
+    x: 520, y: 200, w: 24, d: 24, baseW: 24, baseD: 24, h: 4, elev: 269,
+    rotDeg: 0, cat: 'light', kind: 'lamp_spot',
+    label: 'سبوت ليد جديد', mat: 'white_app',
+    spec: 'إضاءة — سبوت ليد دائري مضاف قابل للتحريك وتغيير المقاس والحذف'
+  };
+  activeFurniture.push(nl);
+  selectedItem = nl; selectedDoor = null; selectedWall = null;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(nl);
+  redraw();
+};
+
+window.addNewWall = function() {
+  if (!editMode) toggleEditMode();
+  pushUndoSnapshot();
+  const nw = {
+    id: 'w_custom_' + Date.now().toString(36).slice(-4),
+    name: 'حائط جديد مضاف',
+    x1: 460, y1: 220, x2: 640, y2: 220,
+    t: 12, ext: false, mat: 'cream', allowDoor: true
+  };
+  APT.baseWalls.push(nw);
+  populateDoorWallDropdown();
+  selectedWall = nw; selectedItem = null; selectedDoor = null;
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(nw);
+  redraw();
+};
+
+window.addNewDoor = function() {
+  if (!editMode) toggleEditMode();
+  const targetWall = selectedWall || APT.baseWalls.find(w => w.id === 'w_cor_s') || APT.baseWalls[0];
+  if (!targetWall) return;
+  pushUndoSnapshot();
+  const nd = {
+    id: 'd_custom_' + Date.now().toString(36).slice(-4),
+    name: 'باب مضاف', w: 90, hx: 0, hy: 0, dir: 'h',
+    swing: 1, hingeEnd: 0, main: false, alum: false, wallId: targetWall.id
+  };
+  const isH = Math.abs(targetWall.y2 - targetWall.y1) < 0.5;
+  const start = isH ? Math.min(targetWall.x1, targetWall.x2) : Math.min(targetWall.y1, targetWall.y2);
+  const end = isH ? Math.max(targetWall.x1, targetWall.x2) : Math.max(targetWall.y1, targetWall.y2);
+  clampDoorOnWall(nd, targetWall, (start + end - nd.w) / 2);
+  APT.doors.push(nd);
+  selectedDoor = nd; selectedItem = null; selectedWall = null;
+  syncWallsFromDoors(true);
+  persistState();
+  updateEditorUI();
+  showInspector(nd);
+  redraw();
+};
+
 function nudgeSelected(dx, dy) {
   if (selectedItem) {
     pushUndoSnapshot();
     selectedItem.x = Math.max(0, Math.min(APT.W - selectedItem.w, Math.round(selectedItem.x + dx)));
     selectedItem.y = Math.max(0, Math.min(APT.H - selectedItem.d, Math.round(selectedItem.y + dy)));
     if (gl && gl.furnMap && gl.furnMap[selectedItem.id]) {
-      gl.furnMap[selectedItem.id].position.set(selectedItem.x + selectedItem.w / 2, 3, selectedItem.y + selectedItem.d / 2);
+      const g = gl.furnMap[selectedItem.id];
+      g.position.x = selectedItem.x + selectedItem.w / 2;
+      g.position.z = selectedItem.y + selectedItem.d / 2;
       updateSelectionBox3D();
     }
     persistState();
@@ -1158,6 +1479,18 @@ function nudgeSelected(dx, dy) {
       updateEditorUI();
       redraw();
     }
+  } else if (selectedWall) {
+    pushUndoSnapshot();
+    selectedWall.x1 = Math.round(selectedWall.x1 + dx);
+    selectedWall.x2 = Math.round(selectedWall.x2 + dx);
+    selectedWall.y1 = Math.round(selectedWall.y1 + dy);
+    selectedWall.y2 = Math.round(selectedWall.y2 + dy);
+    syncDoorsOnWall(selectedWall);
+    syncWallsFromDoors(true);
+    persistState();
+    updateEditorUI();
+    showInspector(selectedWall);
+    redraw();
   }
 }
 
@@ -1194,10 +1527,13 @@ window.undoEdit = function() {
     const el = document.getElementById('furnLayoutSelect');
     if (el) el.value = activePreset;
   }
+  if (Array.isArray(snap.baseWalls)) APT.baseWalls = cloneObj(snap.baseWalls);
   APT.doors = cloneObj(snap.doors);
   activeFurniture = cloneObj(snap.furniture);
   selectedItem = selectedItem ? activeFurniture.find(i => i.id === selectedItem.id) || null : null;
   selectedDoor = selectedDoor ? APT.doors.find(d => d.id === selectedDoor.id) || null : null;
+  selectedWall = selectedWall ? APT.baseWalls.find(w => w.id === selectedWall.id) || null : null;
+  populateDoorWallDropdown();
   syncWallsFromDoors(true);
   if (gl) rebuildFurniture3D();
   persistState();
@@ -1208,10 +1544,14 @@ window.undoEdit = function() {
 window.resetAllEdits = function() {
   pushUndoSnapshot();
   try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  APT.baseWalls = cloneObj(APT.defaultBaseWalls);
+  APT.rooms = cloneObj(APT.defaultRooms);
   APT.doors = cloneObj(APT.defaultDoors);
   activeFurniture = getPresetDefaultFurniture(activePreset);
   selectedItem = null;
   selectedDoor = null;
+  selectedWall = null;
+  populateDoorWallDropdown();
   syncWallsFromDoors(true);
   if (gl) rebuildFurniture3D();
   persistState();
@@ -1223,7 +1563,7 @@ window.resetAllEdits = function() {
 function exportEditsJSON() {
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
-  const payload = { version: 6, doors: APT.doors, activePreset, presets: saved.presets || { [activePreset]: activeFurniture } };
+  const payload = { version: 7, baseWalls: APT.baseWalls, doors: APT.doors, activePreset, presets: saved.presets || { [activePreset]: activeFurniture } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1239,9 +1579,11 @@ function importEditsJSON(input) {
     try {
       const data = JSON.parse(String(reader.result));
       pushUndoSnapshot();
+      if (Array.isArray(data.baseWalls)) APT.baseWalls = data.baseWalls;
       if (Array.isArray(data.doors)) APT.doors = data.doors;
       if (data.presets && data.presets[activePreset]) activeFurniture = data.presets[activePreset];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ doors: APT.doors, presets: data.presets || { [activePreset]: activeFurniture } }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ baseWalls: APT.baseWalls, doors: APT.doors, presets: data.presets || { [activePreset]: activeFurniture } }));
+      populateDoorWallDropdown();
       syncWallsFromDoors(true);
       if (gl) rebuildFurniture3D();
       updateEditorUI();
@@ -1258,7 +1600,7 @@ window.toggleEditMode = function() {
   const card = document.getElementById('editorCard');
   const badge = document.getElementById('editBadgeState');
   btn.classList.toggle('edit-active', editMode);
-  btn.textContent = editMode ? '✅ وضع التعديل نشط (اسحب الأثاث أو البيبان)' : '✏️ وضع التعديل (تحريك الأثاث والبيبان)';
+  btn.textContent = editMode ? '✅ وضع التعديل نشط (أثاث / لمبات / بيبان / حيطان)' : '✏️ وضع التعديل (تحريك الأثاث والبيبان)';
   card.classList.toggle('editor-highlight', editMode);
   badge.textContent = editMode ? 'نشط ✏️' : 'معاينة';
   badge.style.color = editMode ? '#10b981' : '#94a3b8';
@@ -1276,11 +1618,14 @@ function updateEditorUI() {
   const emptyMsg = document.getElementById('editorEmptyMsg');
   const furnBox = document.getElementById('furnEditorFields');
   const doorBox = document.getElementById('doorEditorFields');
+  const wallBox = document.getElementById('wallEditorFields');
   if (selectedItem) {
     emptyMsg.style.display = 'none';
     doorBox.style.display = 'none';
+    if (wallBox) wallBox.style.display = 'none';
     furnBox.style.display = 'block';
-    document.getElementById('edFurnName').textContent = '🛋️ ' + selectedItem.label;
+    const icon = selectedItem.cat === 'light' ? '💡 ' : (selectedItem.cat === 'util' ? (selectedItem.icon || '⚙️') + ' ' : '🛋️ ');
+    document.getElementById('edFurnName').textContent = icon + selectedItem.label;
     document.getElementById('edFurnX').value = Math.round(selectedItem.x);
     document.getElementById('edFurnY').value = Math.round(selectedItem.y);
     document.getElementById('edFurnW').value = Math.round(selectedItem.w);
@@ -1289,6 +1634,7 @@ function updateEditorUI() {
   } else if (selectedDoor) {
     emptyMsg.style.display = 'none';
     furnBox.style.display = 'none';
+    if (wallBox) wallBox.style.display = 'none';
     doorBox.style.display = 'block';
     document.getElementById('edDoorName').textContent = `🚪 ${selectedDoor.name} (${selectedDoor.w} سم)`;
     document.getElementById('edDoorWall').value = selectedDoor.wallId || '';
@@ -1305,10 +1651,24 @@ function updateEditorUI() {
       sl.value = off;
       document.getElementById('edDoorOffsetVal').textContent = off;
     }
+  } else if (selectedWall && wallBox) {
+    emptyMsg.style.display = 'none';
+    furnBox.style.display = 'none';
+    doorBox.style.display = 'none';
+    wallBox.style.display = 'block';
+    const len = Math.round(Math.hypot(selectedWall.x2 - selectedWall.x1, selectedWall.y2 - selectedWall.y1));
+    document.getElementById('edWallName').textContent = `🧱 ${selectedWall.name} (${len} سم)`;
+    document.getElementById('edWallLen').value = len;
+    document.getElementById('edWallThick').value = Math.round(selectedWall.t);
+    document.getElementById('edWallX1').value = Math.round(selectedWall.x1);
+    document.getElementById('edWallY1').value = Math.round(selectedWall.y1);
+    document.getElementById('edWallX2').value = Math.round(selectedWall.x2);
+    document.getElementById('edWallY2').value = Math.round(selectedWall.y2);
   } else {
     emptyMsg.style.display = 'block';
     furnBox.style.display = 'none';
     doorBox.style.display = 'none';
+    if (wallBox) wallBox.style.display = 'none';
   }
 }
 
@@ -1736,7 +2096,8 @@ function rebuildArchitecture3D(wallH) {
     if (bw < 1 || bd < 1) return;
 
     const mats6 = wallMatArray(w.mat, m);
-    addMesh(gl.archGroup, new THREE.BoxGeometry(bw, wallH, bd), mats6, bx + bw / 2, 3 + wallH / 2, bz + bd / 2, true, true);
+    const wMesh = addMesh(gl.archGroup, new THREE.BoxGeometry(bw, wallH, bd), mats6, bx + bw / 2, 3 + wallH / 2, bz + bd / 2, true, true);
+    wMesh.userData = { wallId: w.baseId };
 
     if (wallH > 20) {
       if (isH) {
@@ -1945,22 +2306,7 @@ function rebuildArchitecture3D(wallH) {
   addBalcSeg(805, 6, 895, 6); addBalcSeg(891, 0, 891, 570); addBalcSeg(891, 576, 1300, 576);
   addBalcSeg(1294, 570, 1294, 1180); addBalcSeg(1210, 1174, 1300, 1174);
 
-  // 9. Utilities (Electrical Panels, Gas Meter, Water Heater)
-  if (wallH > 180) {
-    addMesh(gl.archGroup, rBox(3, 28, 34, 1.5), m.ducoWhite, 414, 185, 425);
-    addMesh(gl.archGroup, rBox(3, 28, 34, 1.5), m.ducoWhite, 414, 145, 425);
-    addMesh(gl.archGroup, rBox(14, 24, 20, 3), m.ducoCream, 258, 192, 205);
-    const whCyl = new THREE.Mesh(new THREE.CylinderGeometry(18, 18, 52, 20), m.ducoWhite);
-    whCyl.position.set(212, 195, 489); whCyl.castShadow = true; gl.archGroup.add(whCyl);
-  }
-
-  // 10. Room-Exact Gypsum Ceilings, Dual Corridor Linear LED Profiles & Flush LED Panels
-  function addFlushPanel(x, z, rad = 11) {
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(rad + 1.5, rad + 1.5, 1.2, 22), m.ducoWhite);
-    rim.position.set(x, 270.4, z); gl.ceilingGroup.add(rim);
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 1.4, 22), m.ledPanel);
-    disc.position.set(x, 270.1, z); gl.ceilingGroup.add(disc);
-  }
+  // 9. Room-Exact Gypsum Ceilings (Lamps, Chandeliers, Spotlights & Utilities are now dynamic movable items in furnGroup)
   function addTrayRing(rx, rz, rw, rd, yBottom, mrg, ledMat) {
     addMesh(gl.ceilingGroup, new THREE.BoxGeometry(rw, 10, mrg), m.gypsum, rx + rw / 2, yBottom + 5, rz + mrg / 2, false, true);
     addMesh(gl.ceilingGroup, new THREE.BoxGeometry(rw, 10, mrg), m.gypsum, rx + rw / 2, yBottom + 5, rz + rd - mrg / 2, false, true);
@@ -1977,46 +2323,19 @@ function rebuildArchitecture3D(wallH) {
     if (r.id.startsWith('balcony')) return;
     addMesh(gl.ceilingGroup, new THREE.BoxGeometry(r.w, 4, r.h), m.gypsum, r.x + r.w / 2, 273, r.y + r.h / 2, false, true);
     if (r.id === 'reception') {
-      // Reception: Outer Gypsum Tray + Nested Inner Asymmetric Tray (IMG_8727 11.7s, 17.6s) + Ring Chandelier
       addTrayRing(r.x, r.y, r.w, r.h, 261, 42, m.ledWarm);
       addTrayRing(r.x + 115, r.y + 62, 280, 210, 255, 22, m.ledWarm);
-      addFlushPanel(r.x + 100, r.y + 85, 11);
-      addFlushPanel(r.x + 480, r.y + 95, 11);
-      addFlushPanel(r.x + 460, r.y + 295, 11);
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(24, 1.8, 12, 36), m.gold);
-      ring.rotation.x = Math.PI / 2; ring.position.set(570, 245, 195); gl.ceilingGroup.add(ring);
-      const gRing = new THREE.Mesh(new THREE.TorusGeometry(22.5, 1.0, 8, 36), m.ledWarm);
-      gRing.rotation.x = Math.PI / 2; gRing.position.set(570, 244, 195); gl.ceilingGroup.add(gRing);
     } else if (r.id === 'salon') {
-      // Salon: Perimeter Gypsum Tray + Floating Rectangular Island (IMG_8680) + Curtain Pocket
       addTrayRing(r.x, r.y, r.w, r.h, 261, 40, m.ledWarm);
       const cx = r.x + r.w / 2, cz = r.y + r.h / 2;
       addMesh(gl.ceilingGroup, new THREE.BoxGeometry(150, 8, 175), m.gypsum, cx, 266, cz, false, true);
       addMesh(gl.ceilingGroup, new THREE.BoxGeometry(154, 2, 179), m.ledWarm, cx, 269.5, cz, false, false);
-      addFlushPanel(r.x + 85, r.y + 85, 11);
-      addFlushPanel(r.x + r.w - 85, r.y + r.h - 85, 11);
       addMesh(gl.ceilingGroup, new THREE.BoxGeometry(r.w - 40, 2, 16), m.ledWarm, cx, 269, r.y + r.h - 14, false, false);
     } else if (r.id === 'kids' || r.id === 'master') {
-      // Kids & Master: Perimeter Tray + Flush Round LED Panels + Curtain Pocket (IMG_8673, 8675)
       addTrayRing(r.x, r.y, r.w, r.h, 261, 40, m.ledWarm);
-      addFlushPanel(r.x + r.w * 0.30, r.y + r.h * 0.32, 11);
-      addFlushPanel(r.x + r.w * 0.70, r.y + r.h * 0.68, 11);
       addMesh(gl.ceilingGroup, new THREE.BoxGeometry(r.w - 40, 2, 16), m.ledWarm, r.x + r.w / 2, 269, r.y + r.h - 14, false, false);
-    } else if (r.id === 'kitchen' || r.id === 'bath') {
-      addFlushPanel(r.x + r.w / 2, r.y + r.h / 2, 12);
     }
   });
-
-  // L-Shaped Dual Recessed Linear LED Profiles across Entry + Horizontal Corridor (IMG_8666, 8667, 8724, 8727)
-  // Entry Corridor Parallel Tracks -> 90° bend into Horizontal Corridor
-  addMesh(gl.ceilingGroup, new THREE.BoxGeometry(2.6, 1.4, 355), m.ledLinear, 278, 270.4, 558, false, false);
-  addMesh(gl.ceilingGroup, new THREE.BoxGeometry(2.6, 1.4, 304), m.ledLinear, 386, 270.4, 532, false, false);
-  addMesh(gl.ceilingGroup, new THREE.BoxGeometry(574, 1.4, 2.6), m.ledLinear, 565, 270.4, 736, false, false);
-  addMesh(gl.ceilingGroup, new THREE.BoxGeometry(466, 1.4, 2.6), m.ledLinear, 619, 270.4, 684, false, false);
-  addFlushPanel(332, 480, 9);
-  addFlushPanel(332, 650, 9);
-  addFlushPanel(550, 710, 9);
-  addFlushPanel(760, 710, 9);
 
   gl.builtWallH = wallH;
   updateSelectionBox3D();
@@ -2048,10 +2367,11 @@ function buildFurnitureGroup3D(it) {
   const grp = new THREE.Group();
   const bw = it.baseW || it.w;
   const bd = it.baseD || it.d;
-  grp.position.set(it.x + it.w / 2, 3, it.y + it.d / 2);
+  const yElev = it.elev || 3;
+  grp.position.set(it.x + it.w / 2, yElev, it.y + it.d / 2);
   grp.rotation.y = -((it.rotDeg || 0) * Math.PI) / 180;
-  grp.userData = { furnId: it.id };
-  addContactShadow(grp, bw, bd);
+  grp.userData = { furnId: it.id, cat: it.cat || 'furn', elev: yElev };
+  if (!it.elev || it.elev <= 10) addContactShadow(grp, bw, bd);
 
   if (it.kind === 'tall' || it.kind === 'microwave_tower') {
     addMesh(grp, rBox(bw, it.h, bd, 1.5), m.oak, 0, it.h / 2, 0);
@@ -2147,10 +2467,17 @@ function buildFurnitureGroup3D(it) {
     head.position.set(-bw / 2 + 22, 198, 0); grp.add(head);
   } else if (it.kind === 'shoe_cab') {
     addMesh(grp, rBox(bw, it.h, bd, 2), m.walnut, 0, it.h / 2, 0);
-    const closedD = bd * 0.66;
-    addMesh(grp, rBox(2.5, 20, closedD - 4, 1), m.ducoWhite, -bw / 2 - 0.6, it.h - 14, -bd / 2 + closedD / 2);
-    addMesh(grp, rBox(2.5, it.h - 32, closedD / 2 - 2, 1), m.ducoWhite, -bw / 2 - 0.6, (it.h - 32) / 2 + 4, -bd / 2 + closedD * 0.25);
-    addMesh(grp, rBox(2.5, it.h - 32, closedD / 2 - 2, 1), m.ducoWhite, -bw / 2 - 0.6, (it.h - 32) / 2 + 4, -bd / 2 + closedD * 0.75);
+    if (bw >= bd) {
+      const closedW = bw * 0.66;
+      addMesh(grp, rBox(closedW - 4, 20, 2.5, 1), m.ducoWhite, -bw / 2 + closedW / 2, it.h - 14, -bd / 2 - 0.6);
+      addMesh(grp, rBox(closedW / 2 - 2, it.h - 32, 2.5, 1), m.ducoWhite, -bw / 2 + closedW * 0.25, (it.h - 32) / 2 + 4, -bd / 2 - 0.6);
+      addMesh(grp, rBox(closedW / 2 - 2, it.h - 32, 2.5, 1), m.ducoWhite, -bw / 2 + closedW * 0.75, (it.h - 32) / 2 + 4, -bd / 2 - 0.6);
+    } else {
+      const closedD = bd * 0.66;
+      addMesh(grp, rBox(2.5, 20, closedD - 4, 1), m.ducoWhite, -bw / 2 - 0.6, it.h - 14, -bd / 2 + closedD / 2);
+      addMesh(grp, rBox(2.5, it.h - 32, closedD / 2 - 2, 1), m.ducoWhite, -bw / 2 - 0.6, (it.h - 32) / 2 + 4, -bd / 2 + closedD * 0.25);
+      addMesh(grp, rBox(2.5, it.h - 32, closedD / 2 - 2, 1), m.ducoWhite, -bw / 2 - 0.6, (it.h - 32) / 2 + 4, -bd / 2 + closedD * 0.75);
+    }
   } else if (it.kind === 'wardrobe_plaza') {
     addMesh(grp, rBox(bw - 3, it.h, bd, 1.5), m.walnut, -1, it.h / 2, 0);
     const doorW = (bd - 10) / 6;
@@ -2478,6 +2805,42 @@ function buildFurnitureGroup3D(it) {
       leaf.position.set(-14 + Math.cos(ang) * 5.2, it.h + 23 + (s % 2) * 2, Math.sin(ang) * 5.2);
       grp.add(leaf);
     }
+  } else if (it.kind === 'lamp_chandelier') {
+    const rad = Math.max(10, Math.min(bw, bd) / 2);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(rad, 1.8, 12, 36), m.gold);
+    ring.rotation.x = Math.PI / 2; ring.position.set(0, 2, 0); grp.add(ring);
+    const gRing = new THREE.Mesh(new THREE.TorusGeometry(Math.max(4, rad - 1.5), 1.0, 8, 36), m.ledWarm);
+    gRing.rotation.x = Math.PI / 2; gRing.position.set(0, 1, 0); grp.add(gRing);
+  } else if (it.kind === 'lamp_spot') {
+    const rad = Math.max(5, Math.min(bw, bd) / 2);
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(rad + 1.5, rad + 1.5, 1.2, 22), m.ducoWhite);
+    rim.position.set(0, 1.4, 0); grp.add(rim);
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 1.4, 22), m.ledPanel);
+    disc.position.set(0, 1.1, 0); grp.add(disc);
+  } else if (it.kind === 'lamp_led_strip') {
+    addMesh(grp, new THREE.BoxGeometry(bw, 1.8, bd), m.ledLinear, 0, 1.2, 0, false, false);
+  } else if (it.kind === 'decor_plant') {
+    addMesh(grp, new THREE.CylinderGeometry(11, 8, 22, 16), m.ducoWhite, 0, 11, 0);
+    addMesh(grp, new THREE.CylinderGeometry(1.2, 1.8, 68, 10), m.walnut, 0, 48, 0);
+    for (let i = 0; i < 6; i++) {
+      const lf = new THREE.Mesh(new THREE.SphereGeometry(9, 10, 10), m.plantLeaf);
+      lf.scale.set(1.3, 0.45, 0.85);
+      const a = (i * Math.PI) / 3;
+      lf.position.set(Math.cos(a) * 11, 68 + (i % 3) * 12, Math.sin(a) * 11);
+      lf.rotation.y = a; lf.rotation.z = 0.25;
+      grp.add(lf);
+    }
+  } else if (it.kind === 'util_heater') {
+    const whCyl = new THREE.Mesh(new THREE.CylinderGeometry(Math.min(bw, bd) / 2, Math.min(bw, bd) / 2, it.h, 20), m.ducoWhite);
+    whCyl.position.set(0, it.h / 2, 0); whCyl.castShadow = true; grp.add(whCyl);
+  } else if (it.kind === 'util_gas') {
+    addMesh(grp, rBox(bw, it.h, bd, 3), m.ducoCream, 0, it.h / 2, 0);
+  } else if (it.kind === 'util_elec') {
+    addMesh(grp, rBox(6, 28, bd, 1.5), m.ducoWhite, 0, 44, 0);
+    addMesh(grp, rBox(6, 28, bd, 1.5), m.ducoWhite, 0, 12, 0);
+  } else if (it.kind === 'util_drain') {
+    const dr = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 4, 18), m.chrome);
+    dr.position.set(0, 2, 0); grp.add(dr);
   }
   return grp;
 }
@@ -2488,7 +2851,7 @@ function rebuildFurniture3D() {
   gl.furnMap = {};
   const m = gl.mats;
 
-  // Soft Area Rugs + Potted Kids Corner Plant (IMG PDF Page 2)
+  // Soft Area Rugs
   [
     { x: 465, z: 75,  w: 290, d: 195 },
     { x: 65,  z: 830, w: 290, d: 280 },
@@ -2496,21 +2859,6 @@ function rebuildFurniture3D() {
   ].forEach(rg => {
     addMesh(gl.furnGroup, rBox(rg.w, 1.2, rg.d, 2), m.rugWarm, rg.x + rg.w / 2, 3.6, rg.z + rg.d / 2, false, true);
   });
-
-  // Potted Plant inside Kids corner (between dresser & window)
-  const pot = new THREE.Group();
-  pot.position.set(448, 3, 1138);
-  addMesh(pot, new THREE.CylinderGeometry(11, 8, 22, 16), m.ducoWhite, 0, 11, 0);
-  addMesh(pot, new THREE.CylinderGeometry(1.2, 1.8, 68, 10), m.walnut, 0, 48, 0);
-  for (let i = 0; i < 6; i++) {
-    const lf = new THREE.Mesh(new THREE.SphereGeometry(9, 10, 10), m.plantLeaf);
-    lf.scale.set(1.3, 0.45, 0.85);
-    const a = (i * Math.PI) / 3;
-    lf.position.set(Math.cos(a) * 11, 68 + (i % 3) * 12, Math.sin(a) * 11);
-    lf.rotation.y = a; lf.rotation.z = 0.25;
-    pot.add(lf);
-  }
-  gl.furnGroup.add(pot);
 
   getActiveFurnLayout().forEach(it => {
     const grp = buildFurnitureGroup3D(it);
@@ -2525,9 +2873,11 @@ function updateSelectionBox3D() {
   if (selectedItem) {
     const cx = selectedItem.x + selectedItem.w / 2;
     const cz = selectedItem.y + selectedItem.d / 2;
-    const h = selectedItem.h || 80;
+    const h = Math.max(8, selectedItem.h || 80);
+    const g = gl.furnMap && gl.furnMap[selectedItem.id];
+    const baseY = g ? g.position.y : (selectedItem.elev || 3);
     gl.selOutline.scale.set(selectedItem.w + 8, h + 8, selectedItem.d + 8);
-    gl.selOutline.position.set(cx, 3 + h / 2, cz);
+    gl.selOutline.position.set(cx, baseY + h / 2, cz);
     gl.selOutline.visible = true;
   } else if (selectedDoor) {
     const isH = selectedDoor.dir === 'h';
@@ -2535,6 +2885,15 @@ function updateSelectionBox3D() {
     const bd = isH ? 28 : selectedDoor.w + 10;
     gl.selOutline.scale.set(bw, 220, bd);
     gl.selOutline.position.set(selectedDoor.hx + (isH ? selectedDoor.w / 2 : 0), 113, selectedDoor.hy + (isH ? 0 : selectedDoor.w / 2));
+    gl.selOutline.visible = true;
+  } else if (selectedWall) {
+    const isH = Math.abs(selectedWall.y2 - selectedWall.y1) < 0.5;
+    const cx = (selectedWall.x1 + selectedWall.x2) / 2;
+    const cz = (selectedWall.y1 + selectedWall.y2) / 2;
+    const len = Math.max(10, Math.hypot(selectedWall.x2 - selectedWall.x1, selectedWall.y2 - selectedWall.y1));
+    const wh = gl.builtWallH > 0 ? gl.builtWallH : 215;
+    gl.selOutline.scale.set(isH ? len + 6 : selectedWall.t + 10, wh + 8, isH ? selectedWall.t + 10 : len + 6);
+    gl.selOutline.position.set(cx, 3 + wh / 2, cz);
     gl.selOutline.visible = true;
   } else {
     gl.selOutline.visible = false;
@@ -2614,9 +2973,26 @@ function renderWebGLView(W, H) {
   if (Math.abs(gl.builtWallH - targetWallH) > 0.5) rebuildArchitecture3D(targetWallH);
 
   gl.ceilingGroup.visible = (currentMode === 'walk') && document.getElementById('chkWalkCeiling').checked;
-  gl.furnGroup.visible = currentMode === 'walk'
+  const showFurnGroup = currentMode === 'walk'
     ? document.getElementById('chkWalkFurn').checked
     : document.getElementById('chk3DFurn').checked;
+  gl.furnGroup.visible = true;
+  gl.furnGroup.children.forEach(ch => {
+    const cat = ch.userData && ch.userData.cat;
+    const elev = (ch.userData && ch.userData.elev) || 3;
+    const isSel = !!(selectedItem && ch.userData && selectedItem.id === ch.userData.furnId);
+    if (cat === 'light') {
+      ch.visible = (currentMode === 'walk')
+        ? !!document.getElementById('chkWalkCeiling').checked
+        : !!(editMode || isSel);
+      ch.position.y = (currentMode === '3d') ? Math.min(elev, Math.max(20, targetWallH - 4)) : elev;
+    } else if (cat === 'util') {
+      ch.visible = !!(showFurnGroup && (elev <= 20 || targetWallH > 150 || editMode || isSel));
+      ch.position.y = (currentMode === '3d' && elev > 20) ? Math.min(elev, Math.max(20, targetWallH - 35)) : elev;
+    } else {
+      ch.visible = !!showFurnGroup;
+    }
+  });
 
   applyLightingTheme();
 
@@ -2738,7 +3114,7 @@ function render2DPlan(W, H, isBlueprint) {
   });
 
   drawHatchedRect(422, 388, 383, 272, isBlueprint ? 'rgba(148, 163, 184, 0.25)' : 'rgba(100, 116, 139, 0.28)', 24);
-  drawStairs(455, 420, 315, 210, isBlueprint);
+  drawStairs(438, 406, 208, 118, isBlueprint);
 
   ctx.fillStyle = isBlueprint ? '#020617' : '#334155';
   ctx.fillRect(APT.shaft.x, APT.shaft.y, APT.shaft.w, APT.shaft.h);
@@ -2754,7 +3130,7 @@ function render2DPlan(W, H, isBlueprint) {
   ctx.moveTo(805, 0); ctx.lineTo(895, 0); ctx.lineTo(895, 570); ctx.lineTo(1300, 570); ctx.lineTo(1300, 1180); ctx.lineTo(1210, 1180);
   ctx.stroke();
 
-  if (showFurn) draw2DFurnitureCAD(isBlueprint);
+  draw2DFurnitureCAD(isBlueprint, showFurn, showUtils);
 
   // Valid Door Target Wall Highlights in Edit Mode when dragging a door
   if (editMode && selectedDoor) {
@@ -2762,22 +3138,43 @@ function render2DPlan(W, H, isBlueprint) {
     ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
     ctx.lineWidth = 22;
     ctx.lineCap = 'round';
-    APT.baseWalls.filter(bw => bw.allowDoor).forEach(bw => {
+    APT.baseWalls.filter(bw => bw.allowDoor !== false).forEach(bw => {
       ctx.beginPath(); ctx.moveTo(bw.x1, bw.y1); ctx.lineTo(bw.x2, bw.y2); ctx.stroke();
     });
     ctx.restore();
   }
 
   APT.walls.forEach(w => {
+    const isSelW = selectedWall && w.baseId === selectedWall.id;
     ctx.lineCap = 'square';
-    ctx.strokeStyle = isBlueprint ? (w.ext ? '#e2e8f0' : '#94a3b8') : '#1e293b';
+    ctx.strokeStyle = isSelW ? '#06b6d4' : (isBlueprint ? (w.ext ? '#e2e8f0' : '#94a3b8') : '#1e293b');
     ctx.lineWidth = w.t;
     ctx.beginPath(); ctx.moveTo(w.x1, w.y1); ctx.lineTo(w.x2, w.y2); ctx.stroke();
-    if (isBlueprint) {
-      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+    if (isBlueprint || isSelW) {
+      ctx.strokeStyle = isSelW ? '#22d3ee' : '#38bdf8'; ctx.lineWidth = isSelW ? 3 : 2;
       ctx.beginPath(); ctx.moveTo(w.x1, w.y1); ctx.lineTo(w.x2, w.y2); ctx.stroke();
     }
   });
+
+  if (selectedWall) {
+    ctx.save();
+    ctx.strokeStyle = '#06b6d4';
+    ctx.fillStyle = '#22d3ee';
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(selectedWall.x1, selectedWall.y1);
+    ctx.lineTo(selectedWall.x2, selectedWall.y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    for (const [px, py] of [[selectedWall.x1, selectedWall.y1], [selectedWall.x2, selectedWall.y2]]) {
+      ctx.beginPath(); ctx.arc(px, py, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    const mx = (selectedWall.x1 + selectedWall.x2) / 2, my = (selectedWall.y1 + selectedWall.y2) / 2;
+    ctx.fillStyle = '#facc15';
+    ctx.beginPath(); ctx.arc(mx, my, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
 
   if (showCols) {
     APT.columns.forEach(c => {
@@ -2824,20 +3221,6 @@ function render2DPlan(W, H, isBlueprint) {
     }
     ctx.restore();
   });
-
-  if (showUtils) {
-    APT.utilities.forEach(u => {
-      ctx.save();
-      ctx.fillStyle = isBlueprint ? 'rgba(15,23,42,0.92)' : '#ffffff';
-      ctx.strokeStyle = u.color; ctx.lineWidth = 2.2;
-      ctx.beginPath(); ctx.arc(u.x, u.y, 12.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.font = 'bold 12.5px Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(u.icon, u.x, u.y);
-      ctx.fillStyle = isBlueprint ? u.color : '#0f172a'; ctx.font = '800 11.5px Cairo, Segoe UI';
-      ctx.fillText(u.label, u.x + (u.dx || 0), u.y + (u.dy || 22));
-      ctx.restore();
-    });
-  }
 
   APT.rooms.forEach(r => {
     if (r.hideLabel) return;
@@ -2941,7 +3324,7 @@ function render2DPlan(W, H, isBlueprint) {
   drawCompassAndScale(W, H, isBlueprint);
 }
 
-function draw2DFurnitureCAD(isBlueprint) {
+function draw2DFurnitureCAD(isBlueprint, showFurn = true, showUtils = true) {
   ctx.save();
   const palette2D = {
     wood_cabinet: { fill: 'rgba(138, 98, 64, 0.26)',  stroke: '#6a472b' },
@@ -2962,8 +3345,54 @@ function draw2DFurnitureCAD(isBlueprint) {
   };
 
   getActiveFurnLayout().forEach(it => {
-    const p = palette2D[it.mat] || palette2D.wood_cabinet;
     const isSel = selectedItem && selectedItem.id === it.id;
+    if (it.cat === 'light') {
+      if (!editMode && !isSel) return;
+    } else if (it.cat === 'util' && it.icon) {
+      if (!showUtils && !editMode && !isSel) return;
+    } else {
+      if (!showFurn && !isSel) return;
+    }
+
+    if (it.cat === 'util' && it.icon) {
+      const ux = it.x + it.w / 2, uy = it.y + it.d / 2;
+      ctx.save();
+      ctx.fillStyle = isBlueprint ? 'rgba(15,23,42,0.92)' : '#ffffff';
+      ctx.strokeStyle = isSel ? '#10b981' : (it.color || '#f59e0b');
+      ctx.lineWidth = isSel ? 3.2 : 2.2;
+      ctx.beginPath(); ctx.arc(ux, uy, 12.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.font = 'bold 12.5px Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(it.icon, ux, uy);
+      ctx.fillStyle = isBlueprint ? (it.color || '#fbbf24') : '#0f172a';
+      ctx.font = '800 11.5px Cairo, Segoe UI';
+      ctx.fillText(it.label, ux + (it.dx || 0), uy + (it.dy || 22));
+      ctx.restore();
+      return;
+    }
+
+    if (it.cat === 'light') {
+      const lx = it.x + it.w / 2, ly = it.y + it.d / 2;
+      ctx.save();
+      ctx.strokeStyle = isSel ? '#10b981' : '#f59e0b';
+      ctx.fillStyle = isSel ? 'rgba(16,185,129,0.28)' : 'rgba(250,204,21,0.25)';
+      ctx.lineWidth = isSel ? 2.8 : 1.8;
+      if (it.kind === 'lamp_led_strip') {
+        roundRect(ctx, it.x, it.y, it.w, it.d, 2, true, true);
+      } else {
+        const rad = Math.max(8, Math.min(it.w, it.d) / 2);
+        ctx.beginPath(); ctx.arc(lx, ly, rad, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        if (it.kind === 'lamp_chandelier') {
+          ctx.beginPath(); ctx.arc(lx, ly, rad * 0.65, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = isBlueprint ? '#fde047' : '#92400e';
+      ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('💡 ' + it.label, lx, ly - Math.min(it.w, it.d) / 2 - 8);
+      ctx.restore();
+      return;
+    }
+
+    const p = palette2D[it.mat] || palette2D.wood_cabinet;
     const bw = it.baseW || it.w, bd = it.baseD || it.d;
     const cx = it.x + it.w / 2, cy = it.y + it.d / 2;
 
@@ -2976,7 +3405,7 @@ function draw2DFurnitureCAD(isBlueprint) {
     ctx.strokeStyle = isSel ? '#10b981' : (isBlueprint ? 'rgba(56, 189, 248, 0.78)' : p.stroke);
     ctx.lineWidth = isSel ? 2.8 : 1.6;
 
-    if (it.kind === 'pouf') {
+    if (it.kind === 'pouf' || it.kind === 'decor_plant') {
       ctx.beginPath(); ctx.ellipse(bw / 2, bd / 2, bw / 2, bd / 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     } else if (it.kind === 'nested_gold_table') {
       ctx.beginPath(); ctx.arc(30, 30, 28, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -3169,6 +3598,7 @@ function drawWalkMiniMap(W, H) {
   });
   if (document.getElementById('chkWalkFurn').checked) {
     getActiveFurnLayout().forEach(item => {
+      if (item.cat === 'light' || item.cat === 'util') return;
       ctx.fillStyle = item.room === 'kitchen' ? 'rgba(56, 189, 248, 0.38)' : 'rgba(251, 191, 36, 0.30)';
       ctx.fillRect(ox + item.x * s, oy + item.y * s, Math.max(1.5, item.w * s), Math.max(1.5, item.d * s));
     });
@@ -3294,9 +3724,15 @@ function showInspector(obj) {
   if (obj.hx !== undefined) {
     document.getElementById('insTitle').textContent = '🚪 ' + obj.name;
     document.getElementById('insMeta').textContent = `عرض ${obj.w} سم | الاتجاه: ${obj.dir === 'h' ? 'أفقي' : 'رأسي'}`;
-    document.getElementById('insSub').textContent = editMode ? 'اسحب الباب لتحريكه أو استخدم لوحة التحرير لقلب المفصلة والفتح' : '';
+    document.getElementById('insSub').textContent = editMode ? 'اسحب الباب لتحريكه أو استخدم لوحة التحرير لقلب المفصلة والفتح أو الحذف' : '';
+  } else if (obj.x1 !== undefined && obj.x2 !== undefined) {
+    const len = Math.round(Math.hypot(obj.x2 - obj.x1, obj.y2 - obj.y1));
+    document.getElementById('insTitle').textContent = '🧱 ' + obj.name;
+    document.getElementById('insMeta').textContent = `الطول: ${len} سم | السمك: ${obj.t} سم`;
+    document.getElementById('insSub').textContent = editMode ? 'اسحب الحائط أو أطرافه لتغيير مكانه وطوله أو استخدم لوحة التحرير أو الحذف' : '';
   } else {
-    document.getElementById('insTitle').textContent = '🛋️ ' + obj.label;
+    const ic = obj.cat === 'light' ? '💡 ' : (obj.cat === 'util' ? (obj.icon || '⚙️') + ' ' : '🛋️ ');
+    document.getElementById('insTitle').textContent = ic + obj.label;
     document.getElementById('insMeta').textContent = `الأبعاد: ${obj.w} × ${obj.d} سم | دوران ${obj.rotDeg || 0}°`;
     document.getElementById('insSub').textContent = obj.spec || '';
   }
@@ -3323,6 +3759,43 @@ function hitTest2DDoor(wx, wy) {
   return null;
 }
 
+function hitTest2DFurn(wx, wy) {
+  const list = [...activeFurniture].reverse();
+  // First pass: check smaller items (lamps/utilities/small furniture) so they are easy to pick on top of larger rugs/sofas
+  const hits = list.filter(it => {
+    if (it.cat === 'light' && !editMode) return false;
+    return wx >= it.x - 4 && wx <= it.x + it.w + 4 && wy >= it.y - 4 && wy <= it.y + it.d + 4;
+  });
+  if (hits.length === 0) return null;
+  hits.sort((a, b) => (a.w * a.d) - (b.w * b.d));
+  return hits[0];
+}
+
+function hitTest2DWall(wx, wy) {
+  if (selectedWall) {
+    if (Math.hypot(wx - selectedWall.x1, wy - selectedWall.y1) <= 18) return { wall: selectedWall, mode: 'p1' };
+    if (Math.hypot(wx - selectedWall.x2, wy - selectedWall.y2) <= 18) return { wall: selectedWall, mode: 'p2' };
+  }
+  let best = null, bestD = Infinity;
+  APT.baseWalls.forEach(bw => {
+    const isH = Math.abs(bw.y2 - bw.y1) < 0.5;
+    const minX = Math.min(bw.x1, bw.x2), maxX = Math.max(bw.x1, bw.x2);
+    const minY = Math.min(bw.y1, bw.y2), maxY = Math.max(bw.y1, bw.y2);
+    const px = isH ? Math.max(minX, Math.min(maxX, wx)) : bw.x1;
+    const py = isH ? bw.y1 : Math.max(minY, Math.min(maxY, wy));
+    const d = Math.hypot(wx - px, wy - py);
+    const thresh = Math.max(14, bw.t / 2 + 6);
+    if (d <= thresh && d < bestD) {
+      bestD = d;
+      best = bw;
+    }
+  });
+  if (!best) return null;
+  if (Math.hypot(wx - best.x1, wy - best.y1) <= 16) return { wall: best, mode: 'p1' };
+  if (Math.hypot(wx - best.x2, wy - best.y2) <= 16) return { wall: best, mode: 'p2' };
+  return { wall: best, mode: 'move' };
+}
+
 function raycast3DFurnOrDoor(mx, my, rect) {
   if (!gl) return null;
   const ndc = new THREE.Vector2((mx / rect.width) * 2 - 1, -(my / rect.height) * 2 + 1);
@@ -3336,13 +3809,23 @@ function raycast3DFurnOrDoor(mx, my, rect) {
       if (d) return { type: 'door', door: d, ray };
     }
   }
-  const fHits = ray.intersectObjects(gl.furnGroup.children, true);
+  const visFurn = gl.furnGroup.children.filter(c => c.visible);
+  const fHits = ray.intersectObjects(visFurn, true);
   if (fHits.length > 0) {
     let obj = fHits[0].object;
     while (obj && !obj.userData?.furnId) obj = obj.parent;
     if (obj?.userData?.furnId) {
       const it = activeFurniture.find(x => x.id === obj.userData.furnId);
       if (it) return { type: 'furn', item: it, point: fHits[0].point, ray };
+    }
+  }
+  if (editMode) {
+    const wHits = ray.intersectObjects(gl.archGroup.children, false);
+    for (const h of wHits) {
+      if (h.object.userData && h.object.userData.wallId) {
+        const bw = APT.baseWalls.find(w => w.id === h.object.userData.wallId);
+        if (bw) return { type: 'wall', wall: bw, point: h.point, ray };
+      }
     }
   }
   return { type: 'none', ray };
@@ -3387,20 +3870,43 @@ canvas.addEventListener('mousedown', e => {
 
   if (editMode && (currentMode === 'blueprint' || currentMode === 'colored')) {
     const wx = (mx - pan2D.x) / pan2D.scale, wy = (my - pan2D.y) / pan2D.scale;
+    // Check selected wall endpoint handles first
+    if (selectedWall) {
+      if (Math.hypot(wx - selectedWall.x1, wy - selectedWall.y1) <= 18) {
+        pushUndoSnapshot();
+        activeDrag = { type: 'wall', wall: selectedWall, mode: 'p1', startWX: wx, startWY: wy, orig: cloneObj(selectedWall) };
+        updateEditorUI(); showInspector(selectedWall); canvas.style.cursor = 'grabbing'; redraw();
+        return;
+      }
+      if (Math.hypot(wx - selectedWall.x2, wy - selectedWall.y2) <= 18) {
+        pushUndoSnapshot();
+        activeDrag = { type: 'wall', wall: selectedWall, mode: 'p2', startWX: wx, startWY: wy, orig: cloneObj(selectedWall) };
+        updateEditorUI(); showInspector(selectedWall); canvas.style.cursor = 'grabbing'; redraw();
+        return;
+      }
+    }
     const hitDoor = hitTest2DDoor(wx, wy);
     if (hitDoor) {
       pushUndoSnapshot();
-      selectedDoor = hitDoor; selectedItem = null;
+      selectedDoor = hitDoor; selectedItem = null; selectedWall = null;
       activeDrag = { type: 'door', door: hitDoor };
       updateEditorUI(); showInspector(hitDoor); canvas.style.cursor = 'grabbing'; redraw();
       return;
     }
-    const hitFurn = [...activeFurniture].reverse().find(it => wx >= it.x && wx <= it.x + it.w && wy >= it.y && wy <= it.y + it.d);
+    const hitFurn = hitTest2DFurn(wx, wy);
     if (hitFurn) {
       pushUndoSnapshot();
-      selectedItem = hitFurn; selectedDoor = null;
+      selectedItem = hitFurn; selectedDoor = null; selectedWall = null;
       activeDrag = { type: 'furn', item: hitFurn, offsetX: wx - hitFurn.x, offsetY: wy - hitFurn.y };
       updateEditorUI(); showInspector(hitFurn); canvas.style.cursor = 'grabbing'; redraw();
+      return;
+    }
+    const hitW = hitTest2DWall(wx, wy);
+    if (hitW) {
+      pushUndoSnapshot();
+      selectedWall = hitW.wall; selectedItem = null; selectedDoor = null;
+      activeDrag = { type: 'wall', wall: hitW.wall, mode: hitW.mode, startWX: wx, startWY: wy, orig: cloneObj(hitW.wall) };
+      updateEditorUI(); showInspector(hitW.wall); canvas.style.cursor = 'grabbing'; redraw();
       return;
     }
   }
@@ -3409,18 +3915,30 @@ canvas.addEventListener('mousedown', e => {
     const rc = raycast3DFurnOrDoor(mx, my, rect);
     if (rc && rc.type === 'door') {
       pushUndoSnapshot();
-      selectedDoor = rc.door; selectedItem = null;
+      selectedDoor = rc.door; selectedItem = null; selectedWall = null;
       activeDrag = { type: 'door', door: rc.door };
       updateEditorUI(); showInspector(rc.door); syncDoorHitMeshes(); updateSelectionBox3D(); canvas.style.cursor = 'grabbing'; redraw();
       return;
     }
     if (rc && rc.type === 'furn') {
-      const pt = intersectFloorPlane(mx, my, rect, 3);
+      const g = gl.furnMap && gl.furnMap[rc.item.id];
+      const planeY = g ? g.position.y : (rc.item.elev || 3);
+      const pt = intersectFloorPlane(mx, my, rect, planeY);
       if (pt) {
         pushUndoSnapshot();
-        selectedItem = rc.item; selectedDoor = null;
-        activeDrag = { type: 'furn', item: rc.item, offsetX: pt.x - rc.item.x, offsetY: pt.z - rc.item.y };
+        selectedItem = rc.item; selectedDoor = null; selectedWall = null;
+        activeDrag = { type: 'furn', item: rc.item, offsetX: pt.x - rc.item.x, offsetY: pt.z - rc.item.y, planeY };
         updateEditorUI(); showInspector(rc.item); syncDoorHitMeshes(); updateSelectionBox3D(); canvas.style.cursor = 'grabbing'; redraw();
+        return;
+      }
+    }
+    if (rc && rc.type === 'wall') {
+      const pt = intersectFloorPlane(mx, my, rect, 100);
+      if (pt) {
+        pushUndoSnapshot();
+        selectedWall = rc.wall; selectedItem = null; selectedDoor = null;
+        activeDrag = { type: 'wall', wall: rc.wall, mode: 'move', startWX: pt.x, startWY: pt.z, orig: cloneObj(rc.wall) };
+        updateEditorUI(); showInspector(rc.wall); syncDoorHitMeshes(); updateSelectionBox3D(); canvas.style.cursor = 'grabbing'; redraw();
         return;
       }
     }
@@ -3437,7 +3955,8 @@ window.addEventListener('mousemove', e => {
     let wx = 0, wy = 0;
 
     if (currentMode === '3d' && gl) {
-      const pt = intersectFloorPlane(mx, my, rect, activeDrag.type === 'door' ? 100 : 3);
+      const py = activeDrag.type === 'furn' ? (activeDrag.planeY || 3) : 100;
+      const pt = intersectFloorPlane(mx, my, rect, py);
       if (!pt) return;
       wx = pt.x; wy = pt.z;
     } else {
@@ -3452,7 +3971,8 @@ window.addEventListener('mousemove', e => {
       it.x = Math.max(0, Math.min(APT.W - it.w, nx));
       it.y = Math.max(0, Math.min(APT.H - it.d, ny));
       if (gl && gl.furnMap && gl.furnMap[it.id]) {
-        gl.furnMap[it.id].position.set(it.x + it.w / 2, 3, it.y + it.d / 2);
+        gl.furnMap[it.id].position.x = it.x + it.w / 2;
+        gl.furnMap[it.id].position.z = it.y + it.d / 2;
         updateSelectionBox3D();
       }
       updateEditorUI();
@@ -3460,6 +3980,42 @@ window.addEventListener('mousemove', e => {
     } else if (activeDrag.type === 'door') {
       snapDoorToNearestWall(activeDrag.door, wx, wy);
       updateEditorUI();
+      if (currentMode === '3d') {
+        if (!_wallRebuildRaf) {
+          _wallRebuildRaf = requestAnimationFrame(() => {
+            _wallRebuildRaf = null;
+            syncWallsFromDoors(true);
+            redraw();
+          });
+        }
+      } else {
+        syncWallsFromDoors(false);
+        redraw();
+      }
+    } else if (activeDrag.type === 'wall') {
+      const bw = activeDrag.wall;
+      const orig = activeDrag.orig;
+      const isH = Math.abs(orig.y2 - orig.y1) < 0.5;
+      const dx = Math.round((wx - activeDrag.startWX) / snap) * snap;
+      const dy = Math.round((wy - activeDrag.startWY) / snap) * snap;
+      if (activeDrag.mode === 'p1') {
+        if (isH) bw.x1 = Math.round(wx / snap) * snap;
+        else bw.y1 = Math.round(wy / snap) * snap;
+      } else if (activeDrag.mode === 'p2') {
+        if (isH) bw.x2 = Math.round(wx / snap) * snap;
+        else bw.y2 = Math.round(wy / snap) * snap;
+      } else {
+        if (isH) {
+          bw.y1 = orig.y1 + dy; bw.y2 = orig.y2 + dy;
+          if (e.altKey) { bw.x1 = orig.x1 + dx; bw.x2 = orig.x2 + dx; }
+        } else {
+          bw.x1 = orig.x1 + dx; bw.x2 = orig.x2 + dx;
+          if (e.altKey) { bw.y1 = orig.y1 + dy; bw.y2 = orig.y2 + dy; }
+        }
+      }
+      syncDoorsOnWall(bw);
+      updateEditorUI();
+      showInspector(bw);
       if (currentMode === '3d') {
         if (!_wallRebuildRaf) {
           _wallRebuildRaf = requestAnimationFrame(() => {
@@ -3495,7 +4051,7 @@ window.addEventListener('mousemove', e => {
 
 window.addEventListener('mouseup', e => {
   if (activeDrag) {
-    if (activeDrag.type === 'door') syncWallsFromDoors(true);
+    if (activeDrag.type === 'door' || activeDrag.type === 'wall') syncWallsFromDoors(true);
     persistState();
     activeDrag = null;
     canvas.style.cursor = editMode ? 'grab' : 'default';
@@ -3509,18 +4065,24 @@ window.addEventListener('mouseup', e => {
       if (currentMode === 'blueprint' || currentMode === 'colored') {
         const wx = (mx - pan2D.x) / pan2D.scale, wy = (my - pan2D.y) / pan2D.scale;
         const hd = hitTest2DDoor(wx, wy);
-        if (hd) { selectedDoor = hd; selectedItem = null; }
+        if (hd) { selectedDoor = hd; selectedItem = null; selectedWall = null; }
         else {
-          const hf = [...activeFurniture].reverse().find(it => wx >= it.x && wx <= it.x + it.w && wy >= it.y && wy <= it.y + it.d);
-          selectedItem = hf || null; selectedDoor = null;
+          const hf = hitTest2DFurn(wx, wy);
+          if (hf) { selectedItem = hf; selectedDoor = null; selectedWall = null; }
+          else {
+            const hw = hitTest2DWall(wx, wy);
+            selectedWall = hw ? hw.wall : null;
+            selectedItem = null; selectedDoor = null;
+          }
         }
-        updateEditorUI(); showInspector(selectedDoor || selectedItem); redraw();
+        updateEditorUI(); showInspector(selectedDoor || selectedItem || selectedWall); redraw();
       } else if (gl && (currentMode === '3d' || currentMode === 'walk')) {
         const rc = raycast3DFurnOrDoor(mx, my, rect);
-        if (rc && rc.type === 'door') { selectedDoor = rc.door; selectedItem = null; }
-        else if (rc && rc.type === 'furn') { selectedItem = rc.item; selectedDoor = null; }
-        else { selectedItem = null; selectedDoor = null; }
-        updateEditorUI(); showInspector(selectedDoor || selectedItem); syncDoorHitMeshes(); updateSelectionBox3D(); redraw();
+        if (rc && rc.type === 'door') { selectedDoor = rc.door; selectedItem = null; selectedWall = null; }
+        else if (rc && rc.type === 'furn') { selectedItem = rc.item; selectedDoor = null; selectedWall = null; }
+        else if (rc && rc.type === 'wall') { selectedWall = rc.wall; selectedItem = null; selectedDoor = null; }
+        else { selectedItem = null; selectedDoor = null; selectedWall = null; }
+        updateEditorUI(); showInspector(selectedDoor || selectedItem || selectedWall); syncDoorHitMeshes(); updateSelectionBox3D(); redraw();
       }
     }
   }
@@ -3547,7 +4109,10 @@ window.addEventListener('keydown', e => {
   if (editMode && currentMode !== 'walk') {
     if ((e.ctrlKey || e.metaKey) && e.code === 'KeyZ') { e.preventDefault(); undoEdit(); return; }
     if (e.code === 'KeyR' && selectedItem) { e.preventDefault(); rotateSelectedFurn(); return; }
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && (selectedItem || selectedDoor)) {
+    if ((e.code === 'Delete' || e.code === 'Backspace') && (selectedItem || selectedDoor || selectedWall)) {
+      e.preventDefault(); deleteSelectedAny(); return;
+    }
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && (selectedItem || selectedDoor || selectedWall)) {
       e.preventDefault();
       const s = e.shiftKey ? 1 : 5;
       if (e.code === 'ArrowUp') nudgeSelected(0, -s);
