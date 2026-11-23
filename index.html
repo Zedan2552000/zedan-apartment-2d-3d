@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>استوديو التصميم المعماري NOVA ARCH 6.0 — شقة م. زيدان (12.50 × 8.05 م)</title>
+  <title>استوديو التصميم المعماري NOVA ARCH 6.1 — شقة م. زيدان (12.50 × 8.05 م)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -355,10 +355,10 @@
 <body>
   <header>
     <div class="brand">
-      <div class="brand-badge">NOVA ARCH 6.0 • PBR</div>
+      <div class="brand-badge">NOVA ARCH 6.1 • PBR</div>
       <div>
         <h1>استوديو التصميم المعماري التفاعلي 2D & WebGL 3D — شقة م. زيدان</h1>
-        <p>محدّث بدهانات أوف وايت، البانوهات، ليد بروفايل الطرقة، ألوميتال برونز + محرر تحريك العفش والبيبان</p>
+        <p>محدّث بدهانات أوف وايت، البانوهات، ليد بروفايل الطرقة، ألوميتال برونز + عفش المصنع الفعلي ومحرر التحريك</p>
       </div>
     </div>
 
@@ -598,8 +598,9 @@
         </div>
         <ul style="font-size:10.5px; color:#cbd5e1; padding-right:15px; line-height:1.58;">
           <li><strong>المطبخ:</strong> تنظيف + مايكرويف + تربو + بيكو 14 فرد (165سم) + حوض (245سم) + 3 درج + بوتاجاز 6 شعلة + زيت + فريزر + ثلاجة + نيش.</li>
-          <li><strong>الماستر (بلازا):</strong> سرير 160 ميكانزم + 2 كمود بـدلاية + دولاب 3م أرو/دوكو + تسريحة وبف + مراية نص دايرة + بانوهات.</li>
-          <li><strong>أطفال (خفرع):</strong> 2 سرير 120سم (ليد رأسي) + كمود + دولاب 2م بمراية + تسريحة + مراية مستطيل + بيت ستارة.</li>
+          <li><strong>الماستر (بلازا — مطابق للمصنع):</strong> سرير 160 ميكانزم + 2 كمود بدلاية + دولاب 3م 6 ضلف فلاش أرو/دوكو + تسريحة (3 درج فلاش وشلال أرو بمراية عميقة) + بف + مراية نص دايرة.</li>
+          <li><strong>أطفال (خفرع — مطابق للمصنع):</strong> 2 سرير 120سم (ليد رأسي) + كمود المنارة D68 بأبيض + دولاب 2م فلاش أبيض بجوانب D68 + تسريحة + مراية مستطيل.</li>
+          <li><strong>السفرة والمعيشة (زمردة / عمولة):</strong> بوفيه 2م غير متماثل (4 ضلف + ركن مفتوح) + نيش ألوميتال أسود + سفرة بيضاوي 180×90 + ركنة عمولة (بسحارة سرير وشيزلونج دائري مفتوح).</li>
         </ul>
       </div>
 
@@ -781,22 +782,22 @@ function getPresetDefaultFurniture(preset) {
     { id: 'm_bed',    room: 'master',  x: 995, y: 880, w: 207,d: 170,h: 54,  kind: 'bed_master', headDir:'e', label: 'سرير 160 ميكانزم', mat: 'new_rock1', spec: 'نوم بلازا — مرتبة 160سم ميكانزم نيو روك 1 الخواجة' },
     { id: 'm_kom1',   room: 'master',  x: 1154,y: 825, w: 48, d: 50, h: 50,  kind: 'nightstand_plaza',label: 'كمود 50سم',       mat: 'plaza_oak', pendant: true, spec: 'نوم بلازا — كمود منحني 50سم ودلاية إضاءة' },
     { id: 'm_kom2',   room: 'master',  x: 1154,y: 1055,w: 48, d: 50, h: 50,  kind: 'nightstand_plaza',label: 'كمود 50سم',       mat: 'plaza_oak', pendant: true, spec: 'نوم بلازا — كمود منحني 50سم ودلاية إضاءة' },
-    { id: 'm_dress',  room: 'master',  x: 985, y: 668, w: 120,d: 46, h: 80,  kind: 'dresser_plaza',   label: 'تسريحة بلازا',    mat: 'plaza_oak', spec: 'نوم بلازا — تسريحة شلال أرو + 3 درج + مراية' },
+    { id: 'm_dress',  room: 'master',  x: 985, y: 668, w: 120,d: 46, h: 80,  kind: 'dresser_plaza',   label: 'تسريحة بلازا',    mat: 'plaza_oak', spec: 'نوم بلازا — 3 درج فلاش + شلال أرو منحني + مراية فريم عميق (مطابق للمصنع)' },
     { id: 'm_pouf',   room: 'master',  x: 1025,y: 720, w: 40, d: 38, h: 44,  kind: 'pouf',            label: 'بف',              mat: 'new_rock1', spec: 'بف أسطواني قماش نيو روك 1' },
     { id: 'm_mirr',   room: 'master',  x: 875, y: 765, w: 50, d: 45, h: 172, kind: 'stand_mirror_arch', label: 'مراية نص دايرة', mat: 'walnut', spec: 'كمليات العقد — مراية استاند أرش خشب طبيعي' },
 
     // 4. Kids (أطفال خفرع)
-    { id: 'kd_ward',  room: 'kids',    x: 675, y: 768, w: 180,d: 60, h: 215, kind: 'wardrobe_kids',   label: 'دولاب أطفال 2م',  mat: 'white_app', spec: 'أطفال خفرع — دولاب 2م أبيض مع مراية وسطية' },
+    { id: 'kd_ward',  room: 'kids',    x: 675, y: 768, w: 180,d: 60, h: 215, kind: 'wardrobe_kids',   label: 'دولاب أطفال 2م',  mat: 'white_app', spec: 'أطفال خفرع — 4 ضلف فلاش أوف وايت بجوانب خشب المنارة D68 (مطابق للمصنع)' },
     { id: 'kd_mirr',  room: 'kids',    x: 432, y: 772, w: 45, d: 40, h: 172, kind: 'stand_mirror_rect', label: 'مراية مستطيل',   mat: 'white_app', spec: 'كمليات العقد — مراية استاند مستطيل إطار أبيض' },
     { id: 'kd_dress', room: 'kids',    x: 432, y: 835, w: 48, d: 100,h: 82,  kind: 'dresser_kids',    label: 'تسريحة خفرع',     mat: 'kids_wood', spec: 'أطفال خفرع — خشب المنارة D68 + مراية برواز خشبي' },
     { id: 'kd_bed1',  room: 'kids',    x: 485, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
-    { id: 'kd_kom',   room: 'kids',    x: 625, y: 1118,w: 50, d: 50, h: 48,  kind: 'nightstand_kids', label: 'كمود',            mat: 'kids_wood', spec: 'أطفال خفرع — كمود أوسط بخلفية خشب ومراية' },
+    { id: 'kd_kom',   room: 'kids',    x: 625, y: 1118,w: 50, d: 50, h: 48,  kind: 'nightstand_kids', label: 'كمود',            mat: 'kids_wood', spec: 'أطفال خفرع — كمود خشب المنارة D68 بدرج أبيض فلاش (مطابق للمصنع)' },
     { id: 'kd_bed2',  room: 'kids',    x: 695, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
 
     // 5. Dining (سفرة زمردة)
-    { id: 'd_buffet', room: 'reception', x: 440, y: 334, w: 180, d: 45, h: 85,  kind: 'buffet', dir: 's', label: 'بوفيه زمردة 2م', mat: 'zemerda', spec: 'سفرة زمردة — بوفيه 2م دوكو كريمي × جوزي + مراية دائرية' },
-    { id: 'd_niche',  room: 'reception', x: 255, y: 12,  w: 95,  d: 44, h: 202, kind: 'niche_glass',     label: 'نيش زمردة 1م',    mat: 'zemerda', spec: 'سفرة زمردة — نيش 1م بجانبين كيرف وزجاج مضاء LED' },
-    { id: 'd_table',  room: 'reception', x: 315, y: 95,  w: 90,  d: 175,h: 76,  kind: 'dining_6',        label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي 180×90سم + 6 كراسي' }
+    { id: 'd_buffet', room: 'reception', x: 440, y: 334, w: 180, d: 45, h: 85,  kind: 'buffet', dir: 's', label: 'بوفيه زمردة 2م', mat: 'zemerda', spec: 'سفرة زمردة — 4 ضلف فلاش + ركن مفتوح مائل + مراية دائرية (مطابق للمصنع)' },
+    { id: 'd_niche',  room: 'reception', x: 255, y: 12,  w: 95,  d: 44, h: 202, kind: 'niche_glass',     label: 'نيش زمردة 1م',    mat: 'zemerda', spec: 'سفرة زمردة — ضلف ألوميتال أسود وزجاج + 4 أرفف مضيئة (مطابق للمصنع)' },
+    { id: 'd_table',  room: 'reception', x: 315, y: 95,  w: 90,  d: 175,h: 76,  kind: 'dining_6',        label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي بحافة مشطوفة 180×90سم + 6 كراسي' }
   ];
 
   if (preset === 'preset2') {
@@ -806,14 +807,14 @@ function getPresetDefaultFurniture(preset) {
       { id: 'p2_f1', room: 'reception', x: 460, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil',    backDir: 's', label: 'فوتيه كريمة',       mat: 'ted3', spec: 'انترية كريمة — فوتيه مودرن تيد 3 رائف' },
       { id: 'p2_f2', room: 'reception', x: 560, y: 235, w: 80,  d: 78,  h: 76, kind: 'fauteuil',    backDir: 's', label: 'فوتيه كريمة',       mat: 'ted5', spec: 'انترية كريمة — فوتيه مودرن تيد 5 رائف' },
       { id: 'p2_nt', room: 'reception', x: 525, y: 125, w: 96,  d: 76,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass', spec: 'كمليات — ترابيزتان متداخلتان ذهبي وزجاج' },
-      { id: 'p2_ls', room: 'salon',     x: 12,  y: 1082,w: 396, d: 86,  h: 76, kind: 'sofa_sectional', backDir: 's', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — البا 5 مضلع وكوشن البا 10' },
-      { id: 'p2_lw', room: 'salon',     x: 12,  y: 862, w: 86,  d: 220, h: 76, kind: 'sofa_chaise',    backDir: 'w', roundEnd: 'n', label: 'شيزلونج ركنة 2.20م', mat: 'alba5', spec: 'ضلع الركنة 2.20م بنهاية دائرية وثرو' },
+      { id: 'p2_ls', room: 'salon',     x: 12,  y: 1082,w: 396, d: 86,  h: 76, kind: 'sofa_sectional', backDir: 's', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — بسرير سحارة يفتح للأمام — قماش البا 5/10' },
+      { id: 'p2_lw', room: 'salon',     x: 12,  y: 862, w: 86,  d: 220, h: 76, kind: 'sofa_chaise',    backDir: 'w', roundEnd: 'n', label: 'شيزلونج ركنة 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
       { id: 'p2_lt', room: 'salon',     x: 165, y: 945, w: 95,  d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة ركنة',     mat: 'alba5', spec: 'ترابيزة وسط مودرن حواف دائرية وفازة' }
     );
   } else {
     items.push(
-      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa_sectional', backDir: 'n', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — البا 5 مضلع وكوشن البا 10' },
-      { id: 'p1_le', room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, kind: 'sofa_chaise',    backDir: 'e', roundEnd: 's', label: 'شيزلونج 2.20م', mat: 'alba5', spec: 'ضلع الركنة 2.20م بنهاية دائرية وثرو' },
+      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa_sectional', backDir: 'n', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — بسرير سحارة يفتح للأمام — قماش البا 5/10' },
+      { id: 'p1_le', room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, kind: 'sofa_chaise',    backDir: 'e', roundEnd: 's', label: 'شيزلونج 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
       { id: 'p1_lt', room: 'reception', x: 535, y: 125, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة ركنة',     mat: 'alba5', spec: 'ترابيزة وسط مودرن حواف دائرية وفازة' },
       { id: 'p1_s1', room: 'salon',     x: 12,  y: 820, w: 82,  d: 210, h: 78, kind: 'sofa_tufted', backDir: 'w', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 5 طوبي' },
       { id: 'p1_s2', room: 'salon',     x: 328, y: 820, w: 82,  d: 210, h: 78, kind: 'sofa_tufted', backDir: 'e', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 3 كريمي' },
@@ -2160,12 +2161,16 @@ function buildFurnitureGroup3D(it) {
       addMesh(grp, new THREE.BoxGeometry(2.2, 34, 1.6), m.gold, bw / 2 + 1.2, 112, dz + hOffset);
     }
   } else if (it.kind === 'wardrobe_kids') {
-    addMesh(grp, rBox(bw, it.h, bd - 3, 1.5), m.manara, 0, it.h / 2, -1);
-    const dw = (bw - 8) / 4;
+    // Factory 2m Kids Wardrobe: Dark recessed toe-kick, exposed Manara D68 oak side veneer, 4 flush matte-white doors
+    addMesh(grp, rBox(bw - 4, 6, bd - 4, 1), m.blackMetal, 0, 3, 0);
+    addMesh(grp, rBox(2.8, it.h - 6, bd, 1), m.manara, -bw / 2 + 1.4, 6 + (it.h - 6) / 2, 0);
+    addMesh(grp, rBox(2.8, it.h - 6, bd, 1), m.manara, bw / 2 - 1.4, 6 + (it.h - 6) / 2, 0);
+    addMesh(grp, rBox(bw - 5.6, it.h - 6, bd - 4, 1), m.manara, 0, 6 + (it.h - 6) / 2, -1.5);
+    const dw = (bw - 6.8) / 4;
     for (let i = 0; i < 4; i++) {
-      const dx = -bw / 2 + 4 + dw * (i + 0.5);
-      addMesh(grp, rBox(dw - 1.5, it.h - 6, 3.2, 1), m.ducoWhite, dx, it.h / 2, bd / 2 - 1);
-      if (i === 1 || i === 2) addMesh(grp, new THREE.BoxGeometry(dw - 8, it.h - 26, 1.2), m.mirror, dx, it.h / 2, bd / 2 + 0.8);
+      const dx = -bw / 2 + 3.4 + dw * (i + 0.5);
+      addMesh(grp, rBox(dw - 0.7, it.h - 7, 3.0, 0.8), m.ducoWhite, dx, 6 + (it.h - 7) / 2, bd / 2 - 1.0);
+      if (i === 1 || i === 2) addMesh(grp, new THREE.BoxGeometry(dw - 8, it.h - 28, 1.2), m.mirror, dx, 6 + (it.h - 7) / 2, bd / 2 + 0.8);
     }
   } else if (it.kind === 'bed_master' || it.kind === 'bed_kids') {
     const isMaster = it.kind === 'bed_master';
@@ -2208,24 +2213,40 @@ function buildFurnitureGroup3D(it) {
       const cone = new THREE.Mesh(new THREE.ConeGeometry(10, 14, 18, 1, true), m.gold);
       cone.position.set(0, 168, bd / 2 - 42); grp.add(cone);
     }
-  } else if (it.kind === 'nightstand_plaza' || it.kind === 'nightstand_kids') {
-    const nMat = it.kind === 'nightstand_plaza' ? m.oak : m.manara;
-    addMesh(grp, rBox(bw, it.h, bd, 4), nMat, 0, it.h / 2, 0);
+  } else if (it.kind === 'nightstand_plaza') {
+    addMesh(grp, rBox(bw, it.h, bd, 4), m.oak, 0, it.h / 2, 0);
     addMesh(grp, rBox(bw - 6, it.h - 12, bd - 4, 2), m.ducoCream, -2, it.h / 2, 0);
     if (it.pendant) {
       addMesh(grp, new THREE.CylinderGeometry(0.6, 0.6, 135, 8), m.blackMetal, 0, 195, 0, false, false);
       const globe = new THREE.Mesh(new THREE.SphereGeometry(9.5, 18, 18), m.ledWarm);
       globe.position.set(0, 124, 0); grp.add(globe);
-    } else {
-      addMesh(grp, new THREE.BoxGeometry(bw, 66, 6), m.manara, 0, it.h + 33, bd / 2 - 3);
-      addMesh(grp, new THREE.BoxGeometry(bw - 14, 54, 2), m.mirror, 0, it.h + 33, bd / 2 - 6.5);
     }
+  } else if (it.kind === 'nightstand_kids') {
+    // Factory Kids Nightstand (41b0a271.JPG): Manara D68 outer carcass + flush matte-white front drawer + slatted backdrop
+    addMesh(grp, rBox(bw, it.h, bd, 2.5), m.manara, 0, it.h / 2, 0);
+    addMesh(grp, rBox(bw - 6, it.h - 10, 2.6, 1), m.ducoWhite, 0, it.h / 2, -bd / 2 - 0.3);
+    addMesh(grp, new THREE.BoxGeometry(bw, 66, 6), m.manara, 0, it.h + 33, bd / 2 - 3);
+    addMesh(grp, new THREE.BoxGeometry(bw - 14, 54, 2), m.mirror, 0, it.h + 33, bd / 2 - 6.5);
   } else if (it.kind === 'dresser_plaza') {
-    addMesh(grp, rBox(52, it.h - 6, bd, 3), m.ducoCream, -bw / 2 + 26, (it.h - 6) / 2, 0);
-    addMesh(grp, rBox(bw, 6, bd, 2), m.oak, 0, it.h - 3, 0);
-    addMesh(grp, rBox(6, it.h, bd, 2), m.oak, bw / 2 - 3, it.h / 2, 0);
-    addMesh(grp, rBox(96, 64, 5, 12), m.oak, 0, it.h + 40, -bd / 2 + 4);
-    addMesh(grp, rBox(86, 54, 2.5, 10), m.mirror, 0, it.h + 40, -bd / 2 + 7);
+    // Factory Plaza Dresser (2b2d1f74.JPG): Left 3 flush drawers + smooth oak waterfall + deep 11cm tray mirror flush on desk
+    addMesh(grp, rBox(50, it.h - 6, bd - 2, 2), m.ducoCream, -bw / 2 + 25, (it.h - 6) / 2, -0.5);
+    const drH = (it.h - 11) / 3;
+    for (let d = 0; d < 3; d++) {
+      addMesh(grp, rBox(48, drH - 0.8, 2.2, 1), m.ducoCream, -bw / 2 + 25, 3 + drH * (d + 0.5), bd / 2 - 0.2);
+    }
+    // Smooth oak waterfall top & rounded right leg
+    addMesh(grp, rBox(bw - 10, 5.5, bd, 1.5), m.oak, -5, it.h - 2.75, 0);
+    const wfCurve = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, bd, 18), m.oak);
+    wfCurve.rotation.x = Math.PI / 2; wfCurve.position.set(bw / 2 - 5, it.h - 5, 0); wfCurve.castShadow = true; grp.add(wfCurve);
+    addMesh(grp, rBox(5.5, it.h - 5, bd, 1.5), m.oak, bw / 2 - 2.75, (it.h - 5) / 2, 0);
+    // Deep-framed 11cm rounded-corner oak tray mirror resting directly flush atop desk
+    const mw = 94, mh = 62, md = 11, mz = -bd / 2 + 7;
+    addMesh(grp, rBox(mw, 3.2, md, 1.5), m.oak, 2, it.h + 1.6, mz);
+    addMesh(grp, rBox(mw, 3.2, md, 1.5), m.oak, 2, it.h + mh - 1.6, mz);
+    addMesh(grp, rBox(3.2, mh, md, 1.5), m.oak, 2 - mw / 2 + 1.6, it.h + mh / 2, mz);
+    addMesh(grp, rBox(3.2, mh, md, 1.5), m.oak, 2 + mw / 2 - 1.6, it.h + mh / 2, mz);
+    addMesh(grp, new THREE.BoxGeometry(mw - 4, mh - 4, 2), m.oak, 2, it.h + mh / 2, mz - 3.5);
+    addMesh(grp, new THREE.BoxGeometry(mw - 7, mh - 7, 1.4), m.mirror, 2, it.h + mh / 2, mz - 1.6);
   } else if (it.kind === 'dresser_kids') {
     addMesh(grp, rBox(bw, it.h, bd, 2), m.manara, 0, it.h / 2, 0);
     addMesh(grp, rBox(3, it.h - 10, bd - 10, 1.5), m.ducoCream, bw / 2 + 0.5, it.h / 2, 0);
@@ -2253,44 +2274,64 @@ function buildFurnitureGroup3D(it) {
     }
     grp.add(mGrp);
   } else if (it.kind === 'buffet') {
-    for (const lx of [-bw / 2 + 12, bw / 2 - 12]) {
-      for (const lz of [-bd / 2 + 8, bd / 2 - 8]) addMesh(grp, new THREE.CylinderGeometry(2.2, 1.4, 18, 10), m.walnut, lx, 9, lz);
-    }
-    addMesh(grp, rBox(bw, it.h - 18, bd, 2.5), m.walnut, 0, 18 + (it.h - 18) / 2, 0);
-    const dw = (bw - 10) / 4;
+    // Factory Zemerda 2m Sideboard (ac9f4349.JPG): Right/West 4 flush cream floating doors + Left/East open trapezoidal oak bay
+    const openW = bw * 0.23, cabW = bw - openW, cabCx = -openW / 2, openCx = bw / 2 - openW / 2;
+    addMesh(grp, new THREE.BoxGeometry(5, 14, bd - 10), m.oak, cabCx - cabW * 0.34, 7, 0);
+    addMesh(grp, new THREE.BoxGeometry(5, 14, bd - 10), m.oak, cabCx + cabW * 0.34, 7, 0);
+    addMesh(grp, rBox(cabW, it.h - 14, bd, 2), m.oak, cabCx, 14 + (it.h - 14) / 2, 0);
+    const dw = (cabW - 4) / 4;
     for (let i = 0; i < 4; i++) {
-      const dx = -bw / 2 + 5 + dw * (i + 0.5);
-      addMesh(grp, rBox(dw - 1.5, it.h - 24, 2.5, 1), m.ducoCream, dx, 18 + (it.h - 18) / 2, -bd / 2 - 0.6);
-      addMesh(grp, new THREE.BoxGeometry(1.8, 16, 2), m.blackMetal, dx + (i % 2 === 0 ? 12 : -12), 52, -bd / 2 - 2);
+      const dx = -bw / 2 + 2 + dw * (i + 0.5);
+      addMesh(grp, rBox(dw - 0.6, it.h - 18, 2.2, 0.8), m.ducoCream, dx, 14 + (it.h - 14) / 2, -bd / 2 - 0.5);
+      addMesh(grp, new THREE.BoxGeometry(1.4, 16, 1.5), m.blackMetal, dx + (i % 2 === 0 ? dw * 0.36 : -dw * 0.36), 52, -bd / 2 - 1.6);
     }
+    // Open angled trapezoidal display bay on viewer's left (+X) with slightly stepped raised corner top
+    addMesh(grp, rBox(openW, 5, bd, 1.5), m.oak, openCx, 2.5, 0);
+    addMesh(grp, rBox(3.5, it.h, bd, 1), m.oak, bw / 2 - openW + 1.5, it.h / 2, 0);
+    addMesh(grp, rBox(openW + 10, 4.5, bd + 1, 1.5), m.oak, openCx - 4, it.h + 1.5, 0);
+    const slant = addMesh(grp, rBox(4.2, it.h + 2, bd - 1, 1.2), m.oak, bw / 2 - 3.5, it.h / 2 + 1, 0);
+    slant.rotation.z = -0.10;
+
     const mirF = new THREE.Mesh(new THREE.CylinderGeometry(42, 42, 3.5, 36), m.walnut);
-    mirF.rotation.x = Math.PI / 2; mirF.position.set(0, it.h + 48, bd / 2 + 2); grp.add(mirF);
+    mirF.rotation.x = Math.PI / 2; mirF.position.set(0, it.h + 48, bd / 2 + 1.5); grp.add(mirF);
     const mirG = new THREE.Mesh(new THREE.CylinderGeometry(37, 37, 2, 36), m.mirror);
-    mirG.rotation.x = Math.PI / 2; mirG.position.set(0, it.h + 48, bd / 2 - 0.2); grp.add(mirG);
+    mirG.rotation.x = Math.PI / 2; mirG.position.set(0, it.h + 48, bd / 2 - 0.4); grp.add(mirG);
   } else if (it.kind === 'niche_glass' || it.kind === 'glass_tall') {
-    addMesh(grp, rBox(bw, 8, bd, 3), m.walnut, 0, 4, 0);
-    addMesh(grp, rBox(bw, 8, bd, 3), m.walnut, 0, it.h - 4, 0);
-    addMesh(grp, rBox(14, it.h - 14, bd, 6), m.ducoCream, -bw / 2 + 7, it.h / 2, 0);
-    addMesh(grp, rBox(14, it.h - 14, bd, 6), m.ducoCream, bw / 2 - 7, it.h / 2, 0);
+    // Factory Zemerda Niche (8da5426f.JPG): Rounded cream outer columns + slim matte-black aluminum door frame + 4 lit shelves
+    addMesh(grp, rBox(bw, 7, bd, 3), m.walnut, 0, 3.5, 0);
+    addMesh(grp, rBox(bw, 7, bd, 3), m.walnut, 0, it.h - 3.5, 0);
+    addMesh(grp, rBox(13, it.h - 14, bd, 6), m.ducoCream, -bw / 2 + 6.5, it.h / 2, 0);
+    addMesh(grp, rBox(13, it.h - 14, bd, 6), m.ducoCream, bw / 2 - 6.5, it.h / 2, 0);
     addMesh(grp, new THREE.BoxGeometry(bw - 6, it.h - 14, 3), m.walnut, 0, it.h / 2, -bd / 2 + 2);
-    addMesh(grp, new THREE.BoxGeometry(bw - 26, it.h - 18, 2), m.clearGlass, 0, it.h / 2, bd / 2 - 2, false, false);
-    for (const sy of [52, 98, 144]) {
+    // Matte-black aluminum frame perimeter + center mullion + clear glass
+    const frZ = bd / 2 - 1.5, frW = bw - 26, frH = it.h - 16;
+    addMesh(grp, new THREE.BoxGeometry(frW, 2.2, 2.6), m.blackMetal, 0, 8 + frH - 1.1, frZ);
+    addMesh(grp, new THREE.BoxGeometry(frW, 2.2, 2.6), m.blackMetal, 0, 8 + 1.1, frZ);
+    addMesh(grp, new THREE.BoxGeometry(2.2, frH, 2.6), m.blackMetal, -frW / 2 + 1.1, it.h / 2, frZ);
+    addMesh(grp, new THREE.BoxGeometry(2.2, frH, 2.6), m.blackMetal, frW / 2 - 1.1, it.h / 2, frZ);
+    addMesh(grp, new THREE.BoxGeometry(1.8, frH, 2.6), m.blackMetal, 0, it.h / 2, frZ);
+    addMesh(grp, new THREE.BoxGeometry(frW - 4, frH - 4, 1.4), m.clearGlass, 0, it.h / 2, frZ, false, false);
+    for (const sy of [42, 82, 122, 162]) {
       if (sy < it.h - 20) {
-        addMesh(grp, new THREE.BoxGeometry(bw - 24, 1.8, bd - 8), m.clearGlass, 0, sy, 0, false, false);
-        addMesh(grp, new THREE.BoxGeometry(bw - 28, 1.2, 3), m.ledWarm, 0, sy + 38, -bd / 2 + 6, false, false);
-        const vase = new THREE.Mesh(new THREE.CylinderGeometry(3.8, 5, 13, 14), sy === 98 ? m.gold : m.porcelain);
-        vase.position.set(sy === 98 ? -8 : 7, sy + 7.5, 0); grp.add(vase);
+        addMesh(grp, new THREE.BoxGeometry(bw - 24, 2.0, bd - 8), m.oak, 0, sy, 0);
+        addMesh(grp, new THREE.BoxGeometry(bw - 28, 1.2, 2.8), m.ledWarm, 0, sy + 32, -bd / 2 + 6, false, false);
+        const vase = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.8, 12, 14), sy === 82 || sy === 162 ? m.gold : m.porcelain);
+        vase.position.set(sy === 82 ? -10 : 9, sy + 7, 0); grp.add(vase);
       }
     }
   } else if (it.kind === 'dining_6') {
+    // Factory Zemerda Oval Dining Top (a2ee6833.JPG, 398fb109.JPG): oak-walnut grain top + beveled walnut under-rim
     const rad = bw / 2, straightD = Math.max(10, bd - bw);
     addMesh(grp, rBox(44, 5, 86, 4), m.ducoCream, 0, 2.5, 0);
     const l1 = addMesh(grp, rBox(16, 68, 22, 3), m.ducoCream, 0, 36, -18); l1.rotation.x = 0.18;
     const l2 = addMesh(grp, rBox(14, 68, 20, 3), m.walnut, 0, 36, 18); l2.rotation.x = -0.18;
-    addMesh(grp, new THREE.BoxGeometry(bw, 5, straightD), m.walnut, 0, it.h - 2.5, 0);
+    addMesh(grp, new THREE.BoxGeometry(bw, 3.2, straightD), m.oak, 0, it.h - 1.6, 0);
+    addMesh(grp, new THREE.BoxGeometry(bw - 3, 2.2, straightD - 1), m.walnut, 0, it.h - 4.2, 0);
     for (const sz of [-straightD / 2, straightD / 2]) {
-      const cap = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 5, 28), m.walnut);
-      cap.position.set(0, it.h - 2.5, sz); cap.castShadow = true; grp.add(cap);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 3.2, 30), m.oak);
+      cap.position.set(0, it.h - 1.6, sz); cap.castShadow = true; grp.add(cap);
+      const bev = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad - 2.2, 2.2, 30), m.walnut);
+      bev.position.set(0, it.h - 4.2, sz); grp.add(bev);
     }
     addMesh(grp, rBox(22, 2, 46, 3), m.carrara, 0, it.h + 1, 0);
     addMesh(grp, new THREE.CylinderGeometry(4.5, 5.5, 14, 14), m.blackMetal, 0, it.h + 9, -8);
@@ -2318,7 +2359,6 @@ function buildFurnitureGroup3D(it) {
     const fMat = it.mat === 'ted5' ? m.ted5 : (it.mat === 'ted3' ? m.ted3 : m.alba5);
     const isHoriz = bw >= bd;
     const seatH = 38;
-    // Recessed dark plinth base + rounded seat modules
     addMesh(grp, rBox(bw - 8, 5, bd - 8, 2), m.walnut, 0, 2.5, 0);
     if (it.kind === 'sofa_chaise' && it.roundEnd) {
       const rad = (isHoriz ? bd : bw) / 2;
@@ -2328,11 +2368,15 @@ function buildFurnitureGroup3D(it) {
       addMesh(grp, rBox(bw, seatH, boxLen, 6), fMat, 0, 5 + seatH / 2, dzOff);
       const cyl = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, seatH, 28), fMat);
       cyl.position.set(0, 5 + seatH / 2, czCyl); cyl.castShadow = true; grp.add(cyl);
-      // Soft Rose-Beige Folded Throw Blanket on Chaise End (Contract Page 6)
       addMesh(grp, rBox(bw * 0.72, 4, rad * 0.85, 3), m.alba10, 0, 5 + seatH + 1.5, czCyl);
     } else {
       const segs = it.kind === 'fauteuil' ? 1 : (Math.max(bw, bd) > 260 ? 4 : 3);
       addMesh(grp, rBox(bw, 14, bd, 4), fMat, 0, 12, 0);
+      if (it.kind === 'sofa_sectional') {
+        // Pull-out sofa-bed lower front drawer seam (162f6340.MP4)
+        const apZ = it.backDir === 'n' ? (bd / 2 + 0.2) : (-bd / 2 - 0.2);
+        addMesh(grp, new THREE.BoxGeometry(bw - 14, 1.4, 0.8), m.walnut, 0, 14, apZ, false, true);
+      }
       for (let i = 0; i < segs; i++) {
         if (isHoriz) {
           const sw = (bw - 4) / segs;
@@ -2344,10 +2388,18 @@ function buildFurnitureGroup3D(it) {
       }
     }
     const bk = 22, bh = 36;
-    if (it.backDir === 'n') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, -bd / 2 + bk / 2);
-    else if (it.backDir === 's') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, bd / 2 - bk / 2);
-    else if (it.backDir === 'w') addMesh(grp, rBox(bk, bh, bd, 7), fMat, -bw / 2 + bk / 2, 5 + seatH + bh / 2 - 4, 0);
-    else if (it.backDir === 'e') addMesh(grp, rBox(bk, bh, bd, 7), fMat, bw / 2 - bk / 2, 5 + seatH + bh / 2 - 4, 0);
+    if (it.kind === 'sofa_chaise' && it.roundEnd) {
+      // Backrest strictly on corner ~48% half (leaving circular bullnose completely open — 81c5cb00.MP4)
+      const bkLen = bd * 0.48;
+      const bkZ = it.roundEnd === 's' ? (-bd / 2 + bkLen / 2) : (bd / 2 - bkLen / 2);
+      const bkX = it.backDir === 'w' ? (-bw / 2 + bk / 2) : (bw / 2 - bk / 2);
+      addMesh(grp, rBox(bk, bh, bkLen, 7), fMat, bkX, 5 + seatH + bh / 2 - 4, bkZ);
+    } else {
+      if (it.backDir === 'n') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, -bd / 2 + bk / 2);
+      else if (it.backDir === 's') addMesh(grp, rBox(bw, bh, bk, 7), fMat, 0, 5 + seatH + bh / 2 - 4, bd / 2 - bk / 2);
+      else if (it.backDir === 'w') addMesh(grp, rBox(bk, bh, bd, 7), fMat, -bw / 2 + bk / 2, 5 + seatH + bh / 2 - 4, 0);
+      else if (it.backDir === 'e') addMesh(grp, rBox(bk, bh, bd, 7), fMat, bw / 2 - bk / 2, 5 + seatH + bh / 2 - 4, 0);
+    }
 
     if (it.kind === 'sofa_tufted' || it.kind === 'fauteuil') {
       if (isHoriz) {
@@ -2359,9 +2411,10 @@ function buildFurnitureGroup3D(it) {
       }
     }
     const pilMat = it.mat === 'ted5' ? m.ted3 : (it.mat === 'ted3' ? m.ted5 : m.alba10);
-    const count = it.kind === 'fauteuil' ? 1 : 2;
+    const count = (it.kind === 'fauteuil' || it.kind === 'sofa_chaise') ? 1 : 2;
     for (let k = 0; k < count; k++) {
-      const frac = count === 1 ? 0 : (k === 0 ? -0.25 : 0.25);
+      let frac = count === 1 ? 0 : (k === 0 ? -0.25 : 0.25);
+      if (it.kind === 'sofa_chaise' && it.roundEnd) frac = it.roundEnd === 's' ? -0.26 : 0.26;
       const px = isHoriz ? (bw * frac) : (it.backDir === 'w' ? -bw / 2 + 26 : bw / 2 - 26);
       const pz = !isHoriz ? (bd * frac) : (it.backDir === 'n' ? -bd / 2 + 26 : bd / 2 - 26);
       const pil = addMesh(grp, rBox(isHoriz ? 34 : 13, 24, isHoriz ? 13 : 34, 5), pilMat, px, 49, pz);
@@ -2914,12 +2967,32 @@ function draw2DFurnitureCAD(isBlueprint) {
         roundRect(ctx, -22, cyy, 20, 34, 6, true, true);
         roundRect(ctx, bw + 2, cyy, 20, 34, 6, true, true);
       }
+    } else if (it.kind === 'sofa_chaise' && it.roundEnd) {
+      // True semi-circular bullnose CAD footprint matching factory frame
+      const rad = Math.min(bw, bd) / 2;
+      ctx.beginPath();
+      if (it.roundEnd === 's') {
+        ctx.moveTo(0, 0); ctx.lineTo(bw, 0); ctx.lineTo(bw, bd - rad);
+        ctx.arc(bw / 2, bd - rad, rad, 0, Math.PI, false);
+        ctx.closePath();
+      } else {
+        ctx.moveTo(0, bd); ctx.lineTo(bw, bd); ctx.lineTo(bw, rad);
+        ctx.arc(bw / 2, rad, rad, 0, Math.PI, true);
+        ctx.closePath();
+      }
+      ctx.fill(); ctx.stroke();
     } else {
       const rad = (it.kind.startsWith('sofa') || it.kind === 'fauteuil' || it.kind.startsWith('bed') || it.kind === 'coffee_table') ? 8 : 2.5;
       roundRect(ctx, 0, 0, bw, bd, rad, true, true);
     }
 
-    if (it.kind === 'stove6') {
+    if (it.kind === 'buffet') {
+      const splitX = bw * 0.77;
+      ctx.beginPath();
+      ctx.moveTo(splitX, 0); ctx.lineTo(splitX, bd);
+      ctx.moveTo(splitX, 0); ctx.lineTo(bw, bd);
+      ctx.stroke();
+    } else if (it.kind === 'stove6') {
       for (const bx of [20, 43, 66]) for (const by of [20, 42]) { ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.stroke(); }
     } else if (it.kind === 'sink') {
       roundRect(ctx, 10, 10, bw - 20, bd - 20, 4, false, true);
@@ -2944,10 +3017,17 @@ function draw2DFurnitureCAD(isBlueprint) {
         roundRect(ctx, 18, bd - 42, bw - 36, 28, 5, false, true);
       }
     } else if (it.kind.startsWith('sofa') || it.kind === 'fauteuil') {
-      if (it.backDir === 'n') ctx.strokeRect(0, 0, bw, 16);
-      else if (it.backDir === 's') ctx.strokeRect(0, bd - 16, bw, 16);
-      else if (it.backDir === 'w') ctx.strokeRect(0, 0, 16, bd);
-      else if (it.backDir === 'e') ctx.strokeRect(bw - 16, 0, 16, bd);
+      if (it.kind === 'sofa_chaise' && it.roundEnd) {
+        const bkLen = bd * 0.48;
+        const by = it.roundEnd === 's' ? 0 : (bd - bkLen);
+        if (it.backDir === 'e') ctx.strokeRect(bw - 16, by, 16, bkLen);
+        else ctx.strokeRect(0, by, 16, bkLen);
+      } else {
+        if (it.backDir === 'n') ctx.strokeRect(0, 0, bw, 16);
+        else if (it.backDir === 's') ctx.strokeRect(0, bd - 16, bw, 16);
+        else if (it.backDir === 'w') ctx.strokeRect(0, 0, 16, bd);
+        else if (it.backDir === 'e') ctx.strokeRect(bw - 16, 0, 16, bd);
+      }
     }
 
     if (it.label) {
