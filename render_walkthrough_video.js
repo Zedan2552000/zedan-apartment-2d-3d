@@ -13,17 +13,22 @@ const os = require('os');
   const browser = await puppeteer.launch({
     executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
     headless: 'new',
-    args: ['--no-sandbox', '--disable-gpu-sandbox']
+    args: ['--no-sandbox', '--disable-gpu-sandbox', '--enable-webgl', '--ignore-gpu-blocklist']
   });
 
   const page = await browser.newPage();
+  const pageErrors = [];
+  page.on('pageerror', err => {
+    console.error('PAGE_ERROR:', err.message);
+    pageErrors.push(err.message);
+  });
   await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 1 });
 
-  const url = 'file:///' + path.resolve('C:\\Users\\Habib\\Desktop\\شقتي\\Zedan_Apartment_2D_3D_Studio.html').replace(/\\/g, '/') + '?mode=walk&capture=1&t=0';
-  await page.goto(url, { waitUntil: 'networkidle0' });
+  const url = 'file:///' + path.resolve('C:\\Users\\Habib\\Desktop\\شقتي\\Zedan_Apartment_2D_3D_Studio.html').replace(/\\/g, '/') + '?mode=walk&capture=1&t=0&theme=warm_real';
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
   await page.addStyleTag({ content: 'aside { display: none !important; }' });
   await page.evaluate(() => { window.dispatchEvent(new Event('resize')); });
-  await new Promise(r => setTimeout(r, 250));
+  await new Promise(r => setTimeout(r, 600));
 
   const totalFrames = 240;
   for (let i = 0; i < totalFrames; i++) {
@@ -33,9 +38,13 @@ const os = require('os');
       requestAnimationFrame(() => resolve());
     }), t);
     const framePath = path.join(framesDir, `frame_${String(i).padStart(4, '0')}.jpg`);
-    await page.screenshot({ path: framePath, type: 'jpeg', quality: 90 });
+    await page.screenshot({ path: framePath, type: 'jpeg', quality: 92 });
   }
 
   await browser.close();
+  if (pageErrors.length > 0) {
+    console.error('FAILED DUE TO PAGE ERRORS:', pageErrors);
+    process.exit(1);
+  }
   console.log(`CAPTURED ${totalFrames} WALKTHROUGH FRAMES AT: ${framesDir}`);
 })();

@@ -1,3 +1,4 @@
+import math
 import os
 import ezdxf
 from ezdxf.enums import TextEntityAlignment
@@ -18,11 +19,13 @@ def create_apartment_dxf():
         ("DOORS", 30, 25),
         ("WINDOWS", 4, 25),
         ("BALCONY", 6, 30),
+        ("GYPSUM_CEILING", 252, 15),
         ("STAIRWELL_HATCH", 9, 18),
         ("SHAFT_HATCH", 3, 20),
         ("UTILITIES", 3, 20),
         ("KITCHEN_CAD", 140, 20),
         ("FURNITURE", 42, 20),
+        ("FURNITURE_DETAIL", 253, 13),
         ("DIMENSIONS", 2, 18),
         ("LABELS", 7, 18),
     ]
@@ -70,7 +73,7 @@ def create_apartment_dxf():
             msp.add_line((cx1 + thickness / 2, cy1), (cx2 + thickness / 2, cy2), dxfattribs={"layer": "WINDOWS"})
             msp.add_line((cx1 - thickness / 2, cy1), (cx2 - thickness / 2, cy2), dxfattribs={"layer": "WINDOWS"})
 
-    # 1. Outer Perimeter Footprint (Full West Wall x=0 from y=0..1180)
+    # 1. Outer Perimeter Footprint
     outer_pts = [
         (0, cy(0)),
         (805, cy(0)),
@@ -82,39 +85,43 @@ def create_apartment_dxf():
     ]
     msp.add_lwpolyline(outer_pts, dxfattribs={"layer": "WALLS_EXTERIOR"})
 
-    # 2. Room Boundaries (Centerlines / Partitions)
-    # Left Service Wing (x=0..245): Kitchen (0..355), Shaft+Washer (355..465), Bathroom (465..760)
-    add_wall_rect(240, 0, 250, 240, layer="WALLS_INTERIOR")    # Kitchen East wall above door
-    add_wall_rect(240, 330, 250, 355, layer="WALLS_INTERIOR")  # Kitchen East wall below door
-    add_wall_rect(240, 465, 250, 670, layer="WALLS_INTERIOR")  # Bath East wall closed above door
-    add_wall_rect(240, 750, 250, 760, layer="WALLS_INTERIOR")  # Bath East wall south pier
+    # 2. Room Boundaries (Partitions)
+    add_wall_rect(240, 0, 250, 240, layer="WALLS_INTERIOR")
+    add_wall_rect(240, 330, 250, 355, layer="WALLS_INTERIOR")
+    add_wall_rect(240, 465, 250, 670, layer="WALLS_INTERIOR")
+    add_wall_rect(240, 750, 250, 760, layer="WALLS_INTERIOR")
     add_wall_rect(0, 350, 245, 360, layer="WALLS_INTERIOR")
     add_wall_rect(0, 460, 245, 470, layer="WALLS_INTERIOR")
-    add_wall_rect(135, 355, 145, 465, layer="WALLS_INTERIOR")  # Shaft / Washer divider
-    add_wall_rect(0, 755, 245, 765, layer="WALLS_INTERIOR")    # Bathroom / Salon divider
+    add_wall_rect(135, 355, 145, 465, layer="WALLS_INTERIOR")
+    add_wall_rect(0, 755, 245, 765, layer="WALLS_INTERIOR")
 
-    # Lightwell Shaft (منور): x=0..140, y=355..465
+    # Lightwell Shaft (منور)
     add_hatched_zone(0, 355, 140, 465, layer="SHAFT_HATCH", pattern="ANSI37", scale=8.0, color=3)
 
-    # Reception (الصالة): x=245..805, y=0..388 (with open archway to vertical corridor at x=245..422)
+    # Reception & Stairwell
     add_wall_rect(417, 383, 690, 393, layer="WALLS_INTERIOR")
     add_wall_rect(790, 383, 805, 393, layer="WALLS_INTERIOR")
-
-    # Stairwell (بئر السلم): x=422..805, y=388..660
     add_hatched_zone(422, 388, 805, 660, layer="STAIRWELL_HATCH", pattern="ANSI31", scale=14.0, color=9)
     add_wall_rect(417, 388, 427, 660, layer="WALLS_INTERIOR")
     add_wall_rect(422, 655, 865, 665, layer="WALLS_INTERIOR")
 
-    # Horizontal Corridor (الطرقة): x=245..865, y=660..760 (openings for Salon 285..372 & Kids 585..675)
+    # Horizontal Corridor & Bottom Row Dividers (Salon 0..422, Kids 422..865, Master 865..1210)
     add_wall_rect(245, 755, 285, 765, layer="WALLS_INTERIOR")
     add_wall_rect(372, 755, 585, 765, layer="WALLS_INTERIOR")
     add_wall_rect(675, 755, 865, 765, layer="WALLS_INTERIOR")
-
-    # Bottom Row Rooms (y=760..1180): Salon (0..422), Kids (422..865), Master (865..1210, y=660..1180)
     add_wall_rect(417, 760, 427, 1180, layer="WALLS_INTERIOR")
     add_wall_rect(860, 660, 870, 1180, layer="WALLS_INTERIOR")
 
-    # Right-Side Stepped Balcony (البلكونة)
+    # Gypsum Ceiling Trays
+    for gx1, gy1, gx2, gy2 in [
+        (280, 35, 770, 353),
+        (35, 795, 387, 1145),
+        (457, 795, 830, 1145),
+        (900, 695, 1175, 1145),
+    ]:
+        add_wall_rect(gx1, gy1, gx2, gy2, layer="GYPSUM_CEILING")
+
+    # Stepped Balcony
     balc_pts = [
         (805, cy(0)),
         (895, cy(0)),
@@ -130,69 +137,63 @@ def create_apartment_dxf():
 
     # 3. Structural Columns
     columns = [
-        (100, 465, 140, 485),    # Bath Column 20x40
-        (350, 1170, 390, 1180),  # Salon South Column 40x10
-        (422, 920, 434, 960),    # Kids West 40x10
-        (850, 920, 865, 966),    # Kids East 46x15
-        (1198, 760, 1210, 815),  # Master East 55x10
-        (1167, 1155, 1210, 1180),# Master Corner 43x25
+        (100, 465, 140, 485),
+        (350, 1170, 390, 1180),
+        (422, 920, 434, 960),
+        (850, 920, 865, 966),
+        (1198, 760, 1210, 815),
+        (1167, 1155, 1210, 1180),
     ]
     for x1, y1, x2, y2 in columns:
         add_filled_column(x1, y1, x2, y2)
 
     # 4. Doors & Windows
-    # Main Door (100 cm) on South wall of Reception at y=388, x=690..790
-    add_door(690, 388, 100, 0, 90, 0, 100)
-    # Kitchen Door (90 cm) on East wall at x=245, y=240..330
-    add_door(245, 240, 90, 180, 270, -90, 0)
-    # Bathroom Door (80 cm) on East wall at x=245, y=670..750
-    add_door(245, 670, 80, 180, 270, -80, 0)
-    # Salon Door (87 cm) on North wall at y=760, x=285..372
-    add_door(285, 760, 87, 270, 360, 0, -87)
-    # Kids Door (90 cm) on North wall at y=760, x=585..675
-    add_door(585, 760, 90, 270, 360, 0, -90)
-    # Master Entrance Door (87 cm) on West wall at x=865, y=666..753
-    add_door(865, 666, 87, 270, 360, 87, 0)
-    # Master Balcony Door (90 cm) on East wall at x=1210, y=665..755
-    add_door(1210, 665, 90, 180, 270, -90, 0)
+    add_door(690, 388, 100, 0, 90, 0, 100)     # Main Door
+    add_door(245, 240, 90, 180, 270, -90, 0)   # Kitchen Door
+    add_door(245, 670, 80, 180, 270, -80, 0)   # Bathroom Door
+    add_door(285, 760, 87, 270, 360, 0, -87)   # Salon Door
+    add_door(585, 760, 90, 270, 360, 0, -90)   # Kids Door
+    add_door(865, 666, 87, 270, 360, 87, 0)    # Master Door
+    add_door(1210, 665, 90, 180, 270, -90, 0)  # Balcony Door
 
-    # Windows
-    add_window(40, 355, 100, 355)      # Kitchen Shaft Window 60 cm
-    add_window(45, 465, 95, 465)       # Bath Shaft Window 50 cm
-    add_window(805, 100, 805, 280)     # Reception Balcony Window 180 cm
-    add_window(805, 480, 805, 570)     # Stairwell Window 90 cm
-    add_window(135, 1180, 285, 1180)   # Salon South Window 150 cm
-    add_window(560, 1180, 730, 1180)   # Kids South Window 170 cm
-    add_window(980, 1180, 1100, 1180)  # Master South Window 120 cm
+    add_window(40, 355, 100, 355)
+    add_window(45, 465, 95, 465)
+    add_window(805, 100, 805, 280)
+    add_window(805, 480, 805, 570)
+    add_window(135, 1180, 285, 1180)
+    add_window(560, 1180, 730, 1180)
+    add_window(980, 1180, 1100, 1180)
 
-    # 4B. Engineer's Kitchen CAD Layout (kit.m2.pdf + Beko 14-place Dishwasher 60x60) & PDF Furniture
-    def add_furn_box(x1, y1, x2, y2, label="", layer="FURNITURE", th=7):
+    # 4B. Engineer's Kitchen CAD Layout & Contract Furniture Blocks
+    def add_furn_box(x1, y1, x2, y2, label="", layer="FURNITURE", th=6.5, rot=0):
         pts = [(x1, cy(y1)), (x2, cy(y1)), (x2, cy(y2)), (x1, cy(y2)), (x1, cy(y1))]
         msp.add_lwpolyline(pts, dxfattribs={"layer": layer})
         if label:
-            t = msp.add_text(label, dxfattribs={"layer": layer, "height": th})
+            t = msp.add_text(label, dxfattribs={"layer": layer, "height": th, "rotation": rot})
             t.set_placement(((x1 + x2) / 2.0, cy((y1 + y2) / 2.0)), align=TextEntityAlignment.MIDDLE_CENTER)
 
-    # Kitchen West Wall (x=8..66, South-to-North):
-    add_furn_box(8, 315, 66, 348, "دولاب تنظيف", "KITCHEN_CAD", 6)
-    add_furn_box(8, 256, 66, 315, "دولاب خزين ومايكرويف", "KITCHEN_CAD", 6)
-    add_furn_box(8, 218, 66, 256, "تربو", "KITCHEN_CAD", 6)
-    add_furn_box(8, 158, 68, 218, "غسالة اطباق بيكو 60x60", "KITCHEN_CAD", 6)
-    add_furn_box(8, 94, 66, 158, "حوض مطبخ", "KITCHEN_CAD", 6)
-    add_furn_box(8, 58, 66, 94, "3 درج", "KITCHEN_CAD", 6)
-    add_furn_box(8, 8, 66, 58, "خزين ركنة", "KITCHEN_CAD", 6)
-    # Kitchen North Wall (y=8..68):
-    add_furn_box(66, 8, 152, 68, "بوتاجاز 6 شعلة + شفاط", "KITCHEN_CAD", 6)
-    add_furn_box(152, 8, 182, 66, "ترول زيت", "KITCHEN_CAD", 5.5)
-    add_furn_box(182, 8, 238, 66, "وحدة خزين", "KITCHEN_CAD", 6)
-    # Kitchen East Wall (x=174..238, y=66..238):
-    add_furn_box(182, 66, 238, 114, "وحدة خزين", "KITCHEN_CAD", 6)
-    add_furn_box(178, 114, 238, 162, "فريزر افقي", "KITCHEN_CAD", 6)
-    add_furn_box(174, 162, 238, 212, "ثلاجة", "KITCHEN_CAD", 6)
-    add_furn_box(192, 212, 238, 238, "نيش", "KITCHEN_CAD", 6)
+    # Kitchen West, North & East Walls
+    add_furn_box(8, 315, 66, 348, "دولاب تنظيف", "KITCHEN_CAD", 5.5)
+    add_furn_box(8, 256, 66, 315, "أجهزة ومايكرويف", "KITCHEN_CAD", 5.5)
+    add_furn_box(8, 218, 66, 256, "تربو", "KITCHEN_CAD", 5.5)
+    add_furn_box(8, 158, 68, 218, "غسالة بيكو 60x60", "KITCHEN_CAD", 5.5)
+    add_furn_box(8, 94, 66, 158, "حوض مطبخ", "KITCHEN_CAD", 5.5)
+    add_wall_rect(16, 104, 56, 148, "FURNITURE_DETAIL")
+    msp.add_circle((36, cy(126)), 3.5, dxfattribs={"layer": "FURNITURE_DETAIL"})
+    add_furn_box(8, 58, 66, 94, "3 درج", "KITCHEN_CAD", 5.5)
+    add_furn_box(8, 8, 66, 58, "خزين ركنة", "KITCHEN_CAD", 5.5)
+    add_furn_box(66, 8, 152, 68, "بوتاجاز 6 شعلة + شفاط", "KITCHEN_CAD", 5.5)
+    for bx in (86, 109, 132):
+        for by in (24, 48):
+            msp.add_circle((bx, cy(by)), 5.5, dxfattribs={"layer": "FURNITURE_DETAIL"})
+    add_furn_box(152, 8, 182, 66, "ترول زيت", "KITCHEN_CAD", 5.0)
+    add_furn_box(182, 8, 238, 66, "وحدة خزين", "KITCHEN_CAD", 5.5)
+    add_furn_box(182, 66, 238, 114, "وحدة خزين", "KITCHEN_CAD", 5.5)
+    add_furn_box(178, 114, 238, 162, "فريزر أفقي", "KITCHEN_CAD", 5.5)
+    add_furn_box(174, 162, 238, 212, "ثلاجة", "KITCHEN_CAD", 5.5)
+    add_furn_box(192, 212, 238, 238, "نيش", "KITCHEN_CAD", 5.5)
 
-    # Kitchen 165 & 245 cm reference dimensions from South wall (y=355)
-    for dy_ref, off_x, txt_dim in [(165, -24, "165"), (245, -48, "245")]:
+    for dy_ref, off_x in [(165, -24), (245, -48)]:
         d_k = msp.add_linear_dim(
             base=(off_x, 0),
             p1=(0, cy(355)),
@@ -204,44 +205,65 @@ def create_apartment_dxf():
         )
         d_k.render()
 
-    # Washer Alcove & Bathroom Fixtures
-    add_furn_box(152, 380, 212, 440, "غسالة ملابس", "FURNITURE", 6)
-    add_furn_box(115, 472, 180, 518, "حوض", "FURNITURE", 6)
-    add_furn_box(18, 550, 68, 605, "WC", "FURNITURE", 6)
-    add_furn_box(12, 675, 147, 747, "شاور / بانيو", "FURNITURE", 7)
-    add_furn_box(376, 475, 414, 575, "جزامة", "FURNITURE", 6.5)
+    # Washer, Bathroom & Entry
+    add_furn_box(152, 380, 212, 440, "غسالة ملابس", "FURNITURE", 5.5)
+    msp.add_circle((182, cy(410)), 16, dxfattribs={"layer": "FURNITURE_DETAIL"})
+    add_furn_box(115, 472, 180, 518, "حوض", "FURNITURE", 5.5)
+    add_furn_box(18, 550, 68, 605, "WC", "FURNITURE", 5.5)
+    add_furn_box(12, 675, 147, 747, "شاور / بانيو", "FURNITURE", 6.5)
+    add_furn_box(376, 475, 414, 575, "جزامة", "FURNITURE", 6.0, rot=90)
 
-    # Reception (الصالة): ركنة عمولة 4م × 2.20م + سفرة زمردة
+    # Reception (الصالة): ركنة عمولة + سفرة زمردة
     add_furn_box(450, 10, 795, 98, "ركنة عمولة 4م (البا 5)")
-    add_furn_box(705, 98, 795, 230, "ركنة 2.20م")
-    add_furn_box(535, 125, 635, 185, "ترابيزة ركنة", "FURNITURE", 6)
+    add_furn_box(705, 98, 795, 230, "ركنة 2.20م", rot=90)
+    add_furn_box(535, 125, 635, 185, "ترابيزة ركنة", "FURNITURE", 6.0)
     add_furn_box(440, 334, 620, 379, "بوفيه زمردة 2م")
-    add_furn_box(255, 12, 350, 56, "نيش 1م", "FURNITURE", 6.5)
-    add_furn_box(315, 95, 405, 270, "سفرة 180x90 + 6 كراسي")
+    add_furn_box(255, 12, 350, 56, "نيش 1م", "FURNITURE", 6.0)
+    add_furn_box(315, 95, 405, 270, "سفرة زمردة 180x90", rot=90)
+    for cy_chair in (113, 165, 217):
+        add_wall_rect(293, cy_chair, 313, cy_chair + 34, "FURNITURE_DETAIL")
+        add_wall_rect(407, cy_chair, 427, cy_chair + 34, "FURNITURE_DETAIL")
 
     # Salon (الصالون x=0..422): انترية كريمة + ترابيزة دهبي
-    add_furn_box(12, 820, 94, 1030, "كنبة 2.20م (تيد 5 طوبي)")
-    add_furn_box(328, 820, 410, 1030, "كنبة 2.20م (تيد 3 كريمي)")
-    add_furn_box(32, 1072, 110, 1150, "فوتيه 1", "FURNITURE", 6.5)
-    add_furn_box(312, 1072, 390, 1150, "فوتيه 2", "FURNITURE", 6.5)
-    add_furn_box(166, 910, 256, 985, "ترابيزة متداخلة", "FURNITURE", 6.5)
+    add_furn_box(12, 820, 94, 1030, "كنبة 2.20م (تيد 5)", rot=90)
+    add_furn_box(328, 820, 410, 1030, "كنبة 2.20م (تيد 3)", rot=90)
+    add_furn_box(32, 1072, 110, 1150, "فوتيه 1", "FURNITURE", 6.0)
+    add_furn_box(312, 1072, 390, 1150, "فوتيه 2", "FURNITURE", 6.0)
+    msp.add_circle((194, cy(938)), 27, dxfattribs={"layer": "FURNITURE"})
+    msp.add_circle((236, cy(962)), 25, dxfattribs={"layer": "FURNITURE"})
 
     # Kids Room (أطفال خفرع x=422..865)
     add_furn_box(675, 768, 855, 828, "دولاب أطفال 2م")
     add_furn_box(432, 772, 477, 812, "مراية", "FURNITURE", 5.5)
-    add_furn_box(432, 835, 480, 935, "تسريحة خفرع", "FURNITURE", 6)
+    add_furn_box(432, 835, 480, 935, "تسريحة خفرع", "FURNITURE", 5.5, rot=90)
     add_furn_box(485, 965, 605, 1168, "سرير 120سم (1)")
+    add_wall_rect(505, 1125, 585, 1155, "FURNITURE_DETAIL")
     add_furn_box(625, 1118, 675, 1168, "كمود", "FURNITURE", 5.5)
     add_furn_box(695, 965, 815, 1168, "سرير 120سم (2)")
+    add_wall_rect(715, 1125, 795, 1155, "FURNITURE_DETAIL")
 
     # Master Bedroom (نوم بلازا)
-    add_furn_box(872, 865, 932, 1165, "دولاب بلازا 3م (6 ضلف)")
+    add_furn_box(872, 865, 932, 1165, "دولاب بلازا 3م (6 ضلف)", rot=90)
+    msp.add_line((872, cy(1015)), (932, cy(1015)), dxfattribs={"layer": "FURNITURE_DETAIL"})
     add_furn_box(995, 880, 1202, 1050, "سرير ميكانزم 160سم")
-    add_furn_box(1154, 825, 1202, 875, "كمود 50سم", "FURNITURE", 5.5)
-    add_furn_box(1154, 1055, 1202, 1105, "كمود 50سم", "FURNITURE", 5.5)
-    add_furn_box(985, 668, 1105, 714, "تسريحة بلازا", "FURNITURE", 6.5)
-    add_furn_box(1025, 720, 1065, 758, "بف", "FURNITURE", 5.5)
-    add_furn_box(875, 765, 925, 810, "مراية نص دايرة", "FURNITURE", 5.5)
+    add_wall_rect(1158, 895, 1188, 955, "FURNITURE_DETAIL")
+    add_wall_rect(1158, 975, 1188, 1035, "FURNITURE_DETAIL")
+    add_furn_box(1154, 825, 1202, 875, "كمود 50سم", "FURNITURE", 5.0)
+    add_furn_box(1154, 1055, 1202, 1105, "كمود 50سم", "FURNITURE", 5.0)
+    add_furn_box(985, 668, 1105, 714, "تسريحة بلازا", "FURNITURE", 6.0)
+    msp.add_circle((1045, cy(739)), 19, dxfattribs={"layer": "FURNITURE"})
+    add_furn_box(875, 765, 925, 810, "مراية نص دايرة", "FURNITURE", 5.0)
+
+    # Utilities
+    for ux, uy, ulbl in [
+        (264, 205, "GAS METER"),
+        (402, 420, "ELEC PANEL"),
+        (192, 452, "DRAIN"),
+        (212, 482, "HEATER"),
+    ]:
+        msp.add_circle((ux, cy(uy)), 10, dxfattribs={"layer": "UTILITIES"})
+        ut = msp.add_text(ulbl, dxfattribs={"layer": "UTILITIES", "height": 5.5})
+        ut.set_placement((ux, cy(uy) - 16), align=TextEntityAlignment.MIDDLE_CENTER)
 
     # 5. Room Labels
     labels = [
@@ -251,7 +273,7 @@ def create_apartment_dxf():
         (122, 612, "BATHROOM (الحمام)\n240 x 195 cm | 4.68 m2"),
         (525, 194, "RECEPTION (الصالة)\n560 x 470 cm | 26.32 m2"),
         (613, 524, "STAIRWELL (بئر السلم)\n272 x 425 cm"),
-        (333, 507, "ENTRY CORRIDOR\n260 x 177 cm"),
+        (315, 435, "ENTRY CORRIDOR\n260 x 177 cm"),
         (555, 710, "CORRIDOR (الطرقة) 575 x 100 cm"),
         (211, 970, "SALON (الصالون)\n380 x 345 cm | 13.20 m2"),
         (643, 970, "KIDS BEDROOM (أطفال)\n420 x 350 cm | 14.70 m2"),
@@ -268,50 +290,25 @@ def create_apartment_dxf():
             t.set_placement((lx, cy(ly) - idx * 24), align=TextEntityAlignment.MIDDLE_CENTER)
 
     # 6. Exterior Overall Dimensions
-    dim_top = msp.add_linear_dim(
-        base=(0, cy(-70)),
-        p1=(0, cy(0)),
-        p2=(895, cy(0)),
-        dimstyle="Standard",
-        override={"dimtxt": 22, "dimasz": 12},
-        dxfattribs={"layer": "DIMENSIONS"},
-    )
-    dim_top.render()
-
-    dim_bot = msp.add_linear_dim(
-        base=(0, cy(1250)),
-        p1=(0, cy(1180)),
-        p2=(1300, cy(1180)),
-        dimstyle="Standard",
-        override={"dimtxt": 22, "dimasz": 12},
-        dxfattribs={"layer": "DIMENSIONS"},
-    )
-    dim_bot.render()
-
-    dim_right = msp.add_linear_dim(
-        base=(1360, 0),
-        p1=(1300, cy(1180)),
-        p2=(1300, cy(570)),
-        angle=90,
-        dimstyle="Standard",
-        override={"dimtxt": 22, "dimasz": 12},
-        dxfattribs={"layer": "DIMENSIONS"},
-    )
-    dim_right.render()
-
-    dim_left = msp.add_linear_dim(
-        base=(-70, 0),
-        p1=(0, cy(1180)),
-        p2=(0, cy(0)),
-        angle=90,
-        dimstyle="Standard",
-        override={"dimtxt": 22, "dimasz": 12},
-        dxfattribs={"layer": "DIMENSIONS"},
-    )
-    dim_left.render()
+    for base_pt, p1, p2, ang in [
+        ((0, cy(-70)), (0, cy(0)), (895, cy(0)), 0),
+        ((0, cy(1250)), (0, cy(1180)), (1300, cy(1180)), 0),
+        ((1360, 0), (1300, cy(1180)), (1300, cy(570)), 90),
+        ((-70, 0), (0, cy(1180)), (0, cy(0)), 90),
+    ]:
+        dim_obj = msp.add_linear_dim(
+            base=base_pt,
+            p1=p1,
+            p2=p2,
+            angle=ang,
+            dimstyle="Standard",
+            override={"dimtxt": 22, "dimasz": 12},
+            dxfattribs={"layer": "DIMENSIONS"},
+        )
+        dim_obj.render()
 
     doc.saveas(DXF_PATH)
-    print(f"SUCCESS: Saved updated CAD DXF to {DXF_PATH}")
+    print(f"SUCCESS: Saved upgraded CAD DXF to {DXF_PATH}")
 
 
 if __name__ == "__main__":
