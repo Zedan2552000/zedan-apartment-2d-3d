@@ -442,7 +442,8 @@
     body.capture-mode .inspector-card,
     body.capture-mode .hud-bottom,
     body.capture-mode .walk-room-badge,
-    body.capture-mode #walkControlsHUD { display: none !important; }
+    body.capture-mode #walkControlsHUD,
+    body.capture-mode .zoom-controls { display: none !important; }
     body.capture-mode aside { width: 340px; }
     body.capture-mode .controls-only { display: none !important; }
 
@@ -665,6 +666,74 @@
     body.readonly-mode #editorCard {
       display: none !important;
     }
+
+    .zoom-controls {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 22;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 5px;
+      border-radius: 14px;
+      background: rgba(8, 13, 26, 0.86);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+      user-select: none;
+    }
+    .zoom-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(23, 34, 58, 0.92);
+      color: #f8fafc;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .zoom-btn:hover {
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      border-color: #7dd3fc;
+      color: #fff;
+    }
+    .zoom-btn.zoom-wide-btn { font-size: 11px; }
+    .zoom-btn.active {
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      border-color: #7dd3fc;
+      color: #fff;
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.45);
+    }
+    .zoom-readout {
+      font-size: 10px;
+      font-weight: 800;
+      color: #7dd3fc;
+      direction: ltr;
+      text-align: center;
+      min-width: 34px;
+    }
+    body.mobile-ui .zoom-controls {
+      left: 8px;
+      top: 38%;
+      padding: 4px;
+      gap: 4px;
+    }
+    body.mobile-ui .zoom-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+    body.mobile-ui .zoom-btn.zoom-wide-btn { font-size: 10.5px; }
   </style>
 </head>
 <body class="mobile-ui readonly-mode">
@@ -737,6 +806,13 @@
             <input type="range" id="walkHudSlider" min="0" max="1000" value="0" style="width:100%; cursor:pointer;" oninput="onTourSliderInput(this.value)">
           </div>
         </div>
+      </div>
+      <div class="zoom-controls" id="zoomControlsHUD" aria-label="التحكم في الزوم">
+        <button class="zoom-btn" id="zoomInBtn" onclick="zoomViewport(1)" title="تقريب / Zoom In (+)">＋</button>
+        <div class="zoom-readout" id="zoomReadout">1.0×</div>
+        <button class="zoom-btn" id="zoomOutBtn" onclick="zoomViewport(-1)" title="تبعيد / Zoom Out (-)">－</button>
+        <button class="zoom-btn zoom-wide-btn" id="wideLensBtn" onclick="toggleWalkWideAngle()" title="عدسة واسعة 0.5× للتجول">0.5×</button>
+        <button class="zoom-btn" id="zoomResetBtn" onclick="resetViewportZoom()" title="إعادة ضبط الزوم (0)">⤢</button>
       </div>
       <div class="hud-bottom" id="hudBottom">
         <span>الإجمالي: <strong>12.50 × 8.05 م (100.62 م²)</strong></span>
@@ -905,6 +981,10 @@
           <span>ارتفاع الحوائط: <strong id="wallHVal">2.15 م</strong></span>
           <input type="range" id="wallHSlider" min="45" max="270" value="215" oninput="update3DSettings()">
         </div>
+        <div class="control-row">
+          <span>الزوم / المسافة: <strong id="cam3DDistVal">100%</strong></span>
+          <input type="range" id="cam3DDistSlider" min="260" max="6500" value="2100" oninput="onCam3DDistSlider(this.value)">
+        </div>
         <div style="margin-bottom:7px;">
           <label style="display:block; font-size:11px; color:#94a3b8; margin-bottom:3px;">جو الإضاءة:</label>
           <select id="lightingTheme3D" class="studio-select" onchange="setLightingTheme(this.value)">
@@ -946,6 +1026,10 @@
             <option value="cool_modern">💎 أبيض عصري + ليد بروفايل</option>
             <option value="night">🌙 ليلي سينمائي</option>
           </select>
+        </div>
+        <div class="control-row">
+          <span>زاوية العدسة (زوم أوت): <strong id="walkFovVal">1.0× (72°)</strong></span>
+          <input type="range" id="walkFovSlider" min="40" max="112" value="72" oninput="onWalkFovSlider(this.value)">
         </div>
         <div class="control-row"><label class="toggle-label"><input type="checkbox" id="chkWalkCeiling" checked onchange="update3DSettings()"> الأسقف والجبس بورد والليد</label></div>
         <div class="control-row"><label class="toggle-label"><input type="checkbox" id="chkWalkFurn" checked onchange="update3DSettings()"> إظهار العفش والمطبخ</label></div>
@@ -1285,7 +1369,7 @@ let undoStack = [];
 let _wallRebuildRaf = null;
 
 let cam3D = { yaw: -0.46, pitch: 0.84, dist: 2100, targetX: 655, targetY: 45, targetZ: 590 };
-let walkCam = { x: 715, y: 475, z: 162, yaw: -1.65, pitch: -0.05 };
+let walkCam = { x: 715, y: 475, z: 162, yaw: -1.65, pitch: -0.05, fov: 72 };
 const walkKeys = {};
 let walkRafId = null;
 let walkLastTs = 0;
@@ -2533,7 +2617,7 @@ function initWebGL() {
       }
     }
 
-    const camera = new THREE.PerspectiveCamera(58, 16 / 9, 6, 9000);
+    const camera = new THREE.PerspectiveCamera(58, 16 / 9, 6, 18000);
     const hemiLight = new THREE.HemisphereLight(0xf0f7ff, 0x8b7355, 0.72);
     hemiLight.position.set(650, 1200, 590);
     scene.add(hemiLight);
@@ -3710,7 +3794,7 @@ function renderWebGLView(W, H) {
     gl.camera.position.set(cx, cy, cz);
     gl.camera.lookAt(cam3D.targetX, cam3D.targetY, cam3D.targetZ);
   } else if (currentMode === 'walk') {
-    gl.camera.fov = 68;
+    gl.camera.fov = walkCam.fov || 72;
     gl.camera.updateProjectionMatrix();
     const cp = Math.cos(walkCam.pitch), sp = Math.sin(walkCam.pitch);
     const fx = Math.cos(walkCam.yaw) * cp, fz = Math.sin(walkCam.yaw) * cp;
@@ -3827,7 +3911,7 @@ function renderSoftware3DFallback(W, H) {
     eyeZ = cam3D.targetZ + effDist * Math.cos(cam3D.pitch) * Math.cos(cam3D.yaw);
     lookX = cam3D.targetX; lookY = cam3D.targetY; lookZ = cam3D.targetZ;
   } else {
-    fov = 68;
+    fov = walkCam.fov || 72;
     const cp = Math.cos(walkCam.pitch), sp = Math.sin(walkCam.pitch);
     const fx = Math.cos(walkCam.yaw) * cp, fz = Math.sin(walkCam.yaw) * cp;
     eyeX = walkCam.x; eyeY = walkCam.z; eyeZ = walkCam.y;
@@ -4729,7 +4813,79 @@ function redraw() {
     ctx.clearRect(0, 0, W, H);
     render2DPlan(W, H, currentMode === 'blueprint');
   }
+  if (typeof window.updateZoomUI === 'function') window.updateZoomUI();
 }
+
+window.updateZoomUI = function() {
+  const ro = document.getElementById('zoomReadout');
+  const wideBtn = document.getElementById('wideLensBtn');
+  const walkSl = document.getElementById('walkFovSlider');
+  const walkVal = document.getElementById('walkFovVal');
+  const distSl = document.getElementById('cam3DDistSlider');
+  const distVal = document.getElementById('cam3DDistVal');
+  const fov = Math.round(walkCam.fov || 72);
+  if (wideBtn) {
+    wideBtn.style.display = (currentMode === 'walk') ? 'flex' : 'none';
+    wideBtn.classList.toggle('active', fov >= 100);
+  }
+  if (walkSl) walkSl.value = String(fov);
+  const lensScale = (72 / Math.max(40, fov)).toFixed(1) + '×';
+  if (walkVal) walkVal.textContent = `${lensScale} (${fov}°)`;
+  const d3Pct = Math.round((2100 / Math.max(260, cam3D.dist)) * 100);
+  if (distSl) distSl.value = String(Math.round(cam3D.dist));
+  if (distVal) distVal.textContent = d3Pct + '%';
+  if (ro) {
+    if (currentMode === 'walk') ro.textContent = lensScale;
+    else if (currentMode === '3d') ro.textContent = d3Pct + '%';
+    else ro.textContent = Math.round(pan2D.scale * 100) + '%';
+  }
+};
+
+window.zoomViewport = function(dir) {
+  if (currentMode === '3d') {
+    cam3D.dist = Math.max(260, Math.min(6500, dir > 0 ? cam3D.dist / 1.24 : cam3D.dist * 1.24));
+  } else if (currentMode === 'walk') {
+    stopWalkTour();
+    walkCam.fov = Math.max(40, Math.min(112, (walkCam.fov || 72) + (dir > 0 ? -8 : 8)));
+  } else {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const z = dir > 0 ? 1.25 : 0.80;
+    const ns = Math.max(0.06, Math.min(6.0, pan2D.scale * z));
+    const ratio = ns / pan2D.scale;
+    pan2D.x = cx - (cx - pan2D.x) * ratio;
+    pan2D.y = cy - (cy - pan2D.y) * ratio;
+    pan2D.scale = ns;
+  }
+  redraw();
+};
+
+window.toggleWalkWideAngle = function() {
+  stopWalkTour();
+  walkCam.fov = ((walkCam.fov || 72) >= 100) ? 72 : 104;
+  redraw();
+};
+
+window.resetViewportZoom = function() {
+  if (currentMode === '3d') {
+    cam3D = { yaw: -0.46, pitch: 0.84, dist: 2100, targetX: 655, targetY: 45, targetZ: 590 };
+  } else if (currentMode === 'walk') {
+    walkCam.fov = 72;
+  } else {
+    fit2DToViewport();
+  }
+  redraw();
+};
+
+window.onWalkFovSlider = function(val) {
+  walkCam.fov = Math.max(40, Math.min(112, Number(val) || 72));
+  redraw();
+};
+
+window.onCam3DDistSlider = function(val) {
+  cam3D.dist = Math.max(260, Math.min(6500, Number(val) || 2100));
+  redraw();
+};
 
 window.setMode = function(mode) {
   currentMode = mode;
@@ -5188,21 +5344,25 @@ window.addEventListener('mouseup', e => {
 
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
-  if (currentMode === '3d') cam3D.dist = Math.max(550, Math.min(3200, cam3D.dist + e.deltaY * 1.05));
+  if (currentMode === '3d') cam3D.dist = Math.max(260, Math.min(6500, cam3D.dist + e.deltaY * 1.35));
   else if (currentMode === 'walk') {
     stopWalkTour();
-    const step = e.deltaY < 0 ? 32 : -32;
-    moveWalkCamera(Math.cos(walkCam.yaw) * step, Math.sin(walkCam.yaw) * step);
+    walkCam.fov = Math.max(40, Math.min(112, (walkCam.fov || 72) + (e.deltaY > 0 ? 4 : -4)));
   } else {
     const rect = canvas.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const zoom = e.deltaY < 0 ? 1.12 : 0.89;
-    pan2D.x = mx - (mx - pan2D.x) * zoom; pan2D.y = my - (my - pan2D.y) * zoom; pan2D.scale *= zoom;
+    const z = e.deltaY < 0 ? 1.12 : 0.89;
+    const ns = Math.max(0.06, Math.min(6.0, pan2D.scale * z));
+    const ratio = ns / pan2D.scale;
+    pan2D.x = mx - (mx - pan2D.x) * ratio; pan2D.y = my - (my - pan2D.y) * ratio; pan2D.scale = ns;
   }
   redraw();
 }, { passive: false });
 
 window.addEventListener('keydown', e => {
   if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+  if (e.code === 'Equal' || e.code === 'NumpadAdd') { e.preventDefault(); zoomViewport(1); return; }
+  if (e.code === 'Minus' || e.code === 'NumpadSubtract') { e.preventDefault(); zoomViewport(-1); return; }
+  if (e.code === 'Digit0' || e.code === 'Numpad0') { e.preventDefault(); resetViewportZoom(); return; }
   if (!READ_ONLY_MODE && editMode && currentMode !== 'walk') {
     if ((e.ctrlKey || e.metaKey) && e.code === 'KeyZ') { e.preventDefault(); undoEdit(); return; }
     if (e.code === 'KeyR' && selectedItem) { e.preventDefault(); rotateSelectedFurn(); return; }
@@ -5476,17 +5636,18 @@ function bindTouchGestures() {
       if (touchPinchDist > 8 && dist > 8) {
         const ratio = dist / touchPinchDist;
         if (currentMode === '3d') {
-          cam3D.dist = Math.max(550, Math.min(3200, cam3D.dist / ratio));
+          cam3D.dist = Math.max(260, Math.min(6500, cam3D.dist / ratio));
         } else if (currentMode === 'walk') {
           stopWalkTour();
-          const step = (dist - touchPinchDist) * 0.65;
-          moveWalkCamera(Math.cos(walkCam.yaw) * step, Math.sin(walkCam.yaw) * step);
+          walkCam.fov = Math.max(40, Math.min(112, (walkCam.fov || 72) / ratio));
         } else {
           const rect = canvas.getBoundingClientRect();
           const mx = mid.x - rect.left, my = mid.y - rect.top;
-          pan2D.x = mx - (mx - pan2D.x) * ratio + (mid.x - touchMidPt.x);
-          pan2D.y = my - (my - pan2D.y) * ratio + (mid.y - touchMidPt.y);
-          pan2D.scale = Math.max(0.18, Math.min(4.5, pan2D.scale * ratio));
+          const ns = Math.max(0.06, Math.min(6.0, pan2D.scale * ratio));
+          const rEff = ns / pan2D.scale;
+          pan2D.x = mx - (mx - pan2D.x) * rEff + (mid.x - touchMidPt.x);
+          pan2D.y = my - (my - pan2D.y) * rEff + (mid.y - touchMidPt.y);
+          pan2D.scale = ns;
         }
         redraw();
       }
