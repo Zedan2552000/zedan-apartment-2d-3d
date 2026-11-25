@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>استوديو التصميم المعماري NOVA ARCH 6.1 — شقة م. زيدان (12.50 × 8.05 م)</title>
+  <title>استوديو التصميم المعماري NOVA ARCH 8.0 PRO MAX — شقة م. زيدان (12.50 × 8.05 م)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
   <script src="./three.min.js"></script>
   <style>
     :root {
-      --bg-dark: #060b16;
-      --panel-bg: rgba(11, 18, 33, 0.93);
-      --card-bg: rgba(15, 23, 42, 0.80);
-      --border-color: rgba(56, 189, 248, 0.18);
+      --bg-dark: #050814;
+      --panel-bg: rgba(9, 14, 28, 0.84);
+      --card-bg: rgba(15, 23, 42, 0.72);
+      --border-color: rgba(56, 189, 248, 0.22);
       --accent-cyan: #06b6d4;
+      --accent-violet: #8b5cf6;
       --accent-gold: #f59e0b;
       --accent-emerald: #10b981;
       --text-main: #f8fafc;
@@ -22,8 +23,8 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Cairo', 'Segoe UI', 'Tahoma', sans-serif;
-      background: radial-gradient(circle at 50% 20%, #0f172a 0%, #050811 100%);
+      font-family: 'Cairo', 'Outfit', 'Segoe UI', 'Tahoma', sans-serif;
+      background: radial-gradient(circle at 20% 15%, #111c38 0%, #070b18 55%, #03060d 100%);
       color: var(--text-main);
       height: 100vh;
       display: flex;
@@ -32,10 +33,10 @@
     }
 
     header {
-      background: linear-gradient(90deg, rgba(10, 16, 30, 0.96) 0%, rgba(20, 38, 76, 0.94) 50%, rgba(10, 16, 30, 0.96) 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.26);
+      background: linear-gradient(90deg, rgba(8, 13, 26, 0.92) 0%, rgba(18, 31, 64, 0.88) 50%, rgba(8, 13, 26, 0.92) 100%);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.28);
       padding: 8px 16px;
       display: flex;
       align-items: center;
@@ -43,71 +44,84 @@
       gap: 12px;
       flex-shrink: 0;
       z-index: 30;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
     }
     .brand { display: flex; align-items: center; gap: 11px; }
     .brand-badge {
-      background: linear-gradient(135deg, #06b6d4, #6366f1);
+      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 55%, #8b5cf6 100%);
       color: #fff;
       font-weight: 900;
-      padding: 5px 11px;
-      border-radius: 9px;
+      padding: 5px 12px;
+      border-radius: 10px;
       font-size: 12.5px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 18px rgba(6, 182, 212, 0.45);
+      letter-spacing: 0.6px;
+      box-shadow: 0 0 22px rgba(6, 182, 212, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
       white-space: nowrap;
     }
-    .brand h1 { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.2; }
+    .brand h1 { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
     .brand p { font-size: 11px; color: #93c5fd; }
 
     .tabs {
       display: flex;
       gap: 5px;
-      background: rgba(9, 14, 26, 0.85);
+      background: rgba(7, 11, 22, 0.82);
       padding: 4px;
-      border-radius: 11px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.45);
     }
     .tab-btn {
       background: transparent;
       color: var(--text-muted);
       border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 6px 13px;
+      border-radius: 9px;
       cursor: pointer;
       font-family: inherit;
       font-size: 12px;
-      font-weight: 700;
-      transition: all 0.22s ease;
+      font-weight: 800;
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
       white-space: nowrap;
     }
-    .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.08); transform: translateY(-1px); }
     .tab-btn.active {
-      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      background: linear-gradient(135deg, #0284c7 0%, #06b6d4 55%, #3b82f6 100%);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.45), inset 0 1px 1px rgba(255,255,255,0.3);
     }
 
     .actions { display: flex; gap: 7px; align-items: center; }
     .btn {
-      background: rgba(30, 41, 59, 0.88);
+      background: rgba(23, 33, 54, 0.84);
       color: #e2e8f0;
       border: 1px solid rgba(148, 163, 184, 0.28);
       padding: 6px 11px;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
       font-family: inherit;
       font-size: 11.5px;
       font-weight: 700;
-      transition: all 0.22s ease;
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
       white-space: nowrap;
+      backdrop-filter: blur(10px);
     }
-    .btn:hover { background: rgba(51, 65, 85, 0.96); border-color: var(--accent-cyan); transform: translateY(-1px); }
+    .btn:hover {
+      background: rgba(38, 52, 82, 0.95);
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.22);
+    }
     .btn.edit-active {
       background: linear-gradient(135deg, #059669, #10b981);
-      color: #03150e;
+      color: #02140d;
       border-color: #34d399;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+    .btn.ceil-active {
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
     }
     .btn-gold {
       background: linear-gradient(135deg, #d97706, #f59e0b);
@@ -115,18 +129,18 @@
       border: none;
       font-weight: 800;
     }
-    .btn-gold:hover { filter: brightness(1.08); box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35); }
-    .btn-sm { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
-    .btn-danger { background: rgba(127, 29, 29, 0.65); border-color: rgba(248, 113, 113, 0.4); color: #fecaca; }
-    .btn-danger:hover { background: rgba(185, 28, 28, 0.85); border-color: #f87171; }
+    .btn-gold:hover { filter: brightness(1.08); box-shadow: 0 6px 18px rgba(245, 158, 11, 0.4); }
+    .btn-sm { padding: 4px 8px; font-size: 11px; border-radius: 7px; }
+    .btn-danger { background: rgba(127, 29, 29, 0.68); border-color: rgba(248, 113, 113, 0.42); color: #fecaca; }
+    .btn-danger:hover { background: rgba(185, 28, 28, 0.88); border-color: #f87171; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
 
     .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
 
     aside {
-      width: 332px;
+      width: 342px;
       background: var(--panel-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
       border-left: 1px solid var(--border-color);
       padding: 11px;
       overflow-y: auto;
@@ -135,20 +149,24 @@
       gap: 11px;
       flex-shrink: 0;
       z-index: 20;
+      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.4);
     }
     aside::-webkit-scrollbar { width: 6px; }
     aside::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 
     .card {
       background: var(--card-bg);
-      border: 1px solid rgba(148, 163, 184, 0.16);
-      border-radius: 12px;
-      padding: 10px 11px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 14px;
+      padding: 11px 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
     }
+    .card:hover { border-color: rgba(56, 189, 248, 0.32); }
     .card.editor-highlight {
-      border-color: rgba(16, 185, 129, 0.55);
-      background: rgba(6, 36, 28, 0.65);
+      border-color: rgba(16, 185, 129, 0.65);
+      background: linear-gradient(160deg, rgba(6, 40, 32, 0.78) 0%, rgba(12, 24, 44, 0.82) 100%);
+      box-shadow: 0 0 26px rgba(16, 185, 129, 0.18);
     }
     .card h3 {
       font-size: 12px;
@@ -201,22 +219,102 @@
     .preset-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
     .nudge-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 124px; direction: ltr; }
     .preset-btn {
-      background: rgba(30, 41, 59, 0.88);
+      background: rgba(30, 41, 59, 0.86);
       color: #cbd5e1;
       border: 1px solid rgba(148, 163, 184, 0.24);
       padding: 6px 6px;
-      border-radius: 7px;
+      border-radius: 8px;
       font-family: inherit;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.18s ease;
+      transition: all 0.22s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .preset-btn:hover, .preset-btn.active {
       background: linear-gradient(135deg, #0e7490, #0284c7);
       color: #fff;
       border-color: #38bdf8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.28);
+    }
+    .preset-btn.led-btn {
+      background: linear-gradient(135deg, rgba(14, 116, 144, 0.45), rgba(99, 102, 241, 0.45));
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #e0f2fe;
+    }
+    .preset-btn.spk-btn {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.38), rgba(236, 72, 153, 0.32));
+      border-color: rgba(167, 139, 250, 0.45);
+      color: #f3e8ff;
+    }
+
+    /* Floating Glassmorphism Quick-Action Dock */
+    .floating-dock {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8, 13, 26, 0.84);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(56, 189, 248, 0.34);
+      border-radius: 14px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 19;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+    .dock-sep {
+      width: 1px;
+      height: 22px;
+      background: rgba(148, 163, 184, 0.25);
+      margin: 0 2px;
+    }
+    .dock-chip {
+      background: rgba(24, 35, 58, 0.88);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 5px 10px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.22s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .dock-chip:hover {
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      color: #fff;
+      border-color: #7dd3fc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+    }
+    .dock-chip.chip-led {
+      border-color: rgba(34, 211, 238, 0.5);
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(59, 130, 246, 0.25));
+      color: #bae6fd;
+    }
+    .dock-chip.chip-spk {
+      border-color: rgba(167, 139, 250, 0.5);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(217, 70, 239, 0.22));
+      color: #e9d5ff;
+    }
+    .dock-chip.chip-del {
+      border-color: rgba(248, 113, 113, 0.45);
+      background: rgba(127, 29, 29, 0.55);
+      color: #fecaca;
+    }
+    .dock-chip.chip-del:hover {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: #fff;
+      border-color: #fca5a5;
     }
 
     table.schedule { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -233,10 +331,10 @@
       bottom: 14px;
       left: 14px;
       background: rgba(9, 14, 26, 0.88);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      backdrop-filter: blur(16px);
       padding: 7px 14px;
-      border-radius: 10px;
+      border-radius: 11px;
       font-size: 11.5px;
       color: #cbd5e1;
       display: flex;
@@ -249,13 +347,13 @@
 
     .inspector-card {
       position: absolute;
-      top: 14px;
+      top: 62px;
       left: 14px;
       background: rgba(9, 14, 26, 0.92);
-      border: 1px solid rgba(56, 189, 248, 0.50);
-      backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      backdrop-filter: blur(16px);
       padding: 9px 14px;
-      border-radius: 11px;
+      border-radius: 12px;
       font-size: 11.5px;
       color: #f8fafc;
       z-index: 18;
@@ -270,7 +368,7 @@
 
     .ruler-status {
       position: absolute;
-      top: 14px;
+      top: 62px;
       left: 14px;
       background: rgba(245, 158, 11, 0.18);
       border: 1px solid var(--accent-gold);
@@ -285,6 +383,7 @@
     }
 
     body.capture-mode header,
+    body.capture-mode .floating-dock,
     body.capture-mode .ruler-status,
     body.capture-mode .inspector-card,
     body.capture-mode .hud-bottom,
@@ -299,7 +398,7 @@
       left: 14px;
       background: rgba(9, 14, 26, 0.88);
       border: 1px solid rgba(56, 189, 248, 0.28);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
       border-radius: 13px;
       padding: 10px 12px;
       display: none;
@@ -336,7 +435,7 @@
     }
     .walk-room-badge {
       position: absolute;
-      top: 14px;
+      top: 62px;
       right: 14px;
       background: rgba(9, 14, 26, 0.88);
       border: 1px solid #38bdf8;
@@ -350,15 +449,165 @@
       pointer-events: none;
       z-index: 18;
     }
+
+    /* Mobile & Touch Responsive Architecture (NOVA ARCH 8.0 Mobile Edition) */
+    .mobile-drawer-fab, .mobile-drawer-header { display: none; }
+    .btn-mobile-link {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      border-color: #a78bfa;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.mobile-ui {
+      height: 100dvh;
+      touch-action: none;
+      overscroll-behavior: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body.mobile-ui header {
+      padding: 6px 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    body.mobile-ui .brand p { display: none; }
+    body.mobile-ui .brand h1 { font-size: 12.5px; }
+    body.mobile-ui .brand-badge { font-size: 10.5px; padding: 3px 8px; }
+    body.mobile-ui .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 45;
+      border-radius: 16px 16px 0 0;
+      background: rgba(6, 10, 22, 0.96);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-top: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+      justify-content: space-around;
+    }
+    body.mobile-ui .tab-btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      font-size: 11.5px;
+    }
+    body.mobile-ui .actions {
+      width: 100%;
+      justify-content: space-between;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      gap: 5px;
+    }
+    body.mobile-ui .actions .btn {
+      padding: 5px 8px;
+      font-size: 10.5px;
+      flex: 1;
+      text-align: center;
+      justify-content: center;
+    }
+    body.mobile-ui .floating-dock {
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      transform: none;
+      max-width: calc(100vw - 16px);
+      overflow-x: auto;
+      padding: 5px 8px;
+      border-radius: 12px;
+      justify-content: flex-start;
+    }
+    body.mobile-ui .floating-dock::-webkit-scrollbar { height: 0; display: none; }
+    body.mobile-ui .dock-chip { padding: 5px 9px; font-size: 10.5px; flex-shrink: 0; }
+    body.mobile-ui aside {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 48px;
+      width: 100%;
+      max-height: 62dvh;
+      border-left: none;
+      border-top: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 18px 18px 0 0;
+      z-index: 40;
+      transform: translateY(110%);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      padding: 10px 12px 18px;
+      box-shadow: 0 -14px 36px rgba(0, 0, 0, 0.75);
+    }
+    body.mobile-ui aside.drawer-open {
+      transform: translateY(0);
+    }
+    body.mobile-ui .mobile-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    body.mobile-ui .mobile-drawer-fab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: fixed;
+      bottom: 58px;
+      right: 12px;
+      z-index: 38;
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      color: #fff;
+      border: 1px solid #7dd3fc;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.55);
+    }
+    body.mobile-ui .hud-bottom {
+      bottom: 58px;
+      left: 10px;
+      padding: 5px 10px;
+      font-size: 10px;
+      max-width: 58vw;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    body.mobile-ui #hudHint { display: none; }
+    body.mobile-ui #walkControlsHUD {
+      bottom: 58px;
+      left: 10px;
+      padding: 8px 10px;
+      transform: scale(0.92);
+      transform-origin: bottom left;
+    }
+    body.mobile-ui .inspector-card {
+      top: 52px;
+      left: 8px;
+      right: 8px;
+      max-width: none;
+      padding: 7px 11px;
+    }
+    body.mobile-ui .walk-room-badge {
+      top: 52px;
+      right: 10px;
+      font-size: 10.5px;
+      padding: 4px 11px;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="brand">
-      <div class="brand-badge">NOVA ARCH 6.1 • PBR</div>
+      <div class="brand-badge">NOVA ARCH 8.0 • PRO MAX</div>
       <div>
         <h1>استوديو التصميم المعماري التفاعلي 2D & WebGL 3D — شقة م. زيدان</h1>
-        <p>محدّث بدهانات أوف وايت، البانوهات، ليد بروفايل الطرقة، ألوميتال برونز + عفش المصنع الفعلي ومحرر التحريك</p>
+        <p>محدّث بتعديلاتك المخصصة + إضافة ليد بروفايل وسماعات السقف + محرر الحوائط والأثاث والـ UI/UX Pro Max</p>
       </div>
     </div>
 
@@ -370,9 +619,11 @@
     </div>
 
     <div class="actions">
-      <button class="btn" id="editModeBtn" onclick="toggleEditMode()">✏️ وضع التعديل (تحريك الأثاث والبيبان)</button>
+      <button class="btn" id="editModeBtn" onclick="toggleEditMode()">✏️ وضع التعديل (أثاث / سقف / حيطان)</button>
+      <button class="btn" id="ceilToggleBtn" onclick="toggleCeilingOverlay()" title="إظهار / إخفاء الليد والسماعات والسبوتات في 2D و 3D">💡 إظهار السقف والليد</button>
       <button class="btn" id="rulerToggleBtn" onclick="toggleRuler()">📏 المسطرة</button>
       <button class="btn btn-gold" onclick="exportPNG()">📸 حفظ PNG</button>
+      <a class="btn btn-mobile-link" id="versionSwitchBtn" href="./mobile.html" title="التبديل بين نسخة التلفون والنسخة العادية">📱 نسخة التلفون</a>
     </div>
   </header>
 
@@ -380,6 +631,24 @@
     <main class="viewport" id="viewport">
       <canvas id="glCanvas"></canvas>
       <canvas id="mainCanvas"></canvas>
+      <button class="mobile-drawer-fab" id="mobileDrawerFab" onclick="toggleMobileDrawer()">⚙️ الأدوات والمحرر</button>
+
+      <!-- Floating Glassmorphism Quick-Action Dock (UI Pro Max) -->
+      <div class="floating-dock" id="floatingQuickDock">
+        <button class="dock-chip chip-led" onclick="addNewLedStrip()" title="إضافة شريط ليد بروفايل في السقف">➖ + ليد سقف</button>
+        <button class="dock-chip chip-spk" onclick="addNewCeilingSpeaker()" title="إضافة سماعة سقف ذكية غاطسة">🔊 + سماعة سقف</button>
+        <button class="dock-chip" onclick="addNewLamp('spot')" title="إضافة سبوت ليد في السقف">💡 + سبوت</button>
+        <button class="dock-chip" onclick="addNewLamp('chandelier')" title="إضافة نجفة سقف">✨ + نجفة</button>
+        <div class="dock-sep"></div>
+        <button class="dock-chip" onclick="addNewWall()" title="إضافة حائط جديد">🧱 + حائط</button>
+        <button class="dock-chip" onclick="addNewDoor()" title="إضافة باب جديد">🚪 + باب</button>
+        <div class="dock-sep"></div>
+        <button class="dock-chip" onclick="rotateSelectedFurn()" title="تدوير العنصر المحدد 90° (R)">↻ تدوير 90°</button>
+        <button class="dock-chip" onclick="duplicateSelectedItem()" title="نسخ العنصر المحدد">📋 نسخ</button>
+        <button class="dock-chip chip-del" onclick="deleteSelectedAny()" title="حذف العنصر المحدد (Delete)">🗑️ حذف</button>
+        <button class="dock-chip" onclick="undoEdit()" title="تراجع عن آخر خطوة (Ctrl+Z)">↩️ تراجع</button>
+      </div>
+
       <div class="ruler-status" id="rulerStatus">📏 اضغط نقطتين على الرسم لقياس المسافة بدقة</div>
       <div class="inspector-card" id="inspectorCard">
         <div class="ins-title" id="insTitle">—</div>
@@ -406,15 +675,19 @@
       <div class="hud-bottom" id="hudBottom">
         <span>الإجمالي: <strong>12.50 × 8.05 م (100.62 م²)</strong></span>
         <span>الصافي: <strong>97.84 م²</strong></span>
-        <span id="hudHint">اسحب للتحريك • عجلة الماوس للتكبير • فعّل وضع التعديل لتحريك العفش والبيبان</span>
+        <span id="hudHint">اسحب للتحريك • عجلة الماوس للتكبير • الشريط العلوي لإضافة ليد أو سماعات سقف فوراً</span>
       </div>
     </main>
 
-    <aside>
+    <aside id="studioSidebar">
+      <div class="mobile-drawer-header">
+        <span style="font-size:12.5px; font-weight:800; color:#38bdf8;">⚙️ لوحة التحكم ومحرر الشقة</span>
+        <button class="btn btn-sm btn-danger" onclick="toggleMobileDrawer(false)">✕ إغلاق</button>
+      </div>
       <!-- Interactive Editor Card -->
       <div class="card controls-only" id="editorCard">
         <h3>
-          <span>🛠️ محرر الأثاث واللمبات والحيطان</span>
+          <span>🛠️ محرر الأثاث والليد والسماعات والحيطان</span>
           <span id="editBadgeState" style="font-size:10.5px; color:#94a3b8;">معاينة</span>
         </h3>
         <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:6px;">
@@ -424,14 +697,19 @@
           <button class="btn btn-sm btn-danger" onclick="resetAllEdits()">🔄 استعادة الكل</button>
           <input type="file" id="importJsonInput" accept="application/json" style="display:none;" onchange="importEditsJSON(this)">
         </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:6px;">
+          <button class="preset-btn led-btn" onclick="addNewLedStrip()">➖ + ليد سقف</button>
+          <button class="preset-btn spk-btn" onclick="addNewCeilingSpeaker()">🔊 + سماعة سقف</button>
+        </div>
         <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px;">
-          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewLamp()">💡 + لمبة</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewLamp('spot')">💡 + سبوت</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewLamp('chandelier')">✨ + نجفة</button>
           <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewWall()">🧱 + حائط</button>
           <button class="preset-btn" style="flex:1; font-size:10.5px;" onclick="addNewDoor()">🚪 + باب</button>
-          <button class="preset-btn" style="flex:1; font-size:10.5px; color:#fca5a5;" onclick="deleteSelectedAny()">🗑️ حذف (Del)</button>
+          <button class="preset-btn" style="flex:1; font-size:10.5px; color:#fca5a5;" onclick="deleteSelectedAny()">🗑️ حذف</button>
         </div>
         <div id="editorEmptyMsg" style="font-size:11px; color:#94a3b8; line-height:1.55;">
-          فعّل <strong>✏️ وضع التعديل</strong> ثم اضغط على أي <strong>قطعة عفش، لمبة، سخان/مرفق، باب، أو حائط</strong> في 2D أو 3D لسحبه بالماوس، تغيير أبعاده، أو حذفه بزر <strong>🗑️ حذف (Delete)</strong>.
+          اضغط على <strong>➖ + ليد سقف</strong> أو <strong>🔊 + سماعة سقف</strong> لإضافتها فوراً، أو اضغط على أي <strong>قطعة عفش، ليد، سماعة، باب، أو حائط</strong> لسحبه بالماوس وتعديل مقاساته.
         </div>
 
         <!-- Selected Furniture / Lamp / Utility Editor -->
@@ -442,8 +720,18 @@
             <span>Y (سم): <input type="number" id="edFurnY" class="ed-num" step="5" onchange="applyFurnInputs()"></span>
           </div>
           <div class="control-row">
-            <span>عرض W: <input type="number" id="edFurnW" class="ed-num" step="5" min="5" onchange="applyFurnInputs()"></span>
-            <span>عمق D: <input type="number" id="edFurnD" class="ed-num" step="5" min="5" onchange="applyFurnInputs()"></span>
+            <span>عرض W: <input type="number" id="edFurnW" class="ed-num" step="5" min="4" onchange="applyFurnInputs()"></span>
+            <span>عمق D: <input type="number" id="edFurnD" class="ed-num" step="5" min="4" onchange="applyFurnInputs()"></span>
+          </div>
+          <div id="ledQuickPresets" style="display:none; margin:6px 0; padding:6px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); border-radius:8px;">
+            <div style="font-size:10.5px; color:#38bdf8; margin-bottom:4px; font-weight:700;">⚡ مقاسات سريعة لشريط الليد:</div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button class="preset-btn" style="flex:1; padding:3px 5px; font-size:10px;" onclick="setLedQuickSize(100)">1 متر</button>
+              <button class="preset-btn" style="flex:1; padding:3px 5px; font-size:10px;" onclick="setLedQuickSize(200)">2 متر</button>
+              <button class="preset-btn" style="flex:1; padding:3px 5px; font-size:10px;" onclick="setLedQuickSize(300)">3 متر</button>
+              <button class="preset-btn" style="flex:1; padding:3px 5px; font-size:10px;" onclick="setLedQuickSize(400)">4 متر</button>
+              <button class="preset-btn" style="flex:1; padding:3px 5px; font-size:10px;" onclick="setLedQuickSize(null, true)">⇄ أفقي/رأسي</button>
+            </div>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0;">
             <div class="nudge-pad">
@@ -675,7 +963,7 @@
 // ============================================================================
 // 1. PARAMETRIC APARTMENT GEOMETRY (SINGLE SOURCE OF TRUTH)
 // ============================================================================
-const STORAGE_KEY = 'zedan_apt_v7';
+const STORAGE_KEY = 'zedan_apt_v8';
 
 const APT = {
   W: 1300,
@@ -688,8 +976,8 @@ const APT = {
     { id: 'stairwell', name: 'بئر السلم', sub: 'Stairwell', x: 422, y: 388, w: 383, h: 272, dimLabel: '272 × 425 سم', area: 'مشترك', floor: 'stair', gypsum: false },
     { id: 'entry', name: 'ممر (المدخل)', sub: 'Entry Corridor', x: 245, y: 355, w: 177, h: 305, dimLabel: '260 × 177 سم', area: '4.60 م²', floor: 'corridor', gypsum: false, labelY: 525, labelX: 333 },
     { id: 'corridor', name: 'ممر (الطرقة)', sub: 'Corridor', x: 245, y: 660, w: 620, h: 100, dimLabel: '575 × 100 سم', area: '5.75 م²', floor: 'corridor', gypsum: false },
-    { id: 'salon', name: 'الصالون', sub: 'Salon', x: 0, y: 760, w: 422, h: 420, dimLabel: '380 × 345 سم', area: '13.20 م²', floor: 'marble', gypsum: true },
-    { id: 'kids', name: 'أطفال', sub: 'Kids Room', x: 422, y: 760, w: 443, h: 420, dimLabel: '420 × 350 سم', area: '14.70 م²', floor: 'marble', gypsum: true },
+    { id: 'salon', name: 'الصالون', sub: 'Salon', x: 0, y: 760, w: 427, h: 420, dimLabel: '380 × 345 سم', area: '13.20 م²', floor: 'marble', gypsum: true },
+    { id: 'kids', name: 'أطفال', sub: 'Kids Room', x: 427, y: 760, w: 438, h: 420, dimLabel: '420 × 350 سم', area: '14.70 م²', floor: 'marble', gypsum: true },
     { id: 'master', name: 'الماستر', sub: 'Master Bedroom', x: 865, y: 660, w: 345, h: 520, dimLabel: '350 × 470 سم', area: '15.20 م²', floor: 'marble', gypsum: true },
     { id: 'balcony_upper', name: 'البلكونة', sub: 'Upper Balcony', x: 805, y: 0, w: 90, h: 570, dimLabel: 'عرض 90 سم', area: '', floor: 'balcony', gypsum: false, hideLabel: true },
     { id: 'balcony_turn', name: 'البلكونة', sub: 'Balcony Jog', x: 805, y: 570, w: 495, h: 90, dimLabel: 'ركبة 90 سم', area: '', floor: 'balcony', gypsum: false, hideLabel: true },
@@ -699,7 +987,7 @@ const APT = {
   columns: [
     { x: 100, y: 465, w: 40, h: 20, label: '20×40' },
     { x: 350, y: 1170, w: 40, h: 10, label: '40×10' },
-    { x: 422, y: 920, w: 12, h: 40, label: '40×10' },
+    { x: 427, y: 920, w: 12, h: 40, label: '40×10' },
     { x: 850, y: 920, w: 15, h: 46, label: '46×15' },
     { x: 1198, y: 760, w: 12, h: 55, label: '55×10' },
     { x: 1167, y: 1155, w: 43, h: 25, label: '43×25' }
@@ -728,12 +1016,12 @@ const APT = {
     { id: 'w_str_w',   name: 'حائط السلم الغربي (مدخل)',      x1: 422, y1: 388,  x2: 422,  y2: 660,  t: 14, ext: false, mat: 'entry_stair_e',    allowDoor: true  },
     { id: 'w_str_s',   name: 'حائط السلم الجنوبي (الطرقة)',   x1: 422, y1: 660,  x2: 865,  y2: 660,  t: 14, ext: false, mat: 'stair_corr_s',     allowDoor: true  },
     { id: 'w_cor_s',   name: 'حائط الطرقة (الصالون والأطفال)',x1: 245, y1: 760,  x2: 865,  y2: 760,  t: 12, ext: false, mat: 'cream',            allowDoor: true  },
-    { id: 'w_sal_kid', name: 'فاصل الصالون والأطفال',         x1: 422, y1: 760,  x2: 422,  y2: 1180, t: 12, ext: false, mat: 'cream',            allowDoor: true  },
+    { id: 'w_sal_kid', name: 'فاصل الصالون والأطفال',         x1: 427, y1: 760,  x2: 427,  y2: 1180, t: 12, ext: false, mat: 'cream',            allowDoor: true  },
     { id: 'w_mst_w',   name: 'حائط الماستر الغربي (المدخل)',  x1: 865, y1: 660,  x2: 865,  y2: 1180, t: 14, ext: false, mat: 'cream',            allowDoor: true  }
   ],
   defaultDoors: [
     { id: 'd_main',    name: 'باب الشقة',    w: 100, hx: 690,  hy: 388, dir: 'h', swing: -1, hingeEnd: 1, main: true,  alum: false, wallId: 'w_rec_s' },
-    { id: 'd_kitchen', name: 'باب المطبخ',   w: 90,  hx: 245,  hy: 240, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: false, wallId: 'w_kit_e' },
+    { id: 'd_kitchen', name: 'باب المطبخ',   w: 90,  hx: 245,  hy: 259, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: false, wallId: 'w_kit_e' },
     { id: 'd_bath',    name: 'باب الحمام',   w: 80,  hx: 245,  hy: 670, dir: 'v', swing: -1, hingeEnd: 0, main: false, alum: false, wallId: 'w_bth_e' },
     { id: 'd_salon',   name: 'باب الصالون',  w: 87,  hx: 285,  hy: 760, dir: 'h', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_cor_s' },
     { id: 'd_kids',    name: 'باب الأطفال',  w: 90,  hx: 435,  hy: 760, dir: 'h', swing: 1,  hingeEnd: 0, main: false, alum: false, wallId: 'w_cor_s' },
@@ -759,42 +1047,43 @@ const APT = {
   ]
 };
 
+// Updated 35-Point Walkthrough Tour Path synchronized with Custom Layout JSON
 const WALK_TOUR_PATH = [
-  { x: 735,  y: 495,  yaw: -1.68, pitch: -0.05 },
-  { x: 735,  y: 295,  yaw: -2.25, pitch: -0.10 },
-  { x: 645,  y: 255,  yaw: -2.65, pitch: -0.11 },
-  { x: 465,  y: 285,  yaw: -3.05, pitch: -0.10 },
-  { x: 320,  y: 285,  yaw: -3.12, pitch: -0.10 },
-  { x: 135,  y: 268,  yaw: -2.05, pitch: -0.12 },
-  { x: 122,  y: 155,  yaw: -1.60, pitch: -0.12 },
-  { x: 135,  y: 268,  yaw:  0.15, pitch: -0.10 },
-  { x: 318,  y: 288,  yaw:  1.52, pitch: -0.06 },
-  { x: 332,  y: 445,  yaw:  1.68, pitch:  0.04 },
-  { x: 325,  y: 705,  yaw:  2.95, pitch: -0.06 },
-  { x: 185,  y: 705,  yaw: -2.25, pitch: -0.12 },
-  { x: 135,  y: 575,  yaw: -1.65, pitch: -0.12 },
-  { x: 185,  y: 705,  yaw:  0.05, pitch: -0.08 },
-  { x: 325,  y: 705,  yaw:  1.56, pitch: -0.08 },
-  { x: 328,  y: 710,  yaw:  1.57, pitch: -0.09 },
-  { x: 315,  y: 845,  yaw:  2.45, pitch: -0.11 },
-  { x: 265,  y: 885,  yaw:  2.35, pitch: -0.11 },
-  { x: 315,  y: 830,  yaw: -1.55, pitch: -0.08 },
-  { x: 328,  y: 710,  yaw:  0.02, pitch: -0.07 },
-  { x: 480,  y: 710,  yaw:  1.52, pitch: -0.09 },
-  { x: 480,  y: 845,  yaw:  1.25, pitch: -0.11 },
-  { x: 585,  y: 895,  yaw:  1.45, pitch: -0.11 },
-  { x: 480,  y: 845,  yaw: -1.55, pitch: -0.08 },
-  { x: 480,  y: 710,  yaw:  0.02, pitch: -0.07 },
-  { x: 650,  y: 710,  yaw:  0.02, pitch: -0.07 },
-  { x: 785,  y: 710,  yaw:  0.02, pitch: -0.07 },
-  { x: 960,  y: 780,  yaw:  0.95, pitch: -0.10 },
-  { x: 964,  y: 1095, yaw:  0.45, pitch: -0.11 },
-  { x: 964,  y: 805,  yaw: -0.15, pitch: -0.08 },
-  { x: 1135, y: 770,  yaw: -0.15, pitch: -0.08 },
-  { x: 1255, y: 710,  yaw: -1.57, pitch: -0.06 },
-  { x: 1255, y: 615,  yaw: -3.10, pitch: -0.06 },
-  { x: 850,  y: 615,  yaw: -1.60, pitch: -0.06 },
-  { x: 850,  y: 235,  yaw: -1.65, pitch: -0.07 }
+  { x: 715,  y: 505,  yaw: -1.62, pitch: -0.05 }, // 1. Stairwell landing (next to shoe cabinet at x:756, y:491)
+  { x: 715,  y: 305,  yaw: -2.25, pitch: -0.10 }, // 2. Enter Reception main door
+  { x: 560,  y: 265,  yaw: -2.45, pitch: -0.11 }, // 3. Center Reception (viewing L-sofa & dining)
+  { x: 430,  y: 295,  yaw: -2.95, pitch: -0.10 }, // 4. Facing Zemerda Buffet + Samsung 55" TV & Dining
+  { x: 320,  y: 304,  yaw: -3.12, pitch: -0.10 }, // 5. Approaching Kitchen door (hy: 259..349, center 304)
+  { x: 135,  y: 295,  yaw: -1.95, pitch: -0.12 }, // 6. Inside Kitchen
+  { x: 122,  y: 155,  yaw: -1.60, pitch: -0.12 }, // 7. Deep Kitchen view (stove, sink, dishwasher)
+  { x: 135,  y: 295,  yaw:  0.12, pitch: -0.10 }, // 8. Turning out of Kitchen
+  { x: 318,  y: 304,  yaw:  1.52, pitch: -0.06 }, // 9. Back into Entry Corridor
+  { x: 332,  y: 445,  yaw:  1.65, pitch:  0.04 }, // 10. Walking South along Entry LED strips
+  { x: 325,  y: 705,  yaw:  2.95, pitch: -0.06 }, // 11. Corridor corner facing Bathroom door (hy: 670..750)
+  { x: 185,  y: 705,  yaw: -2.15, pitch: -0.12 }, // 12. Inside Bathroom (clear of shower at x:12..147, y:555..670)
+  { x: 175,  y: 615,  yaw: -2.25, pitch: -0.12 }, // 13. Viewing rotated Vanity (x:192,y:500), WC (x:88,y:475) & Shower
+  { x: 185,  y: 705,  yaw:  0.05, pitch: -0.08 }, // 14. Exiting Bathroom
+  { x: 325,  y: 705,  yaw:  1.56, pitch: -0.08 }, // 15. Facing Salon door
+  { x: 328,  y: 710,  yaw:  1.57, pitch: -0.09 }, // 16. Stepping into Salon
+  { x: 315,  y: 845,  yaw:  1.85, pitch: -0.11 }, // 17. Inside Salon viewing South twin sofas & armchairs
+  { x: 215,  y: 845,  yaw:  1.57, pitch: -0.12 }, // 18. Center Salon panoramic view (p1_s1, p1_s2, p1_f1, p1_f2, p1_nt)
+  { x: 315,  y: 830,  yaw: -1.55, pitch: -0.08 }, // 19. Turning North to exit Salon
+  { x: 328,  y: 710,  yaw:  0.02, pitch: -0.07 }, // 20. Back in main Corridor
+  { x: 480,  y: 710,  yaw:  1.52, pitch: -0.09 }, // 21. At Kids door (hx: 435..525)
+  { x: 480,  y: 845,  yaw:  1.25, pitch: -0.11 }, // 22. Inside Kids Room
+  { x: 595,  y: 895,  yaw:  1.48, pitch: -0.11 }, // 23. Viewing twin 120cm beds (kd_bed1 & kd_bed2 at x:705)
+  { x: 480,  y: 845,  yaw: -1.55, pitch: -0.08 }, // 24. Exiting Kids Room
+  { x: 480,  y: 710,  yaw:  0.02, pitch: -0.07 }, // 25. Corridor looking East toward Master
+  { x: 650,  y: 710,  yaw:  0.02, pitch: -0.07 }, // 26. Mid Corridor under linear LED profiles
+  { x: 785,  y: 710,  yaw:  0.02, pitch: -0.07 }, // 27. Approaching Master Bedroom door
+  { x: 960,  y: 780,  yaw:  0.95, pitch: -0.10 }, // 28. Inside Master Bedroom (Plaza)
+  { x: 964,  y: 1095, yaw:  0.45, pitch: -0.11 }, // 29. Viewing Master bed (x:990, y:875) & 3m Plaza wardrobe
+  { x: 964,  y: 805,  yaw: -0.15, pitch: -0.08 }, // 30. Turning toward Plaza dresser & Balcony door
+  { x: 1135, y: 770,  yaw: -0.15, pitch: -0.08 }, // 31. Stepping through Balcony door
+  { x: 1255, y: 710,  yaw: -1.57, pitch: -0.06 }, // 32. On Lower Balcony
+  { x: 1255, y: 615,  yaw: -3.10, pitch: -0.06 }, // 33. Balcony L-turn
+  { x: 850,  y: 615,  yaw: -1.60, pitch: -0.06 }, // 34. Upper Balcony
+  { x: 850,  y: 235,  yaw: -1.65, pitch: -0.07 }  // 35. Balcony end overlooking Reception window
 ];
 
 function getPresetDefaultFurniture(preset) {
@@ -815,63 +1104,65 @@ function getPresetDefaultFurniture(preset) {
     { id: 'k_fridge', room: 'kitchen', x: 174, y: 162, w: 64, d: 50, h: 184, kind: 'fridge',          label: 'ثلاجة',           mat: 'graphite_app', elec: 'بريزة 150', spec: 'ثلاجة ديجيتال انفرتر رمادي غامق' },
     { id: 'k_niche',  room: 'kitchen', x: 192, y: 212, w: 46, d: 26, h: 210, kind: 'glass_tall',      label: 'نيش مطبخ',        mat: 'glass_wood', spec: 'دولاب نيش زجاجي بإضاءة داخلية' },
 
-    // 2. Washer, Bath & Entry
-    { id: 'washer',   room: 'washer',  x: 152, y: 380, w: 60, d: 60, h: 85,  kind: 'washer',          label: 'غسالة ملابس',     mat: 'white_app', spec: 'غسالة فول أوتوماتيك داخل تجليد رخام أبيض' },
-    { id: 'b_sink',   room: 'bath',    x: 115, y: 472, w: 65, d: 46, h: 82,  kind: 'vanity',          label: 'وحدة حوض',        mat: 'white_app', spec: 'حوض بورسلين بخزانة جوزي ومراية ليد' },
-    { id: 'b_wc',     room: 'bath',    x: 18,  y: 550, w: 50, d: 55, h: 78,  kind: 'wc',              label: 'قاعدة WC',        mat: 'white_app', spec: 'مرحاض بورسلين بصندوق طرد مزدوج' },
-    { id: 'b_shower', room: 'bath',      x: 12,  y: 675, w: 135,d: 72, h: 195, kind: 'shower',          label: 'كابينة شاور',      mat: 'white_app', spec: 'بانيو / شاور بزجاج سيكوريت ودش مطري' },
-    { id: 'shoe',     room: 'stairwell', x: 545, y: 612, w: 100,d: 38, h: 108, kind: 'shoe_cab',        label: 'جزامة مودرن',     mat: 'walnut_white', spec: 'كمليات العقد — خشب جوزي × أبيض دوكو وأرفف (على السلم)' },
+    // 2. Washer, Bath & Stairwell (Updated from Custom Layout JSON)
+    { id: 'washer',   room: 'washer',    x: 152, y: 380, w: 60,  d: 60,  h: 85,  kind: 'washer',   label: 'غسالة ملابس', mat: 'white_app',    spec: 'غسالة فول أوتوماتيك داخل تجليد رخام أبيض' },
+    { id: 'b_sink',   room: 'bath',      x: 192, y: 500, w: 46,  d: 65,  h: 82,  baseW: 65,  baseD: 46,  rotDeg: 90,  kind: 'vanity',   label: 'وحدة حوض',    mat: 'white_app',    spec: 'حوض بورسلين بخزانة جوزي ومراية ليد' },
+    { id: 'b_wc',     room: 'bath',      x: 88,  y: 475, w: 55,  d: 50,  h: 78,  baseW: 50,  baseD: 55,  rotDeg: 90,  kind: 'wc',       label: 'قاعدة WC',    mat: 'white_app',    spec: 'مرحاض بورسلين بصندوق طرد مزدوج' },
+    { id: 'b_shower', room: 'bath',      x: 12,  y: 555, w: 135, d: 115, h: 195, baseW: 135, baseD: 115, rotDeg: 0,   kind: 'shower',   label: 'كابينة شاور',  mat: 'white_app',    spec: 'بانيو / شاور بزجاج سيكوريت ودش مطري' },
+    { id: 'shoe',     room: 'stairwell', x: 756, y: 491, w: 38,  d: 100, h: 108, baseW: 100, baseD: 38,  rotDeg: 270, kind: 'shoe_cab', label: 'جزامة مودرن', mat: 'walnut_white', spec: 'كمليات العقد — خشب جوزي × أبيض دوكو وأرفف (على السلم)' },
 
-    // 3. Master (نوم بلازا)
-    { id: 'm_ward',   room: 'master',  x: 872, y: 865, w: 60, d: 300,h: 222, kind: 'wardrobe_plaza',  label: 'دولاب بلازا 3م',  mat: 'plaza_oak', spec: 'نوم بلازا — 6 ضلف (قشرة أرو + دوكو بني سادة)' },
-    { id: 'm_bed',    room: 'master',  x: 995, y: 880, w: 207,d: 170,h: 54,  kind: 'bed_master', headDir:'e', label: 'سرير 160 ميكانزم', mat: 'new_rock1', spec: 'نوم بلازا — مرتبة 160سم ميكانزم نيو روك 1 الخواجة' },
-    { id: 'm_kom1',   room: 'master',  x: 1154,y: 825, w: 48, d: 50, h: 50,  kind: 'nightstand_plaza',label: 'كمود 50سم',       mat: 'plaza_oak', spec: 'نوم بلازا — كمود منحني 50سم' },
-    { id: 'm_kom2',   room: 'master',  x: 1154,y: 1055,w: 48, d: 50, h: 50,  kind: 'nightstand_plaza',label: 'كمود 50سم',       mat: 'plaza_oak', spec: 'نوم بلازا — كمود منحني 50سم' },
-    { id: 'm_dress',  room: 'master',  x: 985, y: 668, w: 120,d: 46, h: 80,  kind: 'dresser_plaza',   label: 'تسريحة بلازا',    mat: 'plaza_oak', spec: 'نوم بلازا — 3 درج فلاش + شلال أرو منحني + مراية فريم عميق (مطابق للمصنع)' },
-    { id: 'm_pouf',   room: 'master',  x: 1025,y: 720, w: 40, d: 38, h: 44,  kind: 'pouf',            label: 'بف',              mat: 'new_rock1', spec: 'بف أسطواني قماش نيو روك 1' },
-    { id: 'm_mirr',   room: 'master',  x: 875, y: 765, w: 50, d: 45, h: 172, kind: 'stand_mirror_arch', label: 'مراية نص دايرة', mat: 'walnut', spec: 'كمليات العقد — مراية استاند أرش خشب طبيعي' },
+    // 3. Master (نوم بلازا) & Arch Mirror moved to Reception East Wall
+    { id: 'm_ward',   room: 'master',    x: 872, y: 865, w: 60,  d: 300, h: 222, kind: 'wardrobe_plaza',    label: 'دولاب بلازا 3م',   mat: 'plaza_oak', spec: 'نوم بلازا — 6 ضلف (قشرة أرو + دوكو بني سادة)' },
+    { id: 'm_bed',    room: 'master',    x: 990, y: 875, w: 207, d: 170, h: 54,  kind: 'bed_master', headDir:'e', label: 'سرير 160 ميكانزم', mat: 'new_rock1', spec: 'نوم بلازا — مرتبة 160سم ميكانزم نيو روك 1 الخواجة' },
+    { id: 'm_kom1',   room: 'master',    x: 1154,y: 825, w: 48,  d: 50,  h: 50,  kind: 'nightstand_plaza',  label: 'كمود 50سم',        mat: 'plaza_oak', spec: 'نوم بلازا — كمود منحني 50سم' },
+    { id: 'm_kom2',   room: 'master',    x: 1154,y: 1055,w: 48,  d: 50,  h: 50,  kind: 'nightstand_plaza',  label: 'كمود 50سم',        mat: 'plaza_oak', spec: 'نوم بلازا — كمود منحني 50سم' },
+    { id: 'm_dress',  room: 'master',    x: 985, y: 668, w: 120, d: 46,  h: 80,  kind: 'dresser_plaza',     label: 'تسريحة بلازا',     mat: 'plaza_oak', spec: 'نوم بلازا — 3 درج فلاش + شلال أرو منحني + مراية فريم عميق (مطابق للمصنع)' },
+    { id: 'm_pouf',   room: 'master',    x: 1025,y: 720, w: 40,  d: 38,  h: 44,  kind: 'pouf',              label: 'بف',               mat: 'new_rock1', spec: 'بف أسطواني قماش نيو روك 1' },
+    { id: 'm_mirr',   room: 'reception', x: 749, y: 234, w: 45,  d: 50,  h: 172, baseW: 50,  baseD: 45,  rotDeg: 270, kind: 'stand_mirror_arch', label: 'مراية نص دايرة', mat: 'walnut', spec: 'كمليات العقد — مراية استاند أرش خشب طبيعي' },
 
-    // 4. Kids (أطفال خفرع)
-    { id: 'kd_ward',  room: 'kids',    x: 675, y: 768, w: 180,d: 60, h: 215, kind: 'wardrobe_kids',   label: 'دولاب أطفال 2م',  mat: 'white_app', spec: 'أطفال خفرع — 4 ضلف فلاش أوف وايت بجوانب خشب المنارة D68 (مطابق للمصنع)' },
-    { id: 'kd_mirr',  room: 'kids',    x: 590, y: 772, w: 45, d: 40, h: 172, kind: 'stand_mirror_rect', label: 'مراية مستطيل',   mat: 'white_app', spec: 'كمليات العقد — مراية استاند مستطيل إطار أبيض' },
-    { id: 'kd_dress', room: 'kids',    x: 432, y: 856, w: 48, d: 100,h: 82,  kind: 'dresser_kids',    label: 'تسريحة خفرع',     mat: 'kids_wood', spec: 'أطفال خفرع — خشب المنارة D68 + مراية برواز خشبي' },
-    { id: 'kd_bed1',  room: 'kids',    x: 485, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
-    { id: 'kd_kom',   room: 'kids',    x: 625, y: 1118,w: 50, d: 50, h: 48,  kind: 'nightstand_kids', label: 'كمود',            mat: 'kids_wood', spec: 'أطفال خفرع — كمود خشب المنارة D68 بدرج أبيض فلاش (مطابق للمصنع)' },
-    { id: 'kd_bed2',  room: 'kids',    x: 695, y: 965, w: 120,d: 203,h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',  mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
+    // 4. Kids (أطفال خفرع) & Rect Mirror moved to Salon North-West corner
+    { id: 'kd_ward',  room: 'kids',      x: 675, y: 768, w: 180, d: 60,  h: 215, kind: 'wardrobe_kids',     label: 'دولاب أطفال 2م',   mat: 'white_app', spec: 'أطفال خفرع — 4 ضلف فلاش أوف وايت بجوانب خشب المنارة D68 (مطابق للمصنع)' },
+    { id: 'kd_mirr',  room: 'salon',     x: 6,   y: 768, w: 45,  d: 40,  h: 172, baseW: 45,  baseD: 40,  rotDeg: 180, kind: 'stand_mirror_rect', label: 'مراية مستطيل', mat: 'white_app', spec: 'كمليات العقد — مراية استاند مستطيل إطار أبيض' },
+    { id: 'kd_dress', room: 'kids',      x: 432, y: 856, w: 48,  d: 100, h: 82,  kind: 'dresser_kids',      label: 'تسريحة خفرع',      mat: 'kids_wood', spec: 'أطفال خفرع — خشب المنارة D68 + مراية برواز خشبي' },
+    { id: 'kd_bed1',  room: 'kids',      x: 485, y: 965, w: 120, d: 203, h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',   mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
+    { id: 'kd_kom',   room: 'kids',      x: 625, y: 1118,w: 50,  d: 50,  h: 48,  kind: 'nightstand_kids',   label: 'كمود',             mat: 'kids_wood', spec: 'أطفال خفرع — كمود خشب المنارة D68 بدرج أبيض فلاش (مطابق للمصنع)' },
+    { id: 'kd_bed2',  room: 'kids',      x: 705, y: 965, w: 120, d: 203, h: 48,  kind: 'bed_kids', headDir:'s', label: 'سرير 120سم',   mat: 'kids_wood', spec: 'أطفال خفرع — سرير 120سم المنارة D68 بليد رأسي' },
 
     // 5. Dining (سفرة زمردة)
-    { id: 'd_buffet', room: 'reception', x: 440, y: 334, w: 180, d: 45, h: 85,  kind: 'buffet', dir: 's', label: 'بوفيه زمردة 2م + شاشة 55"', mat: 'zemerda', spec: 'سفرة زمردة — 4 ضلف فلاش + ركن مفتوح مائل + تلفزيون سامسونج 55 بوصة' },
-    { id: 'd_niche',  room: 'reception', x: 255, y: 12,  w: 95,  d: 44, h: 202, kind: 'niche_glass',     label: 'نيش زمردة 1م',    mat: 'zemerda', spec: 'سفرة زمردة — ضلف ألوميتال أسود وزجاج + 4 أرفف مضيئة (مطابق للمصنع)' },
-    { id: 'd_table',  room: 'reception', x: 315, y: 95,  w: 90,  d: 175,h: 76,  kind: 'dining_6',        label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي بحافة مشطوفة 180×90سم + 6 كراسي' },
+    { id: 'd_buffet', room: 'reception', x: 440, y: 334, w: 180, d: 45,  h: 85,  kind: 'buffet', dir: 's',  label: 'بوفيه زمردة 2م + شاشة 55"', mat: 'zemerda', spec: 'سفرة زمردة — 4 ضلف فلاش + ركن مفتوح مائل + تلفزيون سامسونج 55 بوصة' },
+    { id: 'd_niche',  room: 'reception', x: 255, y: 12,  w: 95,  d: 44,  h: 202, kind: 'niche_glass',       label: 'نيش زمردة 1م',      mat: 'zemerda', spec: 'سفرة زمردة — ضلف ألوميتال أسود وزجاج + 4 أرفف مضيئة (مطابق للمصنع)' },
+    { id: 'd_table',  room: 'reception', x: 280, y: 80,  w: 90,  d: 175, h: 76,  kind: 'dining_6',          label: 'سفرة زمردة 180×90', mat: 'zemerda', spec: 'سفرة زمردة — ترابيزة بيضاوي بحافة مشطوفة 180×90سم + 6 كراسي' },
 
-    // 6. Movable & Deletable Utilities & Decor (المرافق والديكور)
-    { id: 'u_plant',  room: 'kids',      x: 434, y: 1124,w: 28,  d: 28, h: 86,  elev: 3,   cat: 'util', kind: 'decor_plant', label: 'زرعة ديكور',    mat: 'kids_wood', spec: 'ديكور — زرعة داخلية قابلة للتحريك والحذف' },
-    { id: 'u_gas',    room: 'reception', x: 254, y: 194, w: 24,  d: 24, h: 24,  elev: 180, cat: 'util', kind: 'util_gas',    label: 'عداد الغاز',    mat: 'zemerda',   icon: '🔥', color: '#f59e0b', dx: 18,  dy: 22, spec: 'مرافق — عداد الغاز الطبيعي (قابل للتحريك والحذف)' },
-    { id: 'u_elec',   room: 'entry',     x: 396, y: 405, w: 24,  d: 34, h: 64,  elev: 145, cat: 'util', kind: 'util_elec',   label: 'لوحة الكهرباء', mat: 'white_app', icon: '⚡', color: '#ef4444', dx: -44, dy: 22, spec: 'مرافق — لوحة الكهرباء الرئيسية (قابلة للتحريك والحذف)' },
-    { id: 'u_drain',  room: 'washer',    x: 215, y: 439, w: 24,  d: 24, h: 14,  elev: 4,   cat: 'util', kind: 'util_drain',  label: 'صرف الغسالة',   mat: 'inox',      icon: '🧺', color: '#38bdf8', dx: -44, dy: 0,  spec: 'مرافق — نقطة صرف الغسالة (قابلة للتحريك والحذف)' },
-    { id: 'u_heater', room: 'bath',      x: 195, y: 472, w: 36,  d: 36, h: 52,  elev: 168, cat: 'util', kind: 'util_heater', label: 'السخان',        mat: 'white_app', icon: '♨️', color: '#fb923c', dx: 0,   dy: 22, spec: 'مرافق — سخان المياه الكهربائي (قابل للتحريك والحذف)' },
+    // 6. Movable & Deletable Utilities (المرافق)
+    { id: 'u_gas',    room: 'reception', x: 254, y: 194, w: 24,  d: 24,  h: 24,  elev: 180, cat: 'util', kind: 'util_gas',    label: 'عداد الغاز',    mat: 'zemerda',   icon: '🔥', color: '#f59e0b', dx: 18,  dy: 22, spec: 'مرافق — عداد الغاز الطبيعي (قابل للتحريك والحذف)' },
+    { id: 'u_elec',   room: 'entry',     x: 396, y: 405, w: 24,  d: 34,  h: 64,  elev: 145, cat: 'util', kind: 'util_elec',   label: 'لوحة الكهرباء', mat: 'white_app', icon: '⚡', color: '#ef4444', dx: -44, dy: 22, spec: 'مرافق — لوحة الكهرباء الرئيسية (قابلة للتحريك والحذف)' },
+    { id: 'u_drain',  room: 'washer',    x: 215, y: 439, w: 24,  d: 24,  h: 14,  elev: 4,   cat: 'util', kind: 'util_drain',  label: 'صرف الغسالة',   mat: 'inox',      icon: '🧺', color: '#38bdf8', dx: -44, dy: 0,  spec: 'مرافق — نقطة صرف الغسالة (قابلة للتحريك والحذف)' },
+    { id: 'u_heater', room: 'bath',      x: 195, y: 472, w: 36,  d: 36,  h: 52,  elev: 168, cat: 'util', kind: 'util_heater', label: 'السخان',        mat: 'white_app', icon: '♨️', color: '#fb923c', dx: 0,   dy: 22, spec: 'مرافق — سخان المياه الكهربائي (قابل للتحريك والحذف)' },
 
-    // 7. Movable & Deletable Ceiling Lamps, Chandeliers & Linear LEDs (اللمبات والإضاءة)
+    // 7. Movable & Deletable Ceiling Lamps, Chandeliers, Linear LEDs & Ceiling Speakers (إضاءة وسماعات السقف)
     { id: 'l_rec_ch',   room: 'reception', x: 546, y: 171, w: 48,  d: 48,  h: 12, elev: 243, cat: 'light', kind: 'lamp_chandelier', label: 'نجفة الصالة',         mat: 'gold_glass', spec: 'إضاءة — نجفة ليد دائرية ذهبية 3000K قابلة للتحريك والحذف' },
-    { id: 'l_rec_s1',   room: 'reception', x: 334, y: 74,  w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_rec_s2',   room: 'reception', x: 714, y: 84,  w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_rec_s3',   room: 'reception', x: 694, y: 284, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 3',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_cor_led1', room: 'entry',     x: 275, y: 380, w: 6,   d: 355, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك والحذف' },
-    { id: 'l_cor_led2', room: 'entry',     x: 383, y: 380, w: 6,   d: 304, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك والحذف' },
-    { id: 'l_cor_led3', room: 'corridor',  x: 278, y: 733, w: 574, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك والحذف' },
-    { id: 'l_cor_led4', room: 'corridor',  x: 386, y: 681, w: 466, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك والحذف' },
-    { id: 'l_ent_s1',   room: 'entry',     x: 323, y: 471, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_ent_s2',   room: 'entry',     x: 323, y: 641, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_rec_s1',   room: 'reception', x: 275, y: 140, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_rec_s2',   room: 'reception', x: 735, y: 150, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_cor_led1', room: 'entry',     x: 275, y: 385, w: 6,   d: 355, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك وتغيير الطول والحذف' },
+    { id: 'l_cor_led2', room: 'entry',     x: 383, y: 380, w: 6,   d: 304, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك وتغيير الطول والحذف' },
+    { id: 'l_cor_led3', room: 'corridor',  x: 278, y: 733, w: 574, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك وتغيير الطول والحذف' },
+    { id: 'l_cor_led4', room: 'corridor',  x: 380, y: 675, w: 466, d: 6,   h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل الطرقة 2', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالطرقة قابل للتحريك وتغيير الطول والحذف' },
+    { id: 'l_ent_s1',   room: 'kitchen',   x: 105, y: 100, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_ent_s2',   room: 'bath',      x: 120, y: 600, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المدخل 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
     { id: 'l_cor_s1',   room: 'corridor',  x: 541, y: 701, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الطرقة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_cor_s2',   room: 'corridor',  x: 751, y: 701, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الطرقة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_sal_s1',   room: 'salon',     x: 74,  y: 834, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_sal_s2',   room: 'salon',     x: 326, y: 1084,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_kid_s1',   room: 'kids',      x: 544, y: 883, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_kid_s2',   room: 'kids',      x: 721, y: 1034,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_mst_s1',   room: 'master',    x: 958, y: 815, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_mst_s2',   room: 'master',    x: 1095,y: 1002,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_cor_s2',   room: 'kitchen',   x: 105, y: 280, w: 18,  d: 18,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الطرقة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_sal_s1',   room: 'salon',     x: 160, y: 815, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_sal_s2',   room: 'salon',     x: 170, y: 1050,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالون 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_kid_s1',   room: 'kids',      x: 465, y: 915, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_kid_s2',   room: 'kids',      x: 815, y: 910, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الأطفال 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_mst_s1',   room: 'master',    x: 1040,y: 725, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 1',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 'l_mst_s2',   room: 'master',    x: 1050,y: 1095,w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الماستر 2',      mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
     { id: 'l_kit_s1',   room: 'kitchen',   x: 110, y: 165, w: 24,  d: 24,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت المطبخ',         mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
-    { id: 'l_bth_s1',   room: 'bath',      x: 110, y: 600, w: 24,  d: 24,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الحمام',         mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' }
+    { id: 'l_bth_s1',   room: 'bath',      x: 110, y: 600, w: 24,  d: 24,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الحمام',         mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
+    { id: 's_rec_sp1',  room: 'reception', x: 430, y: 155, w: 24,  d: 24,  h: 5,  elev: 268, cat: 'light', kind: 'ceiling_speaker', label: 'سماعة سقف الصالة 1',  mat: 'white_app',  spec: 'صوتيات ذكية — سماعة سقف غاطسة بلوتوث 6.5 بوصة قابلة للتحريك والحذف' },
+    { id: 's_rec_sp2',  room: 'reception', x: 660, y: 155, w: 24,  d: 24,  h: 5,  elev: 268, cat: 'light', kind: 'ceiling_speaker', label: 'سماعة سقف الصالة 2',  mat: 'white_app',  spec: 'صوتيات ذكية — سماعة سقف غاطسة بلوتوث 6.5 بوصة قابلة للتحريك والحذف' },
+    { id: 's_sal_sp1',  room: 'salon',     x: 205, y: 920, w: 24,  d: 24,  h: 5,  elev: 268, cat: 'light', kind: 'ceiling_speaker', label: 'سماعة سقف الصالون',   mat: 'white_app',  spec: 'صوتيات ذكية — سماعة سقف غاطسة بلوتوث 6.5 بوصة قابلة للتحريك والحذف' },
+    { id: 's_mst_sp1',  room: 'master',    x: 1030,y: 900, w: 24,  d: 24,  h: 5,  elev: 268, cat: 'light', kind: 'ceiling_speaker', label: 'سماعة سقف الماستر',   mat: 'white_app',  spec: 'صوتيات ذكية — سماعة سقف غاطسة بلوتوث 6.5 بوصة قابلة للتحريك والحذف' }
   ];
 
   if (preset === 'preset2') {
@@ -887,17 +1178,16 @@ function getPresetDefaultFurniture(preset) {
     );
   } else {
     items.push(
-      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, kind: 'sofa_sectional', backDir: 'n', roundEnd: 'w', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — دوران بالناحيتين وسرير سحارة يفتح للأمام — قماش البا 5/10' },
-      { id: 'p1_le', room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, kind: 'sofa_chaise',    backDir: 'e', roundEnd: 's', label: 'شيزلونج 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
-      { id: 'p1_lt', room: 'reception', x: 535, y: 125, w: 100, d: 60,  h: 38, kind: 'coffee_table', label: 'ترابيزة ركنة',     mat: 'alba5', spec: 'ترابيزة وسط مودرن حواف دائرية وفازة' },
-      { id: 'p1_s1', room: 'salon',     x: 106, y: 1082,w: 210, d: 82,  h: 78, kind: 'sofa_tufted', backDir: 's', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 5 طوبي' },
-      { id: 'p1_s2', room: 'salon',     x: 32,  y: 774, w: 210, d: 82,  h: 78, kind: 'sofa_tufted', backDir: 'n', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 3 كريمي' },
-      { id: 'p1_f1', room: 'salon',     x: 14,  y: 928, w: 78,  d: 82,  h: 76, kind: 'fauteuil',    backDir: 'w', label: 'فوتيه كريمة',       mat: 'ted3', spec: 'انترية كريمة — فوتيه مودرن تيد 3 رائف' },
-      { id: 'p1_f2', room: 'salon',     x: 330, y: 928, w: 78,  d: 82,  h: 76, kind: 'fauteuil',    backDir: 'e', label: 'فوتيه كريمة',       mat: 'ted5', spec: 'انترية كريمة — فوتيه مودرن تيد 5 رائف' },
-      { id: 'p1_nt', room: 'salon',     x: 163, y: 930, w: 96,  d: 76,  h: 45, kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass', spec: 'كمليات — ترابيزتان متداخلتان ذهبي وزجاج' }
+      { id: 'p1_ln', room: 'reception', x: 450, y: 10,  w: 345, d: 88,  h: 76, baseW: 345, baseD: 88,  rotDeg: 0,   kind: 'sofa_sectional', backDir: 'n', roundEnd: 'w', label: 'ركنة عمولة 4م (البا 5)', mat: 'alba5', spec: 'ركنة عمولة 4×2.20م — دوران بالناحيتين وسرير سحارة يفتح للأمام — قماش البا 5/10' },
+      { id: 'p1_le', room: 'reception', x: 705, y: 98,  w: 90,  d: 132, h: 76, baseW: 90,  baseD: 132, rotDeg: 0,   kind: 'sofa_chaise',    backDir: 'e', roundEnd: 's', label: 'شيزلونج 2.20م', mat: 'alba5', spec: 'شيزلونج نهاية دائرية مفتوحة بدون ظهر + ثرو كشمير (مطابق للمصنع)' },
+      { id: 'p1_s1', room: 'salon',     x: 0,   y: 1093,w: 210, d: 82,  h: 78, baseW: 210, baseD: 82,  rotDeg: 0,   kind: 'sofa_tufted',    backDir: 's', label: 'كنبة 2.20 (تيد 5)', mat: 'ted5', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 5 طوبي' },
+      { id: 'p1_s2', room: 'salon',     x: 212, y: 1093,w: 210, d: 82,  h: 78, baseW: 210, baseD: 82,  rotDeg: 180, kind: 'sofa_tufted',    backDir: 'n', label: 'كنبة 2.20 (تيد 3)', mat: 'ted3', spec: 'انترية كريمة — كنبة ثلاثية 2.20م تيد 3 كريمي' },
+      { id: 'p1_f1', room: 'salon',     x: 349, y: 933, w: 78,  d: 82,  h: 76, baseW: 78,  baseD: 82,  rotDeg: 180, kind: 'fauteuil',       backDir: 'w', label: 'فوتيه كريمة',       mat: 'ted3', spec: 'انترية كريمة — فوتيه مودرن تيد 3 رائف' },
+      { id: 'p1_f2', room: 'salon',     x: 10,  y: 928, w: 78,  d: 82,  h: 76, baseW: 78,  baseD: 82,  rotDeg: 180, kind: 'fauteuil',       backDir: 'e', label: 'فوتيه كريمة',       mat: 'ted5', spec: 'انترية كريمة — فوتيه مودرن تيد 5 رائف' },
+      { id: 'p1_nt', room: 'salon',     x: 163, y: 930, w: 96,  d: 76,  h: 45, baseW: 96,  baseD: 76,  rotDeg: 0,   kind: 'nested_gold_table', label: 'ترابيزة دهبي', mat: 'gold_glass', spec: 'كمليات — ترابيزتان متداخلتان ذهبي وزجاج' }
     );
   }
-  return items.map(it => Object.assign({}, it, { baseW: it.w, baseD: it.d, rotDeg: 0 }));
+  return items.map(it => Object.assign({ baseW: it.w, baseD: it.d, rotDeg: 0 }, it));
 }
 
 // ============================================================================
@@ -915,6 +1205,7 @@ let dragStart = { x: 0, y: 0 };
 let rulerActive = false;
 let rulerPts = [];
 let editMode = false;
+let showCeilingItems = false;
 let activeDrag = null; // { type: 'furn'|'door'|'wall', ... }
 let selectedItem = null;
 let selectedDoor = null;
@@ -927,7 +1218,7 @@ let undoStack = [];
 let _wallRebuildRaf = null;
 
 let cam3D = { yaw: -0.46, pitch: 0.84, dist: 2100, targetX: 655, targetY: 45, targetZ: 590 };
-let walkCam = { x: 735, y: 465, z: 162, yaw: -1.75, pitch: -0.05 };
+let walkCam = { x: 715, y: 475, z: 162, yaw: -1.65, pitch: -0.05 };
 const walkKeys = {};
 let walkRafId = null;
 let walkLastTs = 0;
@@ -953,7 +1244,7 @@ function syncRoomsFromWalls() {
   const wBthE   = findW('w_bth_e');
   const wBthSal = findW('w_bth_sal');
 
-  const xSalKid = wSalKid ? wSalKid.x1 : 422;
+  const xSalKid = wSalKid ? wSalKid.x1 : 427;
   const xMstW   = wMstW   ? wMstW.x1   : 865;
   const yCorS   = wCorS   ? wCorS.y1   : 760;
   const xKitE   = wKitE   ? wKitE.x1   : 245;
@@ -965,11 +1256,15 @@ function syncRoomsFromWalls() {
 
   if (rSal) {
     rSal.y = yCorS; rSal.w = Math.max(80, xSalKid); rSal.h = Math.max(80, 1180 - yCorS);
-    if (xSalKid !== 422 || yCorS !== 760) rSal.dimLabel = `${Math.round(rSal.w * 380 / 422)} × ${Math.round(rSal.h * 345 / 420)} سم`;
+    rSal.dimLabel = (xSalKid !== 427 || yCorS !== 760)
+      ? `${Math.round(rSal.w * 380 / 427)} × ${Math.round(rSal.h * 345 / 420)} سم`
+      : '380 × 345 سم';
   }
   if (rKid) {
     rKid.x = xSalKid; rKid.y = yCorS; rKid.w = Math.max(80, xMstW - xSalKid); rKid.h = Math.max(80, 1180 - yCorS);
-    if (xSalKid !== 422 || xMstW !== 865 || yCorS !== 760) rKid.dimLabel = `${Math.round(rKid.w * 420 / 443)} × ${Math.round(rKid.h * 350 / 420)} سم`;
+    rKid.dimLabel = (xSalKid !== 427 || xMstW !== 865 || yCorS !== 760)
+      ? `${Math.round(rKid.w * 420 / 438)} × ${Math.round(rKid.h * 350 / 420)} سم`
+      : '420 × 350 سم';
   }
   if (rMst) {
     rMst.x = xMstW; rMst.w = Math.max(80, 1210 - xMstW);
@@ -1391,16 +1686,105 @@ window.duplicateSelectedItem = function() {
   redraw();
 };
 
-window.addNewLamp = function() {
+function getSmartSpawnPoint(baseX, baseY, w, d) {
+  let sx = baseX, sy = baseY;
+  for (let tries = 0; tries < 14; tries++) {
+    const clash = activeFurniture.some(it => Math.abs(it.x - sx) < 16 && Math.abs(it.y - sy) < 16);
+    if (!clash) break;
+    sx = Math.min(APT.W - w - 20, sx + 32);
+    sy = Math.min(APT.H - d - 20, sy + 24);
+  }
+  return { x: sx, y: sy };
+}
+
+window.toggleCeilingOverlay = function(forceVal) {
+  showCeilingItems = typeof forceVal === 'boolean' ? forceVal : !showCeilingItems;
+  const btn = document.getElementById('ceilToggleBtn');
+  if (btn) {
+    btn.classList.toggle('ceil-active', showCeilingItems);
+    btn.textContent = showCeilingItems ? '💡 السقف والليد: ظاهر' : '💡 إظهار السقف والليد';
+  }
+  redraw();
+};
+
+window.addNewLedStrip = function() {
   if (!editMode) toggleEditMode();
+  if (!showCeilingItems) toggleCeilingOverlay(true);
   pushUndoSnapshot();
+  const sp = getSmartSpawnPoint(440, 210, 200, 6);
+  const nl = {
+    id: 'led_custom_' + Date.now().toString(36).slice(-4),
+    room: 'reception',
+    x: sp.x, y: sp.y, w: 200, d: 6, baseW: 200, baseD: 6, h: 3, elev: 269,
+    rotDeg: 0, cat: 'light', kind: 'lamp_led_strip',
+    label: 'ليد بروفايل سقف 2م', mat: 'glass_wood',
+    spec: 'إضاءة سقف — شريط ليد بروفايل خطي غاطس قابل للتحريك وتغيير الطول والدوران والحذف'
+  };
+  activeFurniture.push(nl);
+  selectedItem = nl; selectedDoor = null; selectedWall = null;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(nl);
+  redraw();
+};
+
+window.addNewCeilingSpeaker = function() {
+  if (!editMode) toggleEditMode();
+  if (!showCeilingItems) toggleCeilingOverlay(true);
+  pushUndoSnapshot();
+  const sp = getSmartSpawnPoint(510, 240, 24, 24);
+  const ns = {
+    id: 'spk_custom_' + Date.now().toString(36).slice(-4),
+    room: 'reception',
+    x: sp.x, y: sp.y, w: 24, d: 24, baseW: 24, baseD: 24, h: 5, elev: 268,
+    rotDeg: 0, cat: 'light', kind: 'ceiling_speaker',
+    label: 'سماعة سقف ذكية', mat: 'white_app',
+    spec: 'صوتيات ذكية — سماعة سقف غاطسة بلوتوث 6.5 بوصة قابلة للتحريك وتغيير المقاس والحذف'
+  };
+  activeFurniture.push(ns);
+  selectedItem = ns; selectedDoor = null; selectedWall = null;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(ns);
+  redraw();
+};
+
+window.setLedQuickSize = function(lenCm, flipOrient) {
+  if (!selectedItem) return;
+  pushUndoSnapshot();
+  const isHoriz = selectedItem.w >= selectedItem.d;
+  if (flipOrient) {
+    [selectedItem.w, selectedItem.d] = [selectedItem.d, selectedItem.w];
+  } else if (lenCm) {
+    if (isHoriz) { selectedItem.w = lenCm; selectedItem.d = 6; }
+    else         { selectedItem.w = 6; selectedItem.d = lenCm; }
+  }
+  selectedItem.baseW = selectedItem.w;
+  selectedItem.baseD = selectedItem.d;
+  selectedItem.rotDeg = 0;
+  if (gl) rebuildFurniture3D();
+  persistState();
+  updateEditorUI();
+  showInspector(selectedItem);
+  redraw();
+};
+
+window.addNewLamp = function(type = 'spot') {
+  if (!editMode) toggleEditMode();
+  if (!showCeilingItems) toggleCeilingOverlay(true);
+  pushUndoSnapshot();
+  const isCh = type === 'chandelier';
+  const sz = isCh ? 48 : 24;
+  const sp = getSmartSpawnPoint(520, 200, sz, sz);
   const nl = {
     id: 'l_custom_' + Date.now().toString(36).slice(-4),
     room: 'reception',
-    x: 520, y: 200, w: 24, d: 24, baseW: 24, baseD: 24, h: 4, elev: 269,
-    rotDeg: 0, cat: 'light', kind: 'lamp_spot',
-    label: 'سبوت ليد جديد', mat: 'white_app',
-    spec: 'إضاءة — سبوت ليد دائري مضاف قابل للتحريك وتغيير المقاس والحذف'
+    x: sp.x, y: sp.y, w: sz, d: sz, baseW: sz, baseD: sz, h: isCh ? 12 : 4, elev: isCh ? 243 : 269,
+    rotDeg: 0, cat: 'light', kind: isCh ? 'lamp_chandelier' : 'lamp_spot',
+    label: isCh ? 'نجفة ليد جديدة' : 'سبوت ليد جديد', mat: isCh ? 'gold_glass' : 'white_app',
+    spec: isCh ? 'إضاءة — نجفة ليد ذهبية مضافة قابلة للتحريك والحذف' : 'إضاءة — سبوت ليد دائري مضاف قابل للتحريك وتغيير المقاس والحذف'
   };
   activeFurniture.push(nl);
   selectedItem = nl; selectedDoor = null; selectedWall = null;
@@ -1414,10 +1798,12 @@ window.addNewLamp = function() {
 window.addNewWall = function() {
   if (!editMode) toggleEditMode();
   pushUndoSnapshot();
+  const count = APT.baseWalls.filter(w => w.id.startsWith('w_custom_')).length;
+  const wy = Math.min(APT.H - 40, 220 + count * 35);
   const nw = {
     id: 'w_custom_' + Date.now().toString(36).slice(-4),
     name: 'حائط جديد مضاف',
-    x1: 460, y1: 220, x2: 640, y2: 220,
+    x1: 460, y1: wy, x2: 640, y2: wy,
     t: 12, ext: false, mat: 'cream', allowDoor: true
   };
   APT.baseWalls.push(nw);
@@ -1563,7 +1949,7 @@ window.resetAllEdits = function() {
 function exportEditsJSON() {
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
-  const payload = { version: 7, baseWalls: APT.baseWalls, doors: APT.doors, activePreset, presets: saved.presets || { [activePreset]: activeFurniture } };
+  const payload = { version: 8, baseWalls: APT.baseWalls, doors: APT.doors, activePreset, presets: saved.presets || { [activePreset]: activeFurniture } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1600,7 +1986,7 @@ window.toggleEditMode = function() {
   const card = document.getElementById('editorCard');
   const badge = document.getElementById('editBadgeState');
   btn.classList.toggle('edit-active', editMode);
-  btn.textContent = editMode ? '✅ وضع التعديل نشط (أثاث / لمبات / بيبان / حيطان)' : '✏️ وضع التعديل (تحريك الأثاث والبيبان)';
+  btn.textContent = editMode ? '✅ وضع التعديل نشط (أثاث / ليد / سماعات / حيطان)' : '✏️ وضع التعديل (أثاث / سقف / حيطان)';
   card.classList.toggle('editor-highlight', editMode);
   badge.textContent = editMode ? 'نشط ✏️' : 'معاينة';
   badge.style.color = editMode ? '#10b981' : '#94a3b8';
@@ -1619,12 +2005,16 @@ function updateEditorUI() {
   const furnBox = document.getElementById('furnEditorFields');
   const doorBox = document.getElementById('doorEditorFields');
   const wallBox = document.getElementById('wallEditorFields');
+  const ledPresets = document.getElementById('ledQuickPresets');
   if (selectedItem) {
     emptyMsg.style.display = 'none';
     doorBox.style.display = 'none';
     if (wallBox) wallBox.style.display = 'none';
     furnBox.style.display = 'block';
-    const icon = selectedItem.cat === 'light' ? '💡 ' : (selectedItem.cat === 'util' ? (selectedItem.icon || '⚙️') + ' ' : '🛋️ ');
+    if (ledPresets) ledPresets.style.display = (selectedItem.kind === 'lamp_led_strip') ? 'block' : 'none';
+    const icon = selectedItem.kind === 'ceiling_speaker' ? '🔊 '
+      : (selectedItem.kind === 'lamp_led_strip' ? '➖ '
+      : (selectedItem.cat === 'light' ? '💡 ' : (selectedItem.cat === 'util' ? (selectedItem.icon || '⚙️') + ' ' : '🛋️ ')));
     document.getElementById('edFurnName').textContent = icon + selectedItem.label;
     document.getElementById('edFurnX').value = Math.round(selectedItem.x);
     document.getElementById('edFurnY').value = Math.round(selectedItem.y);
@@ -2577,7 +2967,11 @@ function buildFurnitureGroup3D(it) {
     const isArch = it.kind === 'stand_mirror_arch';
     const fMat = isArch ? m.walnut : m.ducoWhite;
     const mGrp = new THREE.Group();
-    mGrp.rotation.y = isArch ? (Math.PI * 0.35) : (-Math.PI * 0.08);
+    if (it.rotDeg) {
+      mGrp.rotation.y = isArch ? Math.PI : (Math.PI * 0.82);
+    } else {
+      mGrp.rotation.y = isArch ? (Math.PI * 0.35) : (-Math.PI * 0.08);
+    }
     mGrp.rotation.x = -0.09;
     if (isArch) {
       addMesh(mGrp, rBox(46, 138, 4.5, 2), fMat, 0, 72, 0);
@@ -2818,7 +3212,20 @@ function buildFurnitureGroup3D(it) {
     const disc = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 1.4, 22), m.ledPanel);
     disc.position.set(0, 1.1, 0); grp.add(disc);
   } else if (it.kind === 'lamp_led_strip') {
-    addMesh(grp, new THREE.BoxGeometry(bw, 1.8, bd), m.ledLinear, 0, 1.2, 0, false, false);
+    addMesh(grp, new THREE.BoxGeometry(bw + 1.2, 2.2, bd + 1.2), m.blackMetal, 0, 1.5, 0, false, false);
+    addMesh(grp, new THREE.BoxGeometry(bw, 1.8, bd), m.ledLinear, 0, 1.1, 0, false, false);
+  } else if (it.kind === 'ceiling_speaker') {
+    const rad = Math.max(6, Math.min(bw, bd) / 2);
+    const bezel = new THREE.Mesh(new THREE.CylinderGeometry(rad + 1.6, rad + 1.6, 1.8, 28), m.ducoWhite);
+    bezel.position.set(0, 1.6, 0); grp.add(bezel);
+    const grille = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, 2.0, 28), m.graphite);
+    grille.position.set(0, 1.3, 0); grp.add(grille);
+    const cone = new THREE.Mesh(new THREE.CylinderGeometry(rad * 0.65, rad * 0.35, 2.2, 24), m.blackMetal);
+    cone.position.set(0, 1.1, 0); grp.add(cone);
+    const tweeter = new THREE.Mesh(new THREE.SphereGeometry(rad * 0.24, 16, 12), m.gold);
+    tweeter.scale.set(1, 0.45, 1); tweeter.position.set(0, 0.7, 0); grp.add(tweeter);
+    const ledRing = new THREE.Mesh(new THREE.TorusGeometry(rad * 0.86, 0.45, 8, 28), m.ledLinear);
+    ledRing.rotation.x = Math.PI / 2; ledRing.position.set(0, 0.8, 0); grp.add(ledRing);
   } else if (it.kind === 'decor_plant') {
     addMesh(grp, new THREE.CylinderGeometry(11, 8, 22, 16), m.ducoWhite, 0, 11, 0);
     addMesh(grp, new THREE.CylinderGeometry(1.2, 1.8, 68, 10), m.walnut, 0, 48, 0);
@@ -2984,7 +3391,7 @@ function renderWebGLView(W, H) {
     if (cat === 'light') {
       ch.visible = (currentMode === 'walk')
         ? !!document.getElementById('chkWalkCeiling').checked
-        : !!(editMode || isSel);
+        : !!(editMode || showCeilingItems || isSel);
       ch.position.y = (currentMode === '3d') ? Math.min(elev, Math.max(20, targetWallH - 4)) : elev;
     } else if (cat === 'util') {
       ch.visible = !!(showFurnGroup && (elev <= 20 || targetWallH > 150 || editMode || isSel));
@@ -3347,7 +3754,7 @@ function draw2DFurnitureCAD(isBlueprint, showFurn = true, showUtils = true) {
   getActiveFurnLayout().forEach(it => {
     const isSel = selectedItem && selectedItem.id === it.id;
     if (it.cat === 'light') {
-      if (!editMode && !isSel) return;
+      if (!editMode && !showCeilingItems && !isSel) return;
     } else if (it.cat === 'util' && it.icon) {
       if (!showUtils && !editMode && !isSel) return;
     } else {
@@ -3373,21 +3780,37 @@ function draw2DFurnitureCAD(isBlueprint, showFurn = true, showUtils = true) {
     if (it.cat === 'light') {
       const lx = it.x + it.w / 2, ly = it.y + it.d / 2;
       ctx.save();
-      ctx.strokeStyle = isSel ? '#10b981' : '#f59e0b';
-      ctx.fillStyle = isSel ? 'rgba(16,185,129,0.28)' : 'rgba(250,204,21,0.25)';
-      ctx.lineWidth = isSel ? 2.8 : 1.8;
-      if (it.kind === 'lamp_led_strip') {
+      if (it.kind === 'ceiling_speaker') {
+        const rad = Math.max(8, Math.min(it.w, it.d) / 2);
+        ctx.strokeStyle = isSel ? '#10b981' : '#a855f7';
+        ctx.fillStyle = isSel ? 'rgba(16,185,129,0.28)' : 'rgba(168,85,247,0.24)';
+        ctx.lineWidth = isSel ? 2.8 : 1.8;
+        ctx.beginPath(); ctx.arc(lx, ly, rad, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(lx, ly, rad * 0.56, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = isBlueprint ? '#e9d5ff' : '#6b21a8';
+        ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('🔊 ' + it.label, lx, ly - rad - 8);
+      } else if (it.kind === 'lamp_led_strip') {
+        ctx.strokeStyle = isSel ? '#10b981' : '#06b6d4';
+        ctx.fillStyle = isSel ? 'rgba(16,185,129,0.35)' : 'rgba(34,211,238,0.38)';
+        ctx.lineWidth = isSel ? 2.8 : 1.8;
         roundRect(ctx, it.x, it.y, it.w, it.d, 2, true, true);
+        ctx.fillStyle = isBlueprint ? '#67e8f9' : '#0e7490';
+        ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('➖ ' + it.label, lx, ly - Math.min(it.w, it.d) / 2 - 8);
       } else {
+        ctx.strokeStyle = isSel ? '#10b981' : '#f59e0b';
+        ctx.fillStyle = isSel ? 'rgba(16,185,129,0.28)' : 'rgba(250,204,21,0.25)';
+        ctx.lineWidth = isSel ? 2.8 : 1.8;
         const rad = Math.max(8, Math.min(it.w, it.d) / 2);
         ctx.beginPath(); ctx.arc(lx, ly, rad, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         if (it.kind === 'lamp_chandelier') {
           ctx.beginPath(); ctx.arc(lx, ly, rad * 0.65, 0, Math.PI * 2); ctx.stroke();
         }
+        ctx.fillStyle = isBlueprint ? '#fde047' : '#92400e';
+        ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('💡 ' + it.label, lx, ly - rad - 8);
       }
-      ctx.fillStyle = isBlueprint ? '#fde047' : '#92400e';
-      ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('💡 ' + it.label, lx, ly - Math.min(it.w, it.d) / 2 - 8);
       ctx.restore();
       return;
     }
@@ -3497,19 +3920,19 @@ function draw2DFurnitureCAD(isBlueprint, showFurn = true, showUtils = true) {
         else if (it.backDir === 'e') ctx.strokeRect(bw - 16, 0, 16, bd);
       }
     }
+    ctx.restore();
 
     if (it.label) {
       ctx.save();
-      const vertical = (bd > bw * 1.38) && bw < 96;
-      ctx.translate(bw / 2, bd / 2);
+      const vertical = (it.d > it.w * 1.38) && it.w < 96;
+      ctx.translate(cx, cy);
       if (vertical) ctx.rotate(-Math.PI / 2);
       ctx.fillStyle = isBlueprint ? '#bae6fd' : '#0f172a';
       ctx.font = it.room === 'kitchen' ? '800 8px Cairo, Segoe UI' : '800 9.5px Cairo, Segoe UI';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(it.label, 0, 0, vertical ? (bd - 10) : Math.max(bw - 6, 44));
+      ctx.fillText(it.label, 0, 0, vertical ? (it.d - 10) : Math.max(it.w - 6, 44));
       ctx.restore();
     }
-    ctx.restore();
   });
 
   ctx.fillStyle = isBlueprint ? '#38bdf8' : '#0369a1';
@@ -3580,9 +4003,10 @@ function updateWalkRoomBadge() {
 }
 
 function drawWalkMiniMap(W, H) {
-  const mapW = 224, pad = 12, s = (mapW - pad * 2) / APT.W;
+  const isMob = document.body.classList.contains('mobile-ui');
+  const mapW = isMob ? 136 : 224, pad = isMob ? 8 : 12, s = (mapW - pad * 2) / APT.W;
   const mapH = Math.round(APT.H * s + pad * 2 + 18);
-  const bx = W - mapW - 18, by = H - mapH - 18, ox = bx + pad, oy = by + pad + 15;
+  const bx = W - mapW - (isMob ? 10 : 18), by = isMob ? 84 : (H - mapH - 18), ox = bx + pad, oy = by + pad + 15;
   miniMapRect = { x: ox, y: oy, s, boxX: bx, boxY: by, boxW: mapW, boxH: mapH };
 
   ctx.save();
@@ -3731,7 +4155,9 @@ function showInspector(obj) {
     document.getElementById('insMeta').textContent = `الطول: ${len} سم | السمك: ${obj.t} سم`;
     document.getElementById('insSub').textContent = editMode ? 'اسحب الحائط أو أطرافه لتغيير مكانه وطوله أو استخدم لوحة التحرير أو الحذف' : '';
   } else {
-    const ic = obj.cat === 'light' ? '💡 ' : (obj.cat === 'util' ? (obj.icon || '⚙️') + ' ' : '🛋️ ');
+    const ic = obj.kind === 'ceiling_speaker' ? '🔊 '
+      : (obj.kind === 'lamp_led_strip' ? '➖ '
+      : (obj.cat === 'light' ? '💡 ' : (obj.cat === 'util' ? (obj.icon || '⚙️') + ' ' : '🛋️ ')));
     document.getElementById('insTitle').textContent = ic + obj.label;
     document.getElementById('insMeta').textContent = `الأبعاد: ${obj.w} × ${obj.d} سم | دوران ${obj.rotDeg || 0}°`;
     document.getElementById('insSub').textContent = obj.spec || '';
@@ -3761,9 +4187,9 @@ function hitTest2DDoor(wx, wy) {
 
 function hitTest2DFurn(wx, wy) {
   const list = [...activeFurniture].reverse();
-  // First pass: check smaller items (lamps/utilities/small furniture) so they are easy to pick on top of larger rugs/sofas
+  // First pass: check smaller items (lamps/speakers/LEDs/utilities/small furniture) so they are easy to pick on top of larger rugs/sofas
   const hits = list.filter(it => {
-    if (it.cat === 'light' && !editMode) return false;
+    if (it.cat === 'light' && !editMode && !showCeilingItems) return false;
     return wx >= it.x - 4 && wx <= it.x + it.w + 4 && wy >= it.y - 4 && wy <= it.y + it.d + 4;
   });
   if (hits.length === 0) return null;
@@ -4133,12 +4559,12 @@ window.addEventListener('keyup', e => { if (walkKeys[e.code]) delete walkKeys[e.
 function jumpWalkRoom(roomId) {
   stopWalkTour();
   const presets = {
-    door:      { x: 735,  y: 455, yaw: -1.75, pitch: -0.05 },
-    reception: { x: 535,  y: 255, yaw: -2.45, pitch: -0.08 },
-    kitchen:   { x: 122,  y: 200, yaw: -2.05, pitch: -0.10 },
+    door:      { x: 715,  y: 475, yaw: -1.65, pitch: -0.05 },
+    reception: { x: 545,  y: 265, yaw: -2.45, pitch: -0.08 },
+    kitchen:   { x: 130,  y: 235, yaw: -1.95, pitch: -0.10 },
     entry:     { x: 335,  y: 455, yaw:  1.57, pitch: -0.06 },
-    bath:      { x: 185,  y: 695, yaw: -2.25, pitch: -0.10 },
-    salon:     { x: 210,  y: 855, yaw:  1.55, pitch: -0.09 },
+    bath:      { x: 180,  y: 685, yaw: -2.18, pitch: -0.10 },
+    salon:     { x: 215,  y: 845, yaw:  1.57, pitch: -0.10 },
     kids:      { x: 630,  y: 865, yaw:  1.55, pitch: -0.09 },
     master:    { x: 962,  y: 815, yaw:  0.88, pitch: -0.09 },
     balcony:   { x: 1255, y: 840, yaw: -1.65, pitch: -0.06 }
@@ -4296,16 +4722,120 @@ function bindWalkPadButtons() {
   });
 }
 
+// ============================================================================
+// 7. MOBILE UI DRAWER & MULTI-TOUCH GESTURE ENGINE (1-FINGER & 2-FINGER PINCH)
+// ============================================================================
+const DEFAULT_MOBILE_UI = false;
+
+window.toggleMobileDrawer = function(forceOpen) {
+  const sb = document.getElementById('studioSidebar');
+  const fab = document.getElementById('mobileDrawerFab');
+  if (!sb) return;
+  const open = typeof forceOpen === 'boolean' ? forceOpen : !sb.classList.contains('drawer-open');
+  sb.classList.toggle('drawer-open', open);
+  if (fab) fab.textContent = open ? '✕ إغلاق الأدوات' : '⚙️ الأدوات والمحرر';
+};
+
+window.setMobileUIMode = function(enable) {
+  document.body.classList.toggle('mobile-ui', !!enable);
+  const sw = document.getElementById('versionSwitchBtn');
+  if (sw) {
+    if (enable) {
+      sw.textContent = '🖥️ النسخة العادية';
+      sw.href = './index.html?desktop=1';
+    } else {
+      sw.textContent = '📱 نسخة التلفون';
+      sw.href = './mobile.html';
+    }
+  }
+  resizeCanvas();
+};
+
+let touchPinchDist = 0;
+let touchMidPt = null;
+
+function bindTouchGestures() {
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      touchPinchDist = 0;
+      const t = e.touches[0];
+      canvas.dispatchEvent(new MouseEvent('mousedown', {
+        clientX: t.clientX, clientY: t.clientY, bubbles: true
+      }));
+    } else if (e.touches.length === 2) {
+      e.preventDefault();
+      isDragging = false;
+      activeDrag = null;
+      const t0 = e.touches[0], t1 = e.touches[1];
+      touchPinchDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+      touchMidPt = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && touchPinchDist === 0) {
+      e.preventDefault();
+      const t = e.touches[0];
+      window.dispatchEvent(new MouseEvent('mousemove', {
+        clientX: t.clientX, clientY: t.clientY, bubbles: true
+      }));
+    } else if (e.touches.length === 2) {
+      e.preventDefault();
+      const t0 = e.touches[0], t1 = e.touches[1];
+      const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+      const mid = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+      if (touchPinchDist > 8 && dist > 8) {
+        const ratio = dist / touchPinchDist;
+        if (currentMode === '3d') {
+          cam3D.dist = Math.max(550, Math.min(3200, cam3D.dist / ratio));
+        } else if (currentMode === 'walk') {
+          stopWalkTour();
+          const step = (dist - touchPinchDist) * 0.65;
+          moveWalkCamera(Math.cos(walkCam.yaw) * step, Math.sin(walkCam.yaw) * step);
+        } else {
+          const rect = canvas.getBoundingClientRect();
+          const mx = mid.x - rect.left, my = mid.y - rect.top;
+          pan2D.x = mx - (mx - pan2D.x) * ratio + (mid.x - touchMidPt.x);
+          pan2D.y = my - (my - pan2D.y) * ratio + (mid.y - touchMidPt.y);
+          pan2D.scale = Math.max(0.18, Math.min(4.5, pan2D.scale * ratio));
+        }
+        redraw();
+      }
+      touchPinchDist = dist;
+      touchMidPt = mid;
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', e => {
+    if (e.touches.length === 0) {
+      touchPinchDist = 0;
+      const t = e.changedTouches[0];
+      if (t) {
+        window.dispatchEvent(new MouseEvent('mouseup', {
+          clientX: t.clientX, clientY: t.clientY, bubbles: true
+        }));
+      }
+    }
+  }, { passive: false });
+}
+
 (function init() {
   loadSavedState();
   populateDoorWallDropdown();
   bindWalkPadButtons();
+  bindTouchGestures();
   const params = new URLSearchParams(window.location.search);
   const mode = params.get('mode');
   const capture = params.get('capture');
   const tourT = params.get('t');
   const theme = params.get('theme');
+  const forceMobile = params.get('mobile') === '1';
+  const forceDesktop = params.get('desktop') === '1';
   if (capture === '1') document.body.classList.add('capture-mode');
+  else if (forceMobile || (DEFAULT_MOBILE_UI && !forceDesktop)) {
+    setMobileUIMode(true);
+  }
   if (theme && ['warm_real', 'daylight', 'cool_modern', 'night'].includes(theme)) setLightingTheme(theme);
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
