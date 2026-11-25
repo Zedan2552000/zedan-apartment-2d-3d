@@ -1207,7 +1207,7 @@ function getPresetDefaultFurniture(preset) {
     { id: 'u_heater', room: 'bath',      x: 195, y: 472, w: 36,  d: 36,  h: 52,  elev: 168, cat: 'util', kind: 'util_heater', label: 'السخان',        mat: 'white_app', icon: '♨️', color: '#fb923c', dx: 0,   dy: 22, spec: 'مرافق — سخان المياه الكهربائي (قابل للتحريك والحذف)' },
 
     // 7. Movable & Deletable Ceiling Lamps, Chandeliers, Linear LEDs & Ceiling Speakers (إضاءة وسماعات السقف)
-    { id: 'l_rec_ch',   room: 'reception', x: 546, y: 171, w: 48,  d: 48,  h: 12, elev: 243, cat: 'light', kind: 'lamp_chandelier', label: 'نجفة الصالة',         mat: 'gold_glass', spec: 'إضاءة — نجفة ليد دائرية ذهبية 3000K قابلة للتحريك والحذف' },
+    { id: 'l_rec_ch',   room: 'reception', x: 534, y: 168, w: 72,  d: 52,  h: 42, elev: 230, cat: 'light', kind: 'lamp_chandelier', label: 'نجفة الصالة (حلقات كريستال)', mat: 'gold_glass', spec: 'إضاءة — نجفة مودرن حلقات ليد كريستال متداخلة بإطار أسود وقرص ذهبي أوسط (مطابقة للصورة)' },
     { id: 'l_rec_s1',   room: 'reception', x: 275, y: 140, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 1',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
     { id: 'l_rec_s2',   room: 'reception', x: 735, y: 150, w: 22,  d: 22,  h: 4,  elev: 269, cat: 'light', kind: 'lamp_spot',       label: 'سبوت الصالة 2',       mat: 'white_app',  spec: 'إضاءة — سبوت ليد دائري غاطس قابل للتحريك والحذف' },
     { id: 'l_cor_led1', room: 'entry',     x: 275, y: 385, w: 6,   d: 355, h: 3,  elev: 269, cat: 'light', kind: 'lamp_led_strip',  label: 'ليد بروفايل المدخل 1', mat: 'glass_wood', spec: 'إضاءة — ليد بروفايل خطي غاطس بالممر قابل للتحريك وتغيير الطول والحذف' },
@@ -1852,15 +1852,15 @@ window.addNewLamp = function(type = 'spot') {
   if (!showCeilingItems) toggleCeilingOverlay(true);
   pushUndoSnapshot();
   const isCh = type === 'chandelier';
-  const sz = isCh ? 48 : 24;
-  const sp = getSmartSpawnPoint(520, 200, sz, sz);
+  const nw = isCh ? 72 : 24, nd = isCh ? 52 : 24;
+  const sp = getSmartSpawnPoint(520, 200, nw, nd);
   const nl = {
     id: 'l_custom_' + Date.now().toString(36).slice(-4),
     room: 'reception',
-    x: sp.x, y: sp.y, w: sz, d: sz, baseW: sz, baseD: sz, h: isCh ? 12 : 4, elev: isCh ? 243 : 269,
+    x: sp.x, y: sp.y, w: nw, d: nd, baseW: nw, baseD: nd, h: isCh ? 42 : 4, elev: isCh ? 230 : 269,
     rotDeg: 0, cat: 'light', kind: isCh ? 'lamp_chandelier' : 'lamp_spot',
-    label: isCh ? 'نجفة ليد جديدة' : 'سبوت ليد جديد', mat: isCh ? 'gold_glass' : 'white_app',
-    spec: isCh ? 'إضاءة — نجفة ليد ذهبية مضافة قابلة للتحريك والحذف' : 'إضاءة — سبوت ليد دائري مضاف قابل للتحريك وتغيير المقاس والحذف'
+    label: isCh ? 'نجفة حلقات كريستال جديدة' : 'سبوت ليد جديد', mat: isCh ? 'gold_glass' : 'white_app',
+    spec: isCh ? 'إضاءة — نجفة مودرن حلقات ليد كريستال متداخلة بإطار أسود وقرص ذهبي' : 'إضاءة — سبوت ليد دائري مضاف قابل للتحريك وتغيير المقاس والحذف'
   };
   activeFurniture.push(nl);
   selectedItem = nl; selectedDoor = null; selectedWall = null;
@@ -2301,6 +2301,27 @@ function buildPBRMaterials() {
     g.fillRect(0, 0, w, h);
   }, 1, 1, 0, true);
 
+  // Faceted Cut-Crystal LED Diffuser Texture (matches photo crystal beads)
+  const crystalLedTex = makeCanvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#e2e8f0';
+    g.fillRect(0, 0, w, h);
+    const cw = 16, ch = 16;
+    for (let y = 0; y < h; y += ch) {
+      const off = ((y / ch) % 2) * (cw / 2);
+      for (let x = -cw; x < w + cw; x += cw) {
+        const seed = Math.abs(Math.sin((x + 13) * 12.9898 + (y + 7) * 78.233));
+        const br = Math.round(215 + seed * 40);
+        g.fillStyle = `rgb(${br},${br},${Math.min(255, br + 3)})`;
+        g.fillRect(x + off + 1, y + 1, cw - 2, ch - 2);
+        g.fillStyle = seed > 0.65 ? '#ffffff' : 'rgba(255,250,240,0.85)';
+        g.fillRect(x + off + 3, y + 3, 5, 5);
+        g.strokeStyle = 'rgba(148,163,184,0.45)';
+        g.lineWidth = 1;
+        g.strokeRect(x + off + 0.5, y + 0.5, cw - 1, ch - 1);
+      }
+    }
+  }, 10, 2, 0, true);
+
   return {
     tex: { marbleTileTex, marbleRoughTex, shadowTex },
     slab:       new THREE.MeshStandardMaterial({ color: 0x162032, roughness: 0.85, metalness: 0.1 }),
@@ -2323,6 +2344,7 @@ function buildPBRMaterials() {
     ledWarm:    new THREE.MeshStandardMaterial({ color: 0xffe4a8, emissive: 0xffb347, emissiveIntensity: 1.8, roughness: 0.25 }),
     ledLinear:  new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xf0f7ff, emissiveIntensity: 2.2, roughness: 0.2 }),
     ledPanel:   new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.9, roughness: 0.18 }),
+    crystalLed: new THREE.MeshStandardMaterial({ map: crystalLedTex, bumpMap: crystalLedTex, bumpScale: 0.45, color: 0xffffff, emissive: 0xfff8ea, emissiveMap: crystalLedTex, emissiveIntensity: 2.15, roughness: 0.14, metalness: 0.22 }),
     oak:        new THREE.MeshStandardMaterial({ map: oakTex, roughness: 0.42, metalness: 0.04 }),
     walnut:     new THREE.MeshStandardMaterial({ map: walnutTex, roughness: 0.36, metalness: 0.05 }),
     doorMain:   new THREE.MeshStandardMaterial({ map: honeyOakTex, roughness: 0.30, metalness: 0.06 }),
@@ -2948,7 +2970,7 @@ function buildFurnitureGroup3D(it) {
   const yElev = it.elev || 3;
   grp.position.set(it.x + it.w / 2, yElev, it.y + it.d / 2);
   grp.rotation.y = -((it.rotDeg || 0) * Math.PI) / 180;
-  grp.userData = { furnId: it.id, cat: it.cat || 'furn', elev: yElev };
+  grp.userData = { furnId: it.id, cat: it.cat || 'furn', elev: yElev, h: it.h || 4, kind: it.kind };
   if (!it.elev || it.elev <= 10) addContactShadow(grp, bw, bd);
 
   if (it.kind === 'tall' || it.kind === 'microwave_tower') {
@@ -3388,11 +3410,85 @@ function buildFurnitureGroup3D(it) {
       grp.add(leaf);
     }
   } else if (it.kind === 'lamp_chandelier') {
-    const rad = Math.max(10, Math.min(bw, bd) / 2);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(rad, 1.8, 12, 36), m.gold);
-    ring.rotation.x = Math.PI / 2; ring.position.set(0, 2, 0); grp.add(ring);
-    const gRing = new THREE.Mesh(new THREE.TorusGeometry(Math.max(4, rad - 1.5), 1.0, 8, 36), m.ledWarm);
-    gRing.rotation.x = Math.PI / 2; gRing.position.set(0, 1, 0); grp.add(gRing);
+    const dropH = Math.max(28, it.h || 42);
+    const cMat = m.crystalLed || m.ledLinear;
+
+    // 1. Matte-black cylindrical ceiling canopy flush at top (dropH)
+    const canopy = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 4.2, 28), m.blackMetal);
+    canopy.position.set(0, dropH - 2.1, 0); canopy.castShadow = true; grp.add(canopy);
+    const canopyTrim = new THREE.Mesh(new THREE.CylinderGeometry(11.4, 11.4, 0.8, 28), m.graphite);
+    canopyTrim.position.set(0, dropH - 4.0, 0); grp.add(canopyTrim);
+
+    // 2. Sculpted interlocking oval ring helper (outer faceted crystal + inner matte-black aluminum spine)
+    function buildCrystalOval(rx, rz, tubeR, yPos, rotX, rotY, rotZ) {
+      const rg = new THREE.Group();
+      rg.position.set(0, yPos, 0);
+      rg.rotation.set(rotX, rotY, rotZ);
+      const ptsOut = [], ptsIn = [];
+      const N = 40;
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2;
+        ptsOut.push(new THREE.Vector3(Math.cos(a) * rx, 0, Math.sin(a) * rz));
+        ptsIn.push(new THREE.Vector3(Math.cos(a) * Math.max(4, rx - tubeR * 0.68), tubeR * 0.56, Math.sin(a) * Math.max(4, rz - tubeR * 0.68)));
+      }
+      const outerMesh = new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsOut, true), 64, tubeR, 12, true),
+        cMat
+      );
+      outerMesh.castShadow = true;
+      rg.add(outerMesh);
+      const innerSpine = new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsIn, true), 56, tubeR * 0.64, 10, true),
+        m.blackMetal
+      );
+      innerSpine.castShadow = true;
+      rg.add(innerSpine);
+      grp.add(rg);
+      return rg;
+    }
+
+    const r1x = Math.max(24, bw * 0.47), r1z = Math.max(14, bd * 0.34);
+    const r2x = Math.max(18, bw * 0.35), r2z = Math.max(13, bd * 0.30);
+    const ring1 = buildCrystalOval(r1x, r1z, 2.35, dropH * 0.34, 0.32, 0.24, -0.26);
+    const ring2 = buildCrystalOval(r2x, r2z, 2.15, dropH * 0.44, -0.36, -0.58, 0.40);
+
+    // 3. Central Hanging Gold-Rimmed Crystal LED Pendant Disc
+    const discGrp = new THREE.Group();
+    discGrp.position.set(0, dropH * 0.31, 0);
+    discGrp.rotation.set(0.24, 0.35, -0.18);
+    const goldShell = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 4.4, 2.6, 24), m.gold);
+    goldShell.castShadow = true; discGrp.add(goldShell);
+    const goldRim = new THREE.Mesh(new THREE.TorusGeometry(5.1, 0.72, 10, 28), m.gold);
+    goldRim.rotation.x = Math.PI / 2; goldRim.position.set(0, -0.7, 0); discGrp.add(goldRim);
+    const crystalLens = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 1.4, 24), cMat);
+    crystalLens.position.set(0, -0.85, 0); discGrp.add(crystalLens);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.2, 2.2, 12), m.gold);
+    collar.position.set(0, 2.1, 0); discGrp.add(collar);
+    grp.add(discGrp);
+
+    // 4. Five Thin Steel Suspension Wires from Canopy to Rings & Center Pendant
+    const upAxis = new THREE.Vector3(0, 1, 0);
+    function addWire(topPt, localTarget, parentObj) {
+      const p1 = localTarget.clone();
+      if (parentObj !== grp) {
+        parentObj.updateMatrix();
+        p1.applyMatrix4(parentObj.matrix);
+      }
+      const p0 = topPt.clone();
+      const dir = p1.clone().sub(p0);
+      const len = dir.length();
+      if (len < 1) return;
+      const wMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, len, 6), m.chrome);
+      wMesh.position.copy(p0).addScaledVector(dir, 0.5);
+      wMesh.quaternion.setFromUnitVectors(upAxis, dir.normalize());
+      grp.add(wMesh);
+    }
+    const topY = dropH - 4.0;
+    addWire(new THREE.Vector3(-7.0, topY, -2.5), new THREE.Vector3(-r1x * 0.72, 0, -r1z * 0.55), ring1);
+    addWire(new THREE.Vector3(7.0, topY, 2.5),  new THREE.Vector3(r1x * 0.72, 0, r1z * 0.55),  ring1);
+    addWire(new THREE.Vector3(-3.5, topY, 6.5),  new THREE.Vector3(-r2x * 0.65, 0, r2z * 0.65), ring2);
+    addWire(new THREE.Vector3(3.5, topY, -6.5),  new THREE.Vector3(r2x * 0.65, 0, -r2z * 0.65), ring2);
+    addWire(new THREE.Vector3(0, topY, 0),       new THREE.Vector3(0, dropH * 0.31 + 2.8, 0),   grp);
   } else if (it.kind === 'lamp_spot') {
     const rad = Math.max(5, Math.min(bw, bd) / 2);
     const rim = new THREE.Mesh(new THREE.CylinderGeometry(rad + 1.5, rad + 1.5, 1.2, 22), m.ducoWhite);
@@ -3520,6 +3616,7 @@ function applyLightingTheme() {
     gl.mats.ledWarm.emissiveIntensity = 2.4;
     gl.mats.ledLinear.emissiveIntensity = 2.1;
     gl.mats.ledPanel.emissiveIntensity = 1.1;
+    if (gl.mats.crystalLed) { gl.mats.crystalLed.emissive.setHex(0xfff2d6); gl.mats.crystalLed.emissiveIntensity = 2.5; }
     gl.interiorLights.forEach(pl => { pl.color.setHex(pl.userData.warmCol); pl.intensity = pl.userData.baseI * 1.45; });
   } else if (t === 'daylight') {
     gl.scene.background.setHex(isWalk ? 0x93c5fd : 0x0b1222);
@@ -3531,6 +3628,7 @@ function applyLightingTheme() {
     gl.mats.ledWarm.emissiveIntensity = 0.9;
     gl.mats.ledLinear.emissiveIntensity = 1.2;
     gl.mats.ledPanel.emissiveIntensity = 1.2;
+    if (gl.mats.crystalLed) { gl.mats.crystalLed.emissive.setHex(0xffffff); gl.mats.crystalLed.emissiveIntensity = 1.15; }
     gl.interiorLights.forEach(pl => { pl.color.setHex(pl.userData.coolCol); pl.intensity = pl.userData.baseI * 0.45; });
   } else if (t === 'cool_modern') {
     gl.scene.background.setHex(isWalk ? 0x64748b : 0x080f1e);
@@ -3542,6 +3640,7 @@ function applyLightingTheme() {
     gl.mats.ledWarm.emissiveIntensity = 1.4;
     gl.mats.ledLinear.emissiveIntensity = 2.6;
     gl.mats.ledPanel.emissiveIntensity = 2.5;
+    if (gl.mats.crystalLed) { gl.mats.crystalLed.emissive.setHex(0xf0f8ff); gl.mats.crystalLed.emissiveIntensity = 2.5; }
     gl.interiorLights.forEach(pl => { pl.color.setHex(pl.userData.coolCol); pl.intensity = pl.userData.baseI * 1.1; });
   } else {
     // 'warm_real' default — matches IMG_8727 & IMG_8680 golden 3000K gypsum coves + crisp corridor LED profiles
@@ -3554,6 +3653,7 @@ function applyLightingTheme() {
     gl.mats.ledWarm.emissiveIntensity = 2.3;
     gl.mats.ledLinear.emissiveIntensity = 2.4;
     gl.mats.ledPanel.emissiveIntensity = 2.0;
+    if (gl.mats.crystalLed) { gl.mats.crystalLed.emissive.setHex(0xfff8ea); gl.mats.crystalLed.emissiveIntensity = 2.15; }
     gl.interiorLights.forEach(pl => { pl.color.setHex(pl.userData.warmCol); pl.intensity = pl.userData.baseI * (isWalk ? 1.05 : 0.65); });
   }
 }
@@ -3587,7 +3687,7 @@ function renderWebGLView(W, H) {
       ch.visible = (currentMode === 'walk')
         ? !!document.getElementById('chkWalkCeiling').checked
         : !!(editMode || showCeilingItems || isSel);
-      ch.position.y = (currentMode === '3d') ? Math.min(elev, Math.max(20, targetWallH - 4)) : elev;
+      ch.position.y = (currentMode === '3d') ? Math.min(elev, Math.max(20, targetWallH - (ch.userData.h || 4) - 2)) : elev;
     } else if (cat === 'util') {
       ch.visible = !!(showFurnGroup && (elev <= 20 || targetWallH > 150 || editMode || isSel));
       ch.position.y = (currentMode === '3d' && elev > 20) ? Math.min(elev, Math.max(20, targetWallH - 35)) : elev;
@@ -3684,7 +3784,7 @@ function shadeHexColor(hex, factor) {
 function getSoftFurnColor(it) {
   if (it.kind === 'lamp_led_strip') return '#7dd3fc';
   if (it.kind === 'ceiling_speaker') return '#a78bfa';
-  if (it.kind === 'lamp_chandelier') return '#fbbf24';
+  if (it.kind === 'lamp_chandelier') return '#f8fafc';
   if (it.kind === 'lamp_spot') return '#fde68a';
   if (it.mat === 'ted5') return '#963c20';
   if (it.mat === 'ted3') return '#ebe4d7';
@@ -3898,7 +3998,7 @@ function renderSoftware3DFallback(W, H) {
     let yBot = elev;
     if (cat === 'light') {
       vis = isWalk ? showCeiling : !!(editMode || showCeilingItems || isSel);
-      yBot = !isWalk ? Math.min(elev, Math.max(20, targetWallH - 4)) : elev;
+      yBot = !isWalk ? Math.min(elev, Math.max(20, targetWallH - (it.h || 4) - 2)) : elev;
     } else if (cat === 'util') {
       vis = !!(showFurn && (elev <= 20 || targetWallH > 150 || editMode || isSel));
       yBot = (!isWalk && elev > 20) ? Math.min(elev, Math.max(20, targetWallH - 35)) : elev;
@@ -3906,6 +4006,15 @@ function renderSoftware3DFallback(W, H) {
       vis = !!showFurn;
     }
     if (!vis) return;
+    if (it.kind === 'lamp_chandelier') {
+      const cx = it.x + it.w / 2, cz = it.y + it.d / 2, hV = Math.max(24, it.h || 42);
+      const str = isSel ? '#facc15' : 'rgba(15,23,42,0.5)';
+      pushBox(cx - 11, yBot + hV - 4, cz - 11, cx + 11, yBot + hV, cz + 11, '#1e293b', '#0f172a', str, 1, 0.8);
+      pushBox(it.x, yBot + 4, it.y + 8, it.x + it.w, yBot + 16, it.y + it.d - 8, '#f8fafc', '#1e293b', str, 0.96, 1.0);
+      pushBox(it.x + 12, yBot + 10, it.y, it.x + it.w - 12, yBot + 24, it.y + it.d, '#fffbeb', '#1e293b', str, 0.96, 1.0);
+      pushBox(cx - 5, yBot + 6, cz - 5, cx + 5, yBot + 14, cz + 5, '#eab308', '#fde047', str, 1, 0.9);
+      return;
+    }
     const col = getSoftFurnColor(it);
     const hVal = Math.max(3, it.h || 50);
     pushBox(it.x, yBot, it.y, it.x + it.w, yBot + hVal, it.y + it.d, col, shadeHexColor(col, 1.08), isSel ? '#facc15' : 'rgba(15,23,42,0.38)', cat === 'light' ? 0.95 : 1, isSel ? 2.2 : 0.8);
@@ -4331,15 +4440,27 @@ function draw2DFurnitureCAD(isBlueprint, showFurn = true, showUtils = true) {
         ctx.fillStyle = isBlueprint ? '#67e8f9' : '#0e7490';
         ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText('➖ ' + it.label, lx, ly - Math.min(it.w, it.d) / 2 - 8);
+      } else if (it.kind === 'lamp_chandelier') {
+        const rx = Math.max(14, it.w * 0.44), ry = Math.max(10, it.d * 0.34);
+        ctx.strokeStyle = isSel ? '#10b981' : '#1e293b';
+        ctx.fillStyle = isSel ? 'rgba(16,185,129,0.22)' : 'rgba(255,248,234,0.34)';
+        ctx.lineWidth = isSel ? 3.2 : 2.6;
+        ctx.save(); ctx.translate(lx, ly); ctx.rotate(0.28);
+        ctx.beginPath(); ctx.ellipse(0, 0, rx, ry * 0.72, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.rotate(-0.68);
+        ctx.beginPath(); ctx.ellipse(0, 0, rx * 0.78, ry * 0.68, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#eab308'; ctx.strokeStyle = '#92400e'; ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.arc(0, 0, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.restore();
+        ctx.fillStyle = isBlueprint ? '#fde047' : '#92400e';
+        ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('✨ ' + it.label, lx, ly - Math.max(it.w, it.d) * 0.4 - 6);
       } else {
         ctx.strokeStyle = isSel ? '#10b981' : '#f59e0b';
         ctx.fillStyle = isSel ? 'rgba(16,185,129,0.28)' : 'rgba(250,204,21,0.25)';
         ctx.lineWidth = isSel ? 2.8 : 1.8;
         const rad = Math.max(8, Math.min(it.w, it.d) / 2);
         ctx.beginPath(); ctx.arc(lx, ly, rad, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        if (it.kind === 'lamp_chandelier') {
-          ctx.beginPath(); ctx.arc(lx, ly, rad * 0.65, 0, Math.PI * 2); ctx.stroke();
-        }
         ctx.fillStyle = isBlueprint ? '#fde047' : '#92400e';
         ctx.font = '800 8.5px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText('💡 ' + it.label, lx, ly - rad - 8);
