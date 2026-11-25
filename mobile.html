@@ -3,11 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نسخة الموبايل NOVA ARCH 8.0 MOBILE — شقة م. زيدان (12.50 × 8.05 م)</title>
+  <title>جولة 3D للموبايل — شقة م. زيدان (عرض وتجول فقط)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-  <script src="./three.min.js"></script>
+  <script>
+    window.__threeStatus = 'loading_local';
+    window.__threeFailReason = '';
+    window.__threeCdnIdx = 0;
+    window.__threeLoadingCdn = false;
+    window.__threeCdnUrls = [
+      'https://cdn.jsdelivr.net/gh/Zedan2552000/zedan-apartment-2d-3d@main/three.min.js',
+      'https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js',
+      'https://unpkg.com/three@0.147.0/build/three.min.js'
+    ];
+    window.__loadThreeCDN = function(forceLegacyWebGL1) {
+      if (forceLegacyWebGL1) {
+        window.__threeCdnIdx = Math.max(window.__threeCdnIdx, 1);
+        try { window.THREE = undefined; } catch {}
+        window.__threeLoadingCdn = false;
+      }
+      if (typeof window.THREE !== 'undefined' && !forceLegacyWebGL1) {
+        window.__threeStatus = 'ready';
+        if (typeof window.__onThreeLoaded === 'function') window.__onThreeLoaded();
+        return;
+      }
+      if (window.__threeLoadingCdn) return;
+      if (window.__threeCdnIdx >= window.__threeCdnUrls.length) {
+        window.__threeStatus = 'software_3d';
+        if (typeof window.redraw === 'function') window.redraw();
+        return;
+      }
+      window.__threeLoadingCdn = true;
+      window.__threeStatus = 'loading_cdn';
+      var url = window.__threeCdnUrls[window.__threeCdnIdx++];
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = url;
+      s.onload = function() {
+        window.__threeLoadingCdn = false;
+        if (typeof window.THREE !== 'undefined') {
+          window.__threeStatus = 'ready';
+          if (typeof window.__onThreeLoaded === 'function') window.__onThreeLoaded();
+        } else {
+          window.__loadThreeCDN(false);
+        }
+      };
+      s.onerror = function() {
+        window.__threeLoadingCdn = false;
+        window.__loadThreeCDN(false);
+      };
+      (document.head || document.documentElement).appendChild(s);
+    };
+  </script>
+  <script src="./three.min.js" onload="if (typeof THREE !== 'undefined') window.__threeStatus = 'ready';" onerror="window.__loadThreeCDN(false)"></script>
   <style>
     :root {
       --bg-dark: #050814;
@@ -46,7 +95,7 @@
       z-index: 30;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
     }
-    .brand { display: flex; align-items: center; gap: 11px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex-shrink: 1; }
     .brand-badge {
       background: linear-gradient(135deg, #06b6d4 0%, #6366f1 55%, #8b5cf6 100%);
       color: #fff;
@@ -57,9 +106,14 @@
       letter-spacing: 0.6px;
       box-shadow: 0 0 22px rgba(6, 182, 212, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
       white-space: nowrap;
+      flex-shrink: 0;
     }
-    .brand h1 { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
-    .brand p { font-size: 11px; color: #93c5fd; }
+    .brand h1 { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.4); white-space: nowrap; }
+    .brand p { font-size: 10.5px; color: #93c5fd; white-space: nowrap; }
+    @media (max-width: 1280px) {
+      header { flex-wrap: wrap; }
+      .brand p { display: none; }
+    }
 
     .tabs {
       display: flex;
@@ -469,26 +523,34 @@
       -webkit-user-select: none;
     }
     body.mobile-ui header {
-      padding: 6px 10px;
-      flex-wrap: wrap;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(8, 13, 26, 0.98);
+      padding: 7px 10px;
+      flex-direction: column;
+      align-items: stretch;
       gap: 6px;
     }
+    body.mobile-ui .brand { width: 100%; justify-content: space-between; }
     body.mobile-ui .brand p { display: none; }
-    body.mobile-ui .brand h1 { font-size: 12.5px; }
+    body.mobile-ui .brand h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     body.mobile-ui .brand-badge { font-size: 10.5px; padding: 3px 8px; }
+    body.mobile-ui .workspace { padding-bottom: 54px; }
     body.mobile-ui .tabs {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
+      height: 52px;
       z-index: 45;
-      border-radius: 16px 16px 0 0;
+      border-radius: 14px 14px 0 0;
       background: rgba(6, 10, 22, 0.96);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
       border-top: 1px solid rgba(56, 189, 248, 0.35);
       padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
       justify-content: space-around;
+      align-items: center;
     }
     body.mobile-ui .tab-btn {
       flex: 1;
@@ -498,15 +560,17 @@
     }
     body.mobile-ui .actions {
       width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
       justify-content: space-between;
       overflow-x: auto;
-      padding-bottom: 2px;
-      gap: 5px;
+      padding-bottom: 1px;
+      gap: 3px;
     }
     body.mobile-ui .actions .btn {
-      padding: 5px 8px;
-      font-size: 10.5px;
-      flex: 1;
+      padding: 4px 5px;
+      font-size: 9.5px;
+      flex: 1 1 auto;
       text-align: center;
       justify-content: center;
     }
@@ -527,7 +591,7 @@
       position: fixed;
       left: 0;
       right: 0;
-      bottom: 48px;
+      bottom: 52px;
       width: 100%;
       max-height: 62dvh;
       border-left: none;
@@ -555,8 +619,8 @@
       align-items: center;
       gap: 6px;
       position: fixed;
-      bottom: 58px;
-      right: 12px;
+      bottom: 62px;
+      right: 10px;
       z-index: 38;
       background: linear-gradient(135deg, #0284c7, #6366f1);
       color: #fff;
@@ -570,18 +634,18 @@
       box-shadow: 0 8px 24px rgba(2, 132, 199, 0.55);
     }
     body.mobile-ui .hud-bottom {
-      bottom: 58px;
+      bottom: 62px;
       left: 10px;
-      padding: 5px 10px;
+      padding: 5px 9px;
       font-size: 10px;
-      max-width: 58vw;
+      max-width: 55vw;
       flex-wrap: wrap;
       gap: 6px;
     }
     body.mobile-ui #hudHint { display: none; }
     body.mobile-ui #walkControlsHUD {
-      bottom: 58px;
-      left: 10px;
+      bottom: 62px;
+      left: 8px;
       padding: 8px 10px;
       transform: scale(0.92);
       transform-origin: bottom left;
@@ -594,20 +658,22 @@
       padding: 7px 11px;
     }
     body.mobile-ui .walk-room-badge {
-      top: 52px;
-      right: 10px;
-      font-size: 10.5px;
-      padding: 4px 11px;
+      display: none !important;
+    }
+    body.readonly-mode #editModeBtn,
+    body.readonly-mode #floatingQuickDock,
+    body.readonly-mode #editorCard {
+      display: none !important;
     }
   </style>
 </head>
-<body class="mobile-ui">
+<body class="mobile-ui readonly-mode">
   <header>
     <div class="brand">
-      <div class="brand-badge">NOVA ARCH 8.0 • PRO MAX</div>
+      <div class="brand-badge">NOVA ARCH 8.1 • TOUR</div>
       <div>
-        <h1>استوديو التصميم المعماري التفاعلي 2D & WebGL 3D — شقة م. زيدان</h1>
-        <p>محدّث بتعديلاتك المخصصة + إضافة ليد بروفايل وسماعات السقف + محرر الحوائط والأثاث والـ UI/UX Pro Max</p>
+        <h1>جولة شقة م. زيدان (3D &amp; 2D)</h1>
+        <p>12.50 × 8.05 م • نسخة عرض وتجول تفاعلي (التعديل مقفول)</p>
       </div>
     </div>
 
@@ -619,11 +685,11 @@
     </div>
 
     <div class="actions">
-      <button class="btn" id="editModeBtn" onclick="toggleEditMode()">✏️ وضع التعديل (أثاث / سقف / حيطان)</button>
-      <button class="btn" id="ceilToggleBtn" onclick="toggleCeilingOverlay()" title="إظهار / إخفاء الليد والسماعات والسبوتات في 2D و 3D">💡 إظهار السقف والليد</button>
+      <button class="btn" id="editModeBtn" onclick="toggleEditMode()">✏️ وضع التعديل</button>
+      <button class="btn" id="ceilToggleBtn" onclick="toggleCeilingOverlay()" title="إظهار / إخفاء الليد والسماعات والسبوتات في 2D و 3D">💡 السقف والليد</button>
       <button class="btn" id="rulerToggleBtn" onclick="toggleRuler()">📏 المسطرة</button>
-      <button class="btn btn-gold" onclick="exportPNG()">📸 حفظ PNG</button>
-      <a class="btn btn-mobile-link" id="versionSwitchBtn" href="./mobile.html" title="التبديل بين نسخة التلفون والنسخة العادية">📱 نسخة التلفون</a>
+      <button class="btn btn-gold" onclick="exportPNG()">📸 PNG</button>
+      <a class="btn btn-mobile-link" id="versionSwitchBtn" href="./index.html?desktop=1" title="التبديل بين نسخة التلفون والنسخة العادية">🖥️ النسخة العادية</a>
     </div>
   </header>
 
@@ -964,6 +1030,7 @@
 // 1. PARAMETRIC APARTMENT GEOMETRY (SINGLE SOURCE OF TRUTH)
 // ============================================================================
 const STORAGE_KEY = 'zedan_apt_v8';
+const READ_ONLY_MODE = true;
 
 const APT = {
   W: 1300,
@@ -1371,7 +1438,9 @@ function syncWallsFromDoors(rebuildGLArch = false) {
 
 function loadSavedState() {
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+  if (!READ_ONLY_MODE) {
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+  }
   APT.baseWalls = (saved && Array.isArray(saved.baseWalls) && saved.baseWalls.length > 0)
     ? cloneObj(saved.baseWalls)
     : cloneObj(APT.defaultBaseWalls);
@@ -1390,6 +1459,7 @@ function loadSavedState() {
 }
 
 function persistState() {
+  if (READ_ONLY_MODE) return;
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch { saved = {}; }
   saved.baseWalls = cloneObj(APT.baseWalls);
@@ -1400,6 +1470,7 @@ function persistState() {
 }
 
 function pushUndoSnapshot() {
+  if (READ_ONLY_MODE) return;
   undoStack.push({
     preset: activePreset,
     baseWalls: cloneObj(APT.baseWalls),
@@ -1465,6 +1536,7 @@ function snapDoorToNearestWall(d, wx, wy) {
 }
 
 window.moveDoorToWall = function(doorId, wallId) {
+  if (READ_ONLY_MODE) return;
   const d = APT.doors.find(x => x.id === doorId);
   const bw = APT.baseWalls.find(x => x.id === wallId);
   if (!d || !bw) return;
@@ -1480,7 +1552,7 @@ window.moveDoorToWall = function(doorId, wallId) {
 };
 
 function onDoorOffsetSlider(val) {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   const bw = APT.baseWalls.find(w => w.id === selectedDoor.wallId);
   if (!bw) return;
   const isH = Math.abs(bw.y2 - bw.y1) < 0.5;
@@ -1493,7 +1565,7 @@ function onDoorOffsetSlider(val) {
 }
 
 function changeDoorWidth(val) {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   pushUndoSnapshot();
   selectedDoor.w = Number(val);
   const bw = APT.baseWalls.find(w => w.id === selectedDoor.wallId);
@@ -1508,7 +1580,7 @@ function changeDoorWidth(val) {
 }
 
 window.flipDoorSwing = function() {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   pushUndoSnapshot();
   selectedDoor.swing *= -1;
   if (gl) {
@@ -1521,7 +1593,7 @@ window.flipDoorSwing = function() {
 };
 
 window.flipDoorHinge = function() {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   pushUndoSnapshot();
   selectedDoor.hingeEnd = selectedDoor.hingeEnd ? 0 : 1;
   syncWallsFromDoors(true);
@@ -1531,7 +1603,7 @@ window.flipDoorHinge = function() {
 };
 
 window.rotateSelectedFurn = function() {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   pushUndoSnapshot();
   const cx = selectedItem.x + selectedItem.w / 2;
   const cy = selectedItem.y + selectedItem.d / 2;
@@ -1547,7 +1619,7 @@ window.rotateSelectedFurn = function() {
 };
 
 function applyFurnInputs() {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   pushUndoSnapshot();
   selectedItem.x = Math.max(0, Math.min(APT.W, Number(document.getElementById('edFurnX').value) || 0));
   selectedItem.y = Math.max(0, Math.min(APT.H, Number(document.getElementById('edFurnY').value) || 0));
@@ -1568,7 +1640,7 @@ function applyFurnInputs() {
 }
 
 window.applyWallLength = function(val) {
-  if (!selectedWall) return;
+  if (READ_ONLY_MODE || !selectedWall) return;
   const newLen = Math.max(20, Math.round(Number(val) || 100));
   pushUndoSnapshot();
   const isH = Math.abs(selectedWall.y2 - selectedWall.y1) < 0.5;
@@ -1590,7 +1662,7 @@ window.applyWallLength = function(val) {
 };
 
 window.applyWallInputs = function() {
-  if (!selectedWall) return;
+  if (READ_ONLY_MODE || !selectedWall) return;
   pushUndoSnapshot();
   const x1 = Math.round(Number(document.getElementById('edWallX1').value) || 0);
   const y1 = Math.round(Number(document.getElementById('edWallY1').value) || 0);
@@ -1612,7 +1684,7 @@ window.applyWallInputs = function() {
 };
 
 window.resetSelectedWall = function() {
-  if (!selectedWall) return;
+  if (READ_ONLY_MODE || !selectedWall) return;
   const def = APT.defaultBaseWalls.find(w => w.id === selectedWall.id);
   if (!def) return;
   pushUndoSnapshot();
@@ -1626,7 +1698,7 @@ window.resetSelectedWall = function() {
 };
 
 window.deleteSelectedWall = function() {
-  if (!selectedWall) return;
+  if (READ_ONLY_MODE || !selectedWall) return;
   pushUndoSnapshot();
   const wid = selectedWall.id;
   APT.baseWalls = APT.baseWalls.filter(w => w.id !== wid);
@@ -1641,7 +1713,7 @@ window.deleteSelectedWall = function() {
 };
 
 window.deleteSelectedItem = function() {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   pushUndoSnapshot();
   activeFurniture = activeFurniture.filter(i => i.id !== selectedItem.id);
   selectedItem = null;
@@ -1653,7 +1725,7 @@ window.deleteSelectedItem = function() {
 };
 
 window.deleteSelectedDoor = function() {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   pushUndoSnapshot();
   APT.doors = APT.doors.filter(d => d.id !== selectedDoor.id);
   selectedDoor = null;
@@ -1665,13 +1737,14 @@ window.deleteSelectedDoor = function() {
 };
 
 window.deleteSelectedAny = function() {
+  if (READ_ONLY_MODE) return;
   if (selectedItem) deleteSelectedItem();
   else if (selectedDoor) deleteSelectedDoor();
   else if (selectedWall) deleteSelectedWall();
 };
 
 window.duplicateSelectedItem = function() {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   pushUndoSnapshot();
   const copy = cloneObj(selectedItem);
   copy.id = selectedItem.id + '_c' + Date.now().toString(36).slice(-3);
@@ -1702,12 +1775,13 @@ window.toggleCeilingOverlay = function(forceVal) {
   const btn = document.getElementById('ceilToggleBtn');
   if (btn) {
     btn.classList.toggle('ceil-active', showCeilingItems);
-    btn.textContent = showCeilingItems ? '💡 السقف والليد: ظاهر' : '💡 إظهار السقف والليد';
+    btn.textContent = showCeilingItems ? '💡 السقف: ظاهر' : '💡 السقف والليد';
   }
   redraw();
 };
 
 window.addNewLedStrip = function() {
+  if (READ_ONLY_MODE) return;
   if (!editMode) toggleEditMode();
   if (!showCeilingItems) toggleCeilingOverlay(true);
   pushUndoSnapshot();
@@ -1730,6 +1804,7 @@ window.addNewLedStrip = function() {
 };
 
 window.addNewCeilingSpeaker = function() {
+  if (READ_ONLY_MODE) return;
   if (!editMode) toggleEditMode();
   if (!showCeilingItems) toggleCeilingOverlay(true);
   pushUndoSnapshot();
@@ -1752,7 +1827,7 @@ window.addNewCeilingSpeaker = function() {
 };
 
 window.setLedQuickSize = function(lenCm, flipOrient) {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   pushUndoSnapshot();
   const isHoriz = selectedItem.w >= selectedItem.d;
   if (flipOrient) {
@@ -1772,6 +1847,7 @@ window.setLedQuickSize = function(lenCm, flipOrient) {
 };
 
 window.addNewLamp = function(type = 'spot') {
+  if (READ_ONLY_MODE) return;
   if (!editMode) toggleEditMode();
   if (!showCeilingItems) toggleCeilingOverlay(true);
   pushUndoSnapshot();
@@ -1796,6 +1872,7 @@ window.addNewLamp = function(type = 'spot') {
 };
 
 window.addNewWall = function() {
+  if (READ_ONLY_MODE) return;
   if (!editMode) toggleEditMode();
   pushUndoSnapshot();
   const count = APT.baseWalls.filter(w => w.id.startsWith('w_custom_')).length;
@@ -1817,6 +1894,7 @@ window.addNewWall = function() {
 };
 
 window.addNewDoor = function() {
+  if (READ_ONLY_MODE) return;
   if (!editMode) toggleEditMode();
   const targetWall = selectedWall || APT.baseWalls.find(w => w.id === 'w_cor_s') || APT.baseWalls[0];
   if (!targetWall) return;
@@ -1840,6 +1918,7 @@ window.addNewDoor = function() {
 };
 
 function nudgeSelected(dx, dy) {
+  if (READ_ONLY_MODE) return;
   if (selectedItem) {
     pushUndoSnapshot();
     selectedItem.x = Math.max(0, Math.min(APT.W - selectedItem.w, Math.round(selectedItem.x + dx)));
@@ -1881,7 +1960,7 @@ function nudgeSelected(dx, dy) {
 }
 
 window.resetSelectedItem = function() {
-  if (!selectedItem) return;
+  if (READ_ONLY_MODE || !selectedItem) return;
   const def = getPresetDefaultFurniture(activePreset).find(i => i.id === selectedItem.id);
   if (!def) return;
   pushUndoSnapshot();
@@ -1894,7 +1973,7 @@ window.resetSelectedItem = function() {
 };
 
 function resetSelectedDoor() {
-  if (!selectedDoor) return;
+  if (READ_ONLY_MODE || !selectedDoor) return;
   const def = APT.defaultDoors.find(d => d.id === selectedDoor.id);
   if (!def) return;
   pushUndoSnapshot();
@@ -1906,7 +1985,7 @@ function resetSelectedDoor() {
 }
 
 window.undoEdit = function() {
-  if (undoStack.length === 0) return;
+  if (READ_ONLY_MODE || undoStack.length === 0) return;
   const snap = undoStack.pop();
   if (snap.preset !== activePreset) {
     activePreset = snap.preset;
@@ -1928,6 +2007,7 @@ window.undoEdit = function() {
 };
 
 window.resetAllEdits = function() {
+  if (READ_ONLY_MODE) return;
   pushUndoSnapshot();
   try { localStorage.removeItem(STORAGE_KEY); } catch {}
   APT.baseWalls = cloneObj(APT.defaultBaseWalls);
@@ -1947,6 +2027,7 @@ window.resetAllEdits = function() {
 };
 
 function exportEditsJSON() {
+  if (READ_ONLY_MODE) return;
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
   const payload = { version: 8, baseWalls: APT.baseWalls, doors: APT.doors, activePreset, presets: saved.presets || { [activePreset]: activeFurniture } };
@@ -1958,6 +2039,7 @@ function exportEditsJSON() {
 }
 
 function importEditsJSON(input) {
+  if (READ_ONLY_MODE) return;
   const f = input.files?.[0];
   if (!f) return;
   const reader = new FileReader();
@@ -1981,12 +2063,13 @@ function importEditsJSON(input) {
 }
 
 window.toggleEditMode = function() {
+  if (READ_ONLY_MODE) { editMode = false; return; }
   editMode = !editMode;
   const btn = document.getElementById('editModeBtn');
   const card = document.getElementById('editorCard');
   const badge = document.getElementById('editBadgeState');
   btn.classList.toggle('edit-active', editMode);
-  btn.textContent = editMode ? '✅ وضع التعديل نشط (أثاث / ليد / سماعات / حيطان)' : '✏️ وضع التعديل (أثاث / سقف / حيطان)';
+  btn.textContent = editMode ? '✅ التعديل نشط' : '✏️ وضع التعديل';
   card.classList.toggle('editor-highlight', editMode);
   badge.textContent = editMode ? 'نشط ✏️' : 'معاينة';
   badge.style.color = editMode ? '#10b981' : '#94a3b8';
@@ -2066,6 +2149,13 @@ function updateEditorUI() {
 // 3. PROCEDURAL PBR MATERIALS & THREE.JS WEBGL2 ARCHITECTURAL ENGINE
 // ============================================================================
 let gl = null;
+let glInitFailed = false;
+let glWebGL1Retried = false;
+window.__onThreeLoaded = function() {
+  glInitFailed = false;
+  gl = null;
+  if (currentMode === '3d' || currentMode === 'walk') redraw();
+};
 
 function makeCanvasTex(w, h, drawFn, repeatX = 1, repeatY = 1, rotation = 0, isColor = true) {
   const c = document.createElement('canvas');
@@ -2073,12 +2163,15 @@ function makeCanvasTex(w, h, drawFn, repeatX = 1, repeatY = 1, rotation = 0, isC
   const g = c.getContext('2d');
   drawFn(g, w, h);
   const t = new THREE.CanvasTexture(c);
-  if (isColor) t.colorSpace = THREE.SRGBColorSpace;
+  if (isColor) {
+    if ('colorSpace' in t && THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+  }
   t.wrapS = THREE.RepeatWrapping;
   t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeatX, repeatY);
   if (rotation) { t.center.set(0.5, 0.5); t.rotation = rotation; }
-  t.anisotropy = 8;
+  t.anisotropy = (document.body.classList.contains('mobile-ui') || window.innerWidth <= 820) ? 2 : 8;
   t.needsUpdate = true;
   return t;
 }
@@ -2315,93 +2408,188 @@ function wallMatArray(code, m) {
   return [e, w, cap, cap, s, n];
 }
 
+function probeWebGLSupport() {
+  try {
+    const tc = document.createElement('canvas');
+    if (tc.getContext('webgl2')) return 2;
+    if (tc.getContext('webgl') || tc.getContext('experimental-webgl')) return 1;
+  } catch {}
+  return 0;
+}
+
 function initWebGL() {
-  if (gl || typeof THREE === 'undefined') return;
-  const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.94;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  if (gl) return true;
+  if (typeof THREE === 'undefined') {
+    if (window.__loadThreeCDN && window.__threeStatus !== 'software_3d') window.__loadThreeCDN(false);
+    return false;
+  }
+  if (glInitFailed) return false;
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b1222);
-
-  if (THREE.RoomEnvironment) {
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 0.28;
+  const wl = probeWebGLSupport();
+  if (wl === 0) {
+    glInitFailed = true;
+    window.__threeStatus = 'software_3d';
+    window.__threeFailReason = 'WebGL unavailable';
+    return false;
+  }
+  if (wl === 1 && parseInt(THREE.REVISION || '0', 10) >= 163) {
+    if (!glWebGL1Retried && window.__loadThreeCDN) {
+      glWebGL1Retried = true;
+      window.__threeFailReason = 'webgl1_retry';
+      window.__loadThreeCDN(true);
+    } else {
+      glInitFailed = true;
+      window.__threeStatus = 'software_3d';
+      window.__threeFailReason = 'WebGL1 unsupported';
+    }
+    return false;
   }
 
-  const camera = new THREE.PerspectiveCamera(58, 16 / 9, 6, 9000);
-  const hemiLight = new THREE.HemisphereLight(0xf0f7ff, 0x8b7355, 0.72);
-  hemiLight.position.set(650, 1200, 590);
-  scene.add(hemiLight);
+  if (!glCanvas.__ctxLostBound) {
+    glCanvas.__ctxLostBound = true;
+    glCanvas.addEventListener('webglcontextlost', e => {
+      e.preventDefault();
+      gl = null;
+      glInitFailed = true;
+      window.__threeStatus = 'software_3d';
+      window.__threeFailReason = 'WebGL context lost';
+      redraw();
+    }, false);
+  }
 
-  const ambientLight = new THREE.AmbientLight(0xfff8eb, 0.22);
-  scene.add(ambientLight);
+  try {
+    const isMob = document.body.classList.contains('mobile-ui') || window.innerWidth <= 820;
+    let renderer = null;
+    let lastErr = null;
+    const optsList = [
+      { canvas: glCanvas, antialias: !isMob, preserveDrawingBuffer: true, powerPreference: isMob ? 'default' : 'high-performance' },
+      { canvas: glCanvas, antialias: false, preserveDrawingBuffer: true },
+      { canvas: glCanvas, antialias: false }
+    ];
+    for (let i = 0; i < optsList.length; i++) {
+      try {
+        renderer = new THREE.WebGLRenderer(optsList[i]);
+        if (renderer) break;
+      } catch (e) {
+        lastErr = e;
+        renderer = null;
+      }
+    }
+    if (!renderer) {
+      if (!glWebGL1Retried && parseInt(THREE.REVISION || '0', 10) >= 163) {
+        glWebGL1Retried = true;
+        window.__threeFailReason = 'webgl1_retry';
+        if (window.__loadThreeCDN) window.__loadThreeCDN(true);
+        return false;
+      }
+      glInitFailed = true;
+      window.__threeStatus = 'software_3d';
+      window.__threeFailReason = (lastErr && lastErr.message) ? lastErr.message : 'WebGL unavailable';
+      return false;
+    }
 
-  const sunLight = new THREE.DirectionalLight(0xfff6e5, 1.55);
-  sunLight.position.set(1450, 1950, 1650);
-  sunLight.target.position.set(600, 0, 580);
-  sunLight.castShadow = true;
-  sunLight.shadow.mapSize.set(2048, 2048);
-  sunLight.shadow.camera.near = 400;
-  sunLight.shadow.camera.far = 4200;
-  sunLight.shadow.camera.left = -1050;
-  sunLight.shadow.camera.right = 1050;
-  sunLight.shadow.camera.top = 1050;
-  sunLight.shadow.camera.bottom = -1050;
-  sunLight.shadow.bias = -0.0005;
-  scene.add(sunLight);
-  scene.add(sunLight.target);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMob ? 1.5 : 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.94;
+    if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+    if ('physicallyCorrectLights' in renderer) renderer.physicallyCorrectLights = true;
 
-  const mats = buildPBRMaterials();
-  const archGroup = new THREE.Group();
-  const ceilingGroup = new THREE.Group();
-  const furnGroup = new THREE.Group();
-  const doorHitGroup = new THREE.Group();
-  scene.add(archGroup);
-  scene.add(ceilingGroup);
-  scene.add(furnGroup);
-  scene.add(doorHitGroup);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b1222);
 
-  // Selection Outline Helper in 3D
-  const selOutline = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0xfacc15, wireframe: true, transparent: true, opacity: 0.85 })
-  );
-  selOutline.visible = false;
-  scene.add(selOutline);
+    if (THREE.RoomEnvironment) {
+      try {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+        if ('environmentIntensity' in scene) scene.environmentIntensity = 0.28;
+        pmrem.dispose();
+      } catch (e) {
+        console.warn('PMREM skipped:', e);
+      }
+    }
 
-  const interiorLights = [];
-  const lightSpecs = [
-    { x: 525, z: 194, y: 245, warmCol: 0xffd28a, coolCol: 0xf1f7ff, baseI: 42000, dist: 720 },
-    { x: 122, z: 175, y: 245, warmCol: 0xfff5e4, coolCol: 0xf8fafc, baseI: 32000, dist: 480 },
-    { x: 122, z: 600, y: 245, warmCol: 0xfff5e4, coolCol: 0xf8fafc, baseI: 26000, dist: 420 },
-    { x: 330, z: 510, y: 245, warmCol: 0xfff3de, coolCol: 0xeef6ff, baseI: 24000, dist: 500 },
-    { x: 555, z: 710, y: 245, warmCol: 0xfff3de, coolCol: 0xeef6ff, baseI: 24000, dist: 560 },
-    { x: 211, z: 970, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 38000, dist: 600 },
-    { x: 643, z: 970, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 38000, dist: 620 },
-    { x: 1037,z: 920, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 40000, dist: 650 }
-  ];
-  lightSpecs.forEach(ls => {
-    const pl = new THREE.PointLight(ls.warmCol, ls.baseI, ls.dist, 1.85);
-    pl.position.set(ls.x, ls.y, ls.z);
-    pl.userData = ls;
-    scene.add(pl);
-    interiorLights.push(pl);
-  });
+    const camera = new THREE.PerspectiveCamera(58, 16 / 9, 6, 9000);
+    const hemiLight = new THREE.HemisphereLight(0xf0f7ff, 0x8b7355, 0.72);
+    hemiLight.position.set(650, 1200, 590);
+    scene.add(hemiLight);
 
-  gl = {
-    renderer, scene, camera, sunLight, hemiLight, ambientLight,
-    archGroup, ceilingGroup, furnGroup, doorHitGroup, selOutline,
-    doorPivots: [], furnMap: {}, interiorLights, mats, builtWallH: -1
-  };
-  rebuildArchitecture3D(currentMode === 'walk' ? 270 : parseFloat(document.getElementById('wallHSlider').value));
-  rebuildFurniture3D();
-  applyLightingTheme();
+    const ambientLight = new THREE.AmbientLight(0xfff8eb, 0.22);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfff6e5, 1.55);
+    sunLight.position.set(1450, 1950, 1650);
+    sunLight.target.position.set(600, 0, 580);
+    sunLight.castShadow = true;
+    const shSize = isMob ? 1024 : 2048;
+    sunLight.shadow.mapSize.set(shSize, shSize);
+    sunLight.shadow.camera.near = 400;
+    sunLight.shadow.camera.far = 4200;
+    sunLight.shadow.camera.left = -1050;
+    sunLight.shadow.camera.right = 1050;
+    sunLight.shadow.camera.top = 1050;
+    sunLight.shadow.camera.bottom = -1050;
+    sunLight.shadow.bias = -0.0005;
+    scene.add(sunLight);
+    scene.add(sunLight.target);
+
+    const mats = buildPBRMaterials();
+    const archGroup = new THREE.Group();
+    const ceilingGroup = new THREE.Group();
+    const furnGroup = new THREE.Group();
+    const doorHitGroup = new THREE.Group();
+    scene.add(archGroup);
+    scene.add(ceilingGroup);
+    scene.add(furnGroup);
+    scene.add(doorHitGroup);
+
+    // Selection Outline Helper in 3D
+    const selOutline = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshBasicMaterial({ color: 0xfacc15, wireframe: true, transparent: true, opacity: 0.85 })
+    );
+    selOutline.visible = false;
+    scene.add(selOutline);
+
+    const interiorLights = [];
+    const lightSpecs = [
+      { x: 525, z: 194, y: 245, warmCol: 0xffd28a, coolCol: 0xf1f7ff, baseI: 42000, dist: 720 },
+      { x: 122, z: 175, y: 245, warmCol: 0xfff5e4, coolCol: 0xf8fafc, baseI: 32000, dist: 480 },
+      { x: 122, z: 600, y: 245, warmCol: 0xfff5e4, coolCol: 0xf8fafc, baseI: 26000, dist: 420 },
+      { x: 330, z: 510, y: 245, warmCol: 0xfff3de, coolCol: 0xeef6ff, baseI: 24000, dist: 500 },
+      { x: 555, z: 710, y: 245, warmCol: 0xfff3de, coolCol: 0xeef6ff, baseI: 24000, dist: 560 },
+      { x: 211, z: 970, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 38000, dist: 600 },
+      { x: 643, z: 970, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 38000, dist: 620 },
+      { x: 1037,z: 920, y: 245, warmCol: 0xffd594, coolCol: 0xf1f7ff, baseI: 40000, dist: 650 }
+    ];
+    lightSpecs.forEach(ls => {
+      const pl = new THREE.PointLight(ls.warmCol, ls.baseI, ls.dist, 1.85);
+      pl.position.set(ls.x, ls.y, ls.z);
+      pl.userData = ls;
+      scene.add(pl);
+      interiorLights.push(pl);
+    });
+
+    gl = {
+      renderer, scene, camera, sunLight, hemiLight, ambientLight,
+      archGroup, ceilingGroup, furnGroup, doorHitGroup, selOutline,
+      doorPivots: [], furnMap: {}, interiorLights, mats, builtWallH: -1
+    };
+    window.__threeStatus = 'ready';
+    rebuildArchitecture3D(currentMode === 'walk' ? 270 : parseFloat(document.getElementById('wallHSlider').value));
+    rebuildFurniture3D();
+    applyLightingTheme();
+    return true;
+  } catch (err) {
+    console.warn('WebGL init failed, using Canvas 3D fallback:', err);
+    gl = null;
+    glInitFailed = true;
+    window.__threeStatus = 'software_3d';
+    window.__threeFailReason = (err && err.message) ? err.message : 'Init failed';
+    return false;
+  }
 }
 
 function clearGroup(grp) {
@@ -3320,11 +3508,12 @@ function applyLightingTheme() {
   if (!gl) return;
   const isWalk = currentMode === 'walk';
   const t = lightingTheme;
+  const setEnv = v => { if ('environmentIntensity' in gl.scene) gl.scene.environmentIntensity = v; };
 
   if (t === 'night') {
     gl.scene.background.setHex(0x040711);
     gl.renderer.toneMappingExposure = 0.96;
-    gl.scene.environmentIntensity = 0.14;
+    setEnv(0.14);
     gl.sunLight.intensity = 0.14;
     gl.hemiLight.intensity = 0.18;
     gl.ambientLight.intensity = 0.12;
@@ -3335,7 +3524,7 @@ function applyLightingTheme() {
   } else if (t === 'daylight') {
     gl.scene.background.setHex(isWalk ? 0x93c5fd : 0x0b1222);
     gl.renderer.toneMappingExposure = 0.96;
-    gl.scene.environmentIntensity = 0.42;
+    setEnv(0.42);
     gl.sunLight.intensity = isWalk ? 1.85 : 1.75;
     gl.hemiLight.intensity = isWalk ? 0.85 : 0.82;
     gl.ambientLight.intensity = 0.28;
@@ -3346,7 +3535,7 @@ function applyLightingTheme() {
   } else if (t === 'cool_modern') {
     gl.scene.background.setHex(isWalk ? 0x64748b : 0x080f1e);
     gl.renderer.toneMappingExposure = 0.95;
-    gl.scene.environmentIntensity = 0.28;
+    setEnv(0.28);
     gl.sunLight.intensity = isWalk ? 0.65 : 1.15;
     gl.hemiLight.intensity = 0.48;
     gl.ambientLight.intensity = 0.22;
@@ -3358,7 +3547,7 @@ function applyLightingTheme() {
     // 'warm_real' default — matches IMG_8727 & IMG_8680 golden 3000K gypsum coves + crisp corridor LED profiles
     gl.scene.background.setHex(isWalk ? 0x1e293b : 0x09101f);
     gl.renderer.toneMappingExposure = 0.94;
-    gl.scene.environmentIntensity = 0.28;
+    setEnv(0.28);
     gl.sunLight.intensity = isWalk ? 0.72 : 1.38;
     gl.hemiLight.intensity = isWalk ? 0.44 : 0.68;
     gl.ambientLight.intensity = isWalk ? 0.20 : 0.26;
@@ -3370,8 +3559,14 @@ function applyLightingTheme() {
 }
 
 function renderWebGLView(W, H) {
+  if (W < 4 || H < 4) return;
   initWebGL();
-  if (!gl) return;
+  if (!gl) {
+    glCanvas.style.display = 'none';
+    renderSoftware3DFallback(W, H);
+    return;
+  }
+  glCanvas.style.display = 'block';
   gl.renderer.setSize(W, H, false);
   gl.camera.aspect = W / Math.max(1, H);
   gl.camera.updateProjectionMatrix();
@@ -3404,11 +3599,14 @@ function renderWebGLView(W, H) {
   applyLightingTheme();
 
   if (currentMode === '3d') {
-    gl.camera.fov = 44;
+    const aspect = gl.camera.aspect;
+    const portraitFactor = aspect < 1 ? Math.min(1.56, 0.86 / Math.max(0.45, aspect)) : 1;
+    const effDist = cam3D.dist * portraitFactor;
+    gl.camera.fov = aspect < 1 ? 50 : 44;
     gl.camera.updateProjectionMatrix();
-    const cx = cam3D.targetX + cam3D.dist * Math.cos(cam3D.pitch) * Math.sin(cam3D.yaw);
-    const cy = cam3D.targetY + cam3D.dist * Math.sin(cam3D.pitch);
-    const cz = cam3D.targetZ + cam3D.dist * Math.cos(cam3D.pitch) * Math.cos(cam3D.yaw);
+    const cx = cam3D.targetX + effDist * Math.cos(cam3D.pitch) * Math.sin(cam3D.yaw);
+    const cy = cam3D.targetY + effDist * Math.sin(cam3D.pitch);
+    const cz = cam3D.targetZ + effDist * Math.cos(cam3D.pitch) * Math.cos(cam3D.yaw);
     gl.camera.position.set(cx, cy, cz);
     gl.camera.lookAt(cam3D.targetX, cam3D.targetY, cam3D.targetZ);
   } else if (currentMode === 'walk') {
@@ -3420,7 +3618,17 @@ function renderWebGLView(W, H) {
     gl.camera.lookAt(walkCam.x + fx * 120, walkCam.z + sp * 120, walkCam.y + fz * 120);
   }
 
-  gl.renderer.render(gl.scene, gl.camera);
+  try {
+    gl.renderer.render(gl.scene, gl.camera);
+  } catch (err) {
+    console.warn('WebGL render error, switching to Canvas 3D fallback:', err);
+    gl = null;
+    glInitFailed = true;
+    glCanvas.style.display = 'none';
+    window.__threeStatus = 'software_3d';
+    renderSoftware3DFallback(W, H);
+    return;
+  }
 
   ctx.clearRect(0, 0, W, H);
   if (currentMode === '3d' && document.getElementById('chk3DLabels').checked) {
@@ -3431,8 +3639,10 @@ function renderWebGLView(W, H) {
 }
 
 function draw3DRoomLabelsOverlay(W, H, wallH) {
+  const isMob = document.body.classList.contains('mobile-ui') || W < 700;
   const v = new THREE.Vector3();
   APT.rooms.filter(r => !r.hideLabel).forEach(r => {
+    if (isMob && (r.id === 'washer' || r.id === 'entry')) return;
     const lx = r.labelX || (r.x + r.w / 2), lz = r.labelY || (r.y + r.h / 2);
     const ly = wallH + (r.id === 'entry' ? 58 : (r.id === 'washer' ? 22 : 36));
     v.set(lx, ly, lz).project(gl.camera);
@@ -3440,16 +3650,339 @@ function draw3DRoomLabelsOverlay(W, H, wallH) {
     const sx = (v.x * 0.5 + 0.5) * W, sy = (-v.y * 0.5 + 0.5) * H;
     ctx.save();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.font = '800 12px Cairo, Segoe UI';
-    const tw = Math.max(ctx.measureText(r.name).width, ctx.measureText(r.dimLabel).width) + 22;
-    ctx.fillStyle = 'rgba(9, 14, 26, 0.88)';
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.78)';
-    ctx.lineWidth = 1.3;
-    roundRect(ctx, sx - tw / 2, sy - 18, tw, 36, 8, true, true);
-    ctx.fillStyle = '#ffffff'; ctx.fillText(r.name, sx, sy - 6);
-    ctx.fillStyle = '#fbbf24'; ctx.font = '700 10px Cairo, Segoe UI'; ctx.fillText(r.dimLabel, sx, sy + 9);
+    if (isMob) {
+      ctx.font = '800 9.5px Cairo, Segoe UI';
+      const shortName = r.name.replace('ممر (الطرقة)', 'الطرقة');
+      const tw = ctx.measureText(shortName).width + 12;
+      ctx.fillStyle = 'rgba(9, 14, 26, 0.86)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.72)';
+      ctx.lineWidth = 1.0;
+      roundRect(ctx, sx - tw / 2, sy - 9.5, tw, 19, 6, true, true);
+      ctx.fillStyle = '#ffffff'; ctx.fillText(shortName, sx, sy);
+    } else {
+      ctx.font = '800 12px Cairo, Segoe UI';
+      const tw = Math.max(ctx.measureText(r.name).width, ctx.measureText(r.dimLabel).width) + 22;
+      ctx.fillStyle = 'rgba(9, 14, 26, 0.88)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.78)';
+      ctx.lineWidth = 1.3;
+      roundRect(ctx, sx - tw / 2, sy - 18, tw, 36, 8, true, true);
+      ctx.fillStyle = '#ffffff'; ctx.fillText(r.name, sx, sy - 6);
+      ctx.fillStyle = '#fbbf24'; ctx.font = '700 10px Cairo, Segoe UI'; ctx.fillText(r.dimLabel, sx, sy + 9);
+    }
     ctx.restore();
   });
+}
+
+function shadeHexColor(hex, factor) {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, Math.max(0, Math.round(((n >> 16) & 255) * factor)));
+  const g = Math.min(255, Math.max(0, Math.round(((n >> 8) & 255) * factor)));
+  const b = Math.min(255, Math.max(0, Math.round((n & 255) * factor)));
+  return `rgb(${r},${g},${b})`;
+}
+
+function getSoftFurnColor(it) {
+  if (it.kind === 'lamp_led_strip') return '#7dd3fc';
+  if (it.kind === 'ceiling_speaker') return '#a78bfa';
+  if (it.kind === 'lamp_chandelier') return '#fbbf24';
+  if (it.kind === 'lamp_spot') return '#fde68a';
+  if (it.mat === 'ted5') return '#963c20';
+  if (it.mat === 'ted3') return '#ebe4d7';
+  if (it.mat === 'alba5' || it.mat === 'new_rock1') return '#ede7dc';
+  if (it.mat === 'graphite_app' || it.kind === 'fridge') return '#475569';
+  if (it.mat === 'inox') return '#cbd5e1';
+  if (it.mat === 'gold_glass') return '#eab308';
+  if (it.mat === 'walnut' || it.mat === 'walnut_white' || it.mat === 'zemerda') return '#8b5a34';
+  if (it.mat === 'kids_wood') return '#bf8954';
+  if (it.mat === 'plaza_oak' || it.mat === 'wood_cabinet') return '#9d724a';
+  if (it.mat === 'white_app') return '#f1f5f9';
+  return '#cbd5e1';
+}
+
+function renderSoftware3DFallback(W, H) {
+  if (W < 4 || H < 4) return;
+  const isWalk = currentMode === 'walk';
+  const isMob = document.body.classList.contains('mobile-ui') || W < 700;
+  const aspect = W / Math.max(1, H);
+  const targetWallH = isWalk ? 270 : parseFloat(document.getElementById('wallHSlider').value);
+  const lightMul = lightingTheme === 'night' ? 0.70 : (lightingTheme === 'daylight' ? 1.05 : 0.94);
+
+  // Background gradient
+  ctx.save();
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  if (isWalk && lightingTheme === 'daylight') { bg.addColorStop(0, '#60a5fa'); bg.addColorStop(1, '#1e293b'); }
+  else if (lightingTheme === 'night') { bg.addColorStop(0, '#02050d'); bg.addColorStop(1, '#080e1f'); }
+  else { bg.addColorStop(0, '#16223b'); bg.addColorStop(1, '#050914'); }
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+
+  let eyeX, eyeY, eyeZ, lookX, lookY, lookZ, fov;
+  if (currentMode === '3d') {
+    const portraitFactor = aspect < 1 ? Math.min(1.56, 0.86 / Math.max(0.45, aspect)) : 1;
+    const effDist = cam3D.dist * portraitFactor;
+    fov = aspect < 1 ? 50 : 44;
+    eyeX = cam3D.targetX + effDist * Math.cos(cam3D.pitch) * Math.sin(cam3D.yaw);
+    eyeY = cam3D.targetY + effDist * Math.sin(cam3D.pitch);
+    eyeZ = cam3D.targetZ + effDist * Math.cos(cam3D.pitch) * Math.cos(cam3D.yaw);
+    lookX = cam3D.targetX; lookY = cam3D.targetY; lookZ = cam3D.targetZ;
+  } else {
+    fov = 68;
+    const cp = Math.cos(walkCam.pitch), sp = Math.sin(walkCam.pitch);
+    const fx = Math.cos(walkCam.yaw) * cp, fz = Math.sin(walkCam.yaw) * cp;
+    eyeX = walkCam.x; eyeY = walkCam.z; eyeZ = walkCam.y;
+    lookX = walkCam.x + fx * 120; lookY = walkCam.z + sp * 120; lookZ = walkCam.y + fz * 120;
+  }
+
+  let fx = lookX - eyeX, fy = lookY - eyeY, fz = lookZ - eyeZ;
+  const fl = Math.hypot(fx, fy, fz) || 1;
+  fx /= fl; fy /= fl; fz /= fl;
+
+  let rx = -fz, ry = 0, rz = fx;
+  const rl = Math.hypot(rx, ry, rz) || 1;
+  rx /= rl; rz /= rl;
+
+  const ux = ry * fz - rz * fy;
+  const uy = rz * fx - rx * fz;
+  const uz = rx * fy - ry * fx;
+
+  const focal = (H * 0.5) / Math.tan((fov * Math.PI / 180) * 0.5);
+  const nearZ = 8;
+
+  function toCam(wx, wy, wz) {
+    const dx = wx - eyeX, dy = wy - eyeY, dz = wz - eyeZ;
+    return {
+      cx: dx * rx + dy * ry + dz * rz,
+      cy: dx * ux + dy * uy + dz * uz,
+      cz: dx * fx + dy * fy + dz * fz
+    };
+  }
+
+  function projPoint(wx, wy, wz) {
+    const p = toCam(wx, wy, wz);
+    if (p.cz < nearZ) return null;
+    return { x: W * 0.5 + (p.cx / p.cz) * focal, y: H * 0.5 - (p.cy / p.cz) * focal, z: p.cz };
+  }
+
+  const floorPolys = [];
+  const ceilPolys = [];
+  const solidPolys = [];
+
+  function pushQuad(list, pts, fill, stroke, alpha = 1, lw = 0.8) {
+    const camPts = pts.map(p => toCam(p[0], p[1], p[2]));
+    let anyIn = false;
+    for (let i = 0; i < camPts.length; i++) {
+      if (camPts[i].cz >= nearZ) { anyIn = true; break; }
+    }
+    if (!anyIn) return;
+    const clipped = [];
+    for (let i = 0; i < camPts.length; i++) {
+      const a = camPts[i], b = camPts[(i + 1) % camPts.length];
+      const aIn = a.cz >= nearZ, bIn = b.cz >= nearZ;
+      if (aIn) {
+        clipped.push(a);
+        if (!bIn) {
+          const t = (nearZ - a.cz) / (b.cz - a.cz);
+          clipped.push({ cx: a.cx + (b.cx - a.cx) * t, cy: a.cy + (b.cy - a.cy) * t, cz: nearZ });
+        }
+      } else if (bIn) {
+        const t = (nearZ - a.cz) / (b.cz - a.cz);
+        clipped.push({ cx: a.cx + (b.cx - a.cx) * t, cy: a.cy + (b.cy - a.cy) * t, cz: nearZ });
+      }
+    }
+    if (clipped.length < 3) return;
+    let sumZ = 0;
+    const scr = clipped.map(p => {
+      sumZ += p.cz;
+      return [W * 0.5 + (p.cx / p.cz) * focal, H * 0.5 - (p.cy / p.cz) * focal];
+    });
+    list.push({ pts: scr, avgZ: sumZ / clipped.length, fill, stroke, alpha, lw });
+  }
+
+  function pushBox(x0, y0, z0, x1, y1, z1, baseHex, topHex, strokeCol = 'rgba(15,23,42,0.34)', alpha = 1, lw = 0.8) {
+    if (eyeY >= y1) pushQuad(solidPolys, [[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]], shadeHexColor(topHex || baseHex, lightMul), strokeCol, alpha, lw);
+    else if (eyeY <= y0) pushQuad(solidPolys, [[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]], shadeHexColor(baseHex, 0.72 * lightMul), strokeCol, alpha, lw);
+    if (eyeX >= x1) pushQuad(solidPolys, [[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]], shadeHexColor(baseHex, 0.88 * lightMul), strokeCol, alpha, lw);
+    else if (eyeX <= x0) pushQuad(solidPolys, [[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[x0,y0,z1]], shadeHexColor(baseHex, 0.82 * lightMul), strokeCol, alpha, lw);
+    if (eyeZ >= z1) pushQuad(solidPolys, [[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]], shadeHexColor(baseHex, 0.94 * lightMul), strokeCol, alpha, lw);
+    else if (eyeZ <= z0) pushQuad(solidPolys, [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0]], shadeHexColor(baseHex, 0.76 * lightMul), strokeCol, alpha, lw);
+  }
+
+  const showCeiling = isWalk && document.getElementById('chkWalkCeiling').checked;
+  const showFurn = isWalk ? document.getElementById('chkWalkFurn').checked : document.getElementById('chk3DFurn').checked;
+
+  // 1. Floors & Walk Ceilings
+  APT.rooms.forEach(r => {
+    let fHex = '#e6d8c3';
+    if (r.floor === 'kitchen_tile' || r.floor === 'bath_tile') fHex = '#7d624d';
+    else if (r.floor === 'white_marble') fHex = '#e2e8f0';
+    else if (r.floor === 'balcony') fHex = '#c98d72';
+    else if (r.floor === 'stair') fHex = '#cbd5e1';
+    else if (r.floor === 'corridor') fHex = '#dfd0b8';
+    pushQuad(floorPolys, [[r.x,3,r.y],[r.x+r.w,3,r.y],[r.x+r.w,3,r.y+r.h],[r.x,3,r.y+r.h]], shadeHexColor(fHex, lightMul), 'rgba(100,116,139,0.28)', 1, 0.7);
+    if (showCeiling && !r.id.startsWith('balcony')) {
+      pushQuad(ceilPolys, [[r.x,273,r.y],[r.x+r.w,273,r.y],[r.x+r.w,273,r.y+r.h],[r.x,273,r.y+r.h]], shadeHexColor('#ede9df', 0.92 * lightMul), 'rgba(148,163,184,0.22)', 1, 0.6);
+    }
+  });
+
+  // 2. Subdivided Extruded Walls
+  APT.walls.forEach(w => {
+    const isH = Math.abs(w.y2 - w.y1) < 1;
+    const len = isH ? Math.abs(w.x2 - w.x1) : Math.abs(w.y2 - w.y1);
+    if (len < 1) return;
+    let wHex = '#f1ede4';
+    if (w.mat === 'terracotta' || w.mat.includes('stair')) wHex = '#d8c3a5';
+    else if (w.mat.includes('kitchen')) wHex = '#a68c76';
+    else if (w.mat.includes('bath')) wHex = '#948272';
+    else if (w.mat.includes('ext')) wHex = '#e4dfd6';
+    const isSelW = !!(selectedWall && selectedWall.id === w.baseId);
+    const strokeC = isSelW ? '#facc15' : 'rgba(15,23,42,0.34)';
+    const nSeg = Math.max(1, Math.ceil(len / 140));
+    const s0 = isH ? Math.min(w.x1, w.x2) : Math.min(w.y1, w.y2);
+    const step = len / nSeg;
+    for (let i = 0; i < nSeg; i++) {
+      const a = s0 + i * step, b = s0 + (i + 1) * step;
+      if (isH) pushBox(a, 3, w.y1 - w.t / 2, b, 3 + targetWallH, w.y1 + w.t / 2, wHex, '#334155', strokeC, 1, isSelW ? 1.8 : 0.7);
+      else     pushBox(w.x1 - w.t / 2, 3, a, w.x1 + w.t / 2, 3 + targetWallH, b, wHex, '#334155', strokeC, 1, isSelW ? 1.8 : 0.7);
+    }
+  });
+
+  // 3. Stairs & Balcony Parapet
+  for (let st = 0; st < 8; st++) {
+    const sx = 438 + st * 26, sh = (st + 1) * 15;
+    if (sh < targetWallH) pushBox(sx, 3, 406, sx + 26, 3 + sh, 524, '#cbd5e1', '#e2e8f0');
+  }
+  const paraH = Math.min(targetWallH, 92);
+  if (paraH > 8) {
+    [[805,0,895,12],[885,0,897,576],[885,570,1300,582],[1288,570,1300,1180],[1210,1168,1300,1180]].forEach(b => {
+      pushBox(b[0], 3, b[1], b[2], 3 + paraH, b[3], '#c98d72', '#475569');
+    });
+  }
+
+  // 4. Windows & Doors
+  APT.windows.forEach(win => {
+    const isH = win.y1 === win.y2;
+    const x0 = isH ? win.x1 : win.x1 - 7.5, x1 = isH ? win.x2 : win.x1 + 7.5;
+    const z0 = isH ? win.y1 - 7.5 : win.y1, z1 = isH ? win.y1 + 7.5 : win.y2;
+    const sillH = Math.min(targetWallH, win.sill);
+    if (sillH > 4) pushBox(x0, 3, z0, x1, 3 + sillH, z1, '#ede9df', '#f1f5f9');
+    const glassTop = Math.min(targetWallH, win.sill + win.wh);
+    if (glassTop > sillH + 8) pushBox(x0 + (isH ? 2 : 4), 3 + sillH, z0 + (isH ? 4 : 2), x1 - (isH ? 2 : 4), 3 + glassTop, z1 - (isH ? 4 : 2), '#7dd3fc', '#bae6fd', 'rgba(226,232,240,0.6)', 0.45);
+    if (targetWallH > win.sill + win.wh + 2) pushBox(x0, 3 + win.sill + win.wh, z0, x1, 3 + targetWallH, z1, '#ede9df', '#334155');
+  });
+
+  const doorH = Math.min(targetWallH, 214);
+  APT.doors.forEach(d => {
+    const sg = getDoorSwingGeometry(d);
+    const curAng = sg.closedAngle + sg.diff * doorOpenRatio;
+    const len = Math.max(10, d.w - 6);
+    const tx = sg.hingeX + Math.cos(curAng) * len;
+    const tz = sg.hingeY + Math.sin(curAng) * len;
+    const dHex = d.alum ? '#ede8dc' : (d.main ? '#a66e38' : '#8b512c');
+    const isSelD = !!(selectedDoor && selectedDoor.id === d.id);
+    if (doorH > 20) {
+      pushQuad(solidPolys, [[sg.hingeX, 3, sg.hingeY], [tx, 3, tz], [tx, 3 + doorH - 4, tz], [sg.hingeX, 3 + doorH - 4, sg.hingeY]], shadeHexColor(dHex, lightMul), isSelD ? '#facc15' : 'rgba(15,23,42,0.5)', 1, isSelD ? 2 : 1.0);
+    }
+    if (targetWallH > 215) {
+      if (d.dir === 'h') pushBox(d.hx, 218, d.hy - 7, d.hx + d.w, 3 + targetWallH, d.hy + 7, '#ede9df', '#334155');
+      else               pushBox(d.hx - 7, 218, d.hy, d.hx + 7, 3 + targetWallH, d.hy + d.w, '#ede9df', '#334155');
+    }
+  });
+
+  // 5. Furniture, Ceiling LEDs & Speakers
+  getActiveFurnLayout().forEach(it => {
+    const cat = it.cat || 'furn';
+    const elev = it.elev || 3;
+    const isSel = !!(selectedItem && selectedItem.id === it.id);
+    let vis = false;
+    let yBot = elev;
+    if (cat === 'light') {
+      vis = isWalk ? showCeiling : !!(editMode || showCeilingItems || isSel);
+      yBot = !isWalk ? Math.min(elev, Math.max(20, targetWallH - 4)) : elev;
+    } else if (cat === 'util') {
+      vis = !!(showFurn && (elev <= 20 || targetWallH > 150 || editMode || isSel));
+      yBot = (!isWalk && elev > 20) ? Math.min(elev, Math.max(20, targetWallH - 35)) : elev;
+    } else {
+      vis = !!showFurn;
+    }
+    if (!vis) return;
+    const col = getSoftFurnColor(it);
+    const hVal = Math.max(3, it.h || 50);
+    pushBox(it.x, yBot, it.y, it.x + it.w, yBot + hVal, it.y + it.d, col, shadeHexColor(col, 1.08), isSel ? '#facc15' : 'rgba(15,23,42,0.38)', cat === 'light' ? 0.95 : 1, isSel ? 2.2 : 0.8);
+  });
+
+  function drawPolyList(list) {
+    list.sort((a, b) => b.avgZ - a.avgZ);
+    for (let i = 0; i < list.length; i++) {
+      const p = list[i];
+      ctx.save();
+      if (p.alpha < 1) ctx.globalAlpha = p.alpha;
+      ctx.beginPath();
+      ctx.moveTo(p.pts[0][0], p.pts[0][1]);
+      for (let k = 1; k < p.pts.length; k++) ctx.lineTo(p.pts[k][0], p.pts[k][1]);
+      ctx.closePath();
+      ctx.fillStyle = p.fill;
+      ctx.fill();
+      if (p.stroke) {
+        ctx.strokeStyle = p.stroke;
+        ctx.lineWidth = p.lw || 0.8;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  drawPolyList(floorPolys);
+  drawPolyList(ceilPolys);
+  drawPolyList(solidPolys);
+
+  // Overlays
+  if (currentMode === '3d' && document.getElementById('chk3DLabels').checked) {
+    APT.rooms.filter(r => !r.hideLabel).forEach(r => {
+      if (isMob && (r.id === 'washer' || r.id === 'entry')) return;
+      const lx = r.labelX || (r.x + r.w / 2), lz = r.labelY || (r.y + r.h / 2);
+      const ly = targetWallH + (r.id === 'entry' ? 58 : (r.id === 'washer' ? 22 : 36));
+      const sp = projPoint(lx, ly, lz);
+      if (!sp) return;
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      if (isMob) {
+        ctx.font = '800 9.5px Cairo, Segoe UI';
+        const shortName = r.name.replace('ممر (الطرقة)', 'الطرقة');
+        const tw = ctx.measureText(shortName).width + 12;
+        ctx.fillStyle = 'rgba(9, 14, 26, 0.86)'; ctx.strokeStyle = 'rgba(56, 189, 248, 0.72)'; ctx.lineWidth = 1.0;
+        roundRect(ctx, sp.x - tw / 2, sp.y - 9.5, tw, 19, 6, true, true);
+        ctx.fillStyle = '#ffffff'; ctx.fillText(shortName, sp.x, sp.y);
+      } else {
+        ctx.font = '800 12px Cairo, Segoe UI';
+        const tw = Math.max(ctx.measureText(r.name).width, ctx.measureText(r.dimLabel).width) + 22;
+        ctx.fillStyle = 'rgba(9, 14, 26, 0.88)'; ctx.strokeStyle = 'rgba(56, 189, 248, 0.78)'; ctx.lineWidth = 1.3;
+        roundRect(ctx, sp.x - tw / 2, sp.y - 18, tw, 36, 8, true, true);
+        ctx.fillStyle = '#ffffff'; ctx.fillText(r.name, sp.x, sp.y - 6);
+        ctx.fillStyle = '#fbbf24'; ctx.font = '700 10px Cairo, Segoe UI'; ctx.fillText(r.dimLabel, sp.x, sp.y + 9);
+      }
+      ctx.restore();
+    });
+  } else if (currentMode === 'walk') {
+    drawWalkMiniMap(W, H);
+  }
+
+  // Status Pill
+  const msg = (window.__threeStatus === 'loading_cdn' || window.__threeStatus === 'loading_local')
+    ? '⏳ جاري تحميل محرك WebGL 3D... (وضع 3D السريع نشط)'
+    : '⚡ وضع 3D متوافق (Canvas 3D التفاعلي)';
+  ctx.save();
+  ctx.font = '700 11px Cairo, Segoe UI';
+  const pw = ctx.measureText(msg).width + 20;
+  const px = (W - pw) / 2, py = isMob ? 12 : H - 48;
+  ctx.fillStyle = 'rgba(7, 11, 22, 0.84)';
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.55)';
+  ctx.lineWidth = 1.1;
+  roundRect(ctx, px, py, pw, 24, 12, true, true);
+  ctx.fillStyle = '#bae6fd';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(msg, W / 2, py + 12);
+  ctx.restore();
 }
 
 // ============================================================================
@@ -4006,7 +4539,7 @@ function drawWalkMiniMap(W, H) {
   const isMob = document.body.classList.contains('mobile-ui');
   const mapW = isMob ? 136 : 224, pad = isMob ? 8 : 12, s = (mapW - pad * 2) / APT.W;
   const mapH = Math.round(APT.H * s + pad * 2 + 18);
-  const bx = W - mapW - (isMob ? 10 : 18), by = isMob ? 84 : (H - mapH - 18), ox = bx + pad, oy = by + pad + 15;
+  const bx = W - mapW - (isMob ? 10 : 18), by = isMob ? 56 : (H - mapH - 18), ox = bx + pad, oy = by + pad + 15;
   miniMapRect = { x: ox, y: oy, s, boxX: bx, boxY: by, boxW: mapW, boxH: mapH };
 
   ctx.save();
@@ -4053,20 +4586,28 @@ function resizeCanvas() {
 
 function fit2DToViewport() {
   const rect = canvas.parentElement.getBoundingClientRect();
-  const pad = 122;
-  const sx = (rect.width - pad * 2) / APT.W, sy = (rect.height - pad * 2) / APT.H;
-  pan2D.scale = Math.min(sx, sy);
+  const isMob = document.body.classList.contains('mobile-ui') || rect.width < 700;
+  const padX = isMob ? 24 : 122;
+  const padTop = isMob ? 66 : 122;
+  const padBot = isMob ? 74 : 122;
+  const sx = (rect.width - padX * 2) / APT.W, sy = (rect.height - padTop - padBot) / APT.H;
+  pan2D.scale = Math.max(0.15, Math.min(sx, sy));
   pan2D.x = (rect.width - APT.W * pan2D.scale) / 2;
-  pan2D.y = (rect.height - APT.H * pan2D.scale) / 2 - 12;
+  pan2D.y = padTop + (rect.height - padTop - padBot - APT.H * pan2D.scale) / 2;
 }
 
 function redraw() {
   const rect = canvas.parentElement.getBoundingClientRect();
   const W = rect.width, H = rect.height;
+  if (W < 4 || H < 4) return;
   const isGL = (currentMode === '3d' || currentMode === 'walk');
-  glCanvas.style.display = isGL ? 'block' : 'none';
-  if (isGL) renderWebGLView(W, H);
-  else { ctx.clearRect(0, 0, W, H); render2DPlan(W, H, currentMode === 'blueprint'); }
+  if (isGL) {
+    renderWebGLView(W, H);
+  } else {
+    glCanvas.style.display = 'none';
+    ctx.clearRect(0, 0, W, H);
+    render2DPlan(W, H, currentMode === 'blueprint');
+  }
 }
 
 window.setMode = function(mode) {
@@ -4079,17 +4620,23 @@ window.setMode = function(mode) {
   document.getElementById('rulerToggleBtn').style.display = is2D ? 'inline-block' : 'none';
   document.getElementById('walkControlsHUD').style.display = (mode === 'walk') ? 'flex' : 'none';
   document.getElementById('walkRoomBadge').style.display = (mode === 'walk') ? 'block' : 'none';
+  const hudBot = document.getElementById('hudBottom');
+  if (hudBot) hudBot.style.display = (mode === 'walk' && document.body.classList.contains('mobile-ui')) ? 'none' : 'flex';
 
   if (mode !== 'walk') { stopWalkTour(); Object.keys(walkKeys).forEach(k => delete walkKeys[k]); }
   if (mode === '3d') {
     rulerActive = false; document.getElementById('rulerStatus').style.display = 'none';
-    document.getElementById('hudHint').textContent = 'اسحب بالماوس لتدوير المجسم • اسحب أي قطعة عفش أو باب في وضع التعديل';
+    document.getElementById('hudHint').textContent = READ_ONLY_MODE
+      ? 'اسحب لتدوير المجسم • عجلة الماوس أو الأصبعين للتكبير والتصغير'
+      : 'اسحب بالماوس لتدوير المجسم • اسحب أي قطعة عفش أو باب في وضع التعديل';
   } else if (mode === 'walk') {
     rulerActive = false; document.getElementById('rulerStatus').style.display = 'none';
     document.getElementById('hudHint').textContent = 'تحرك بـ WASD أو الأسهم • اسحب بالماوس للنظر • اضغط الرادار للانتقال';
     updateWalkRoomBadge();
   } else {
-    document.getElementById('hudHint').textContent = 'اسحب للتحريك • عجلة الماوس للتكبير • فعّل وضع التعديل لسحب الأثاث والبيبان';
+    document.getElementById('hudHint').textContent = READ_ONLY_MODE
+      ? 'اسحب للتحريك • عجلة الماوس للتكبير • اضغط على أي قطعة أو استخدم المسطرة للقياس'
+      : 'اسحب للتحريك • عجلة الماوس للتكبير • فعّل وضع التعديل لسحب الأثاث والبيبان';
     fit2DToViewport();
   }
   redraw();
@@ -4113,7 +4660,9 @@ function onFurnLayoutChange() {
   activePreset = el ? el.value : 'preset1';
   selectedItem = null;
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+  if (!READ_ONLY_MODE) {
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+  }
   activeFurniture = (saved && saved.presets && Array.isArray(saved.presets[activePreset]))
     ? cloneObj(saved.presets[activePreset])
     : getPresetDefaultFurniture(activePreset);
@@ -4170,7 +4719,7 @@ function exportPNG() {
   const out = document.createElement('canvas');
   out.width = canvas.width; out.height = canvas.height;
   const octx = out.getContext('2d');
-  if (currentMode === '3d' || currentMode === 'walk') octx.drawImage(glCanvas, 0, 0, out.width, out.height);
+  if ((currentMode === '3d' || currentMode === 'walk') && gl && glCanvas.style.display !== 'none') octx.drawImage(glCanvas, 0, 0, out.width, out.height);
   octx.drawImage(canvas, 0, 0, out.width, out.height);
   const link = document.createElement('a');
   link.download = `Zedan_Apartment_${currentMode}.png`; link.href = out.toDataURL('image/png'); link.click();
@@ -4258,6 +4807,7 @@ function raycast3DFurnOrDoor(mx, my, rect) {
 }
 
 function intersectFloorPlane(mx, my, rect, yHeight = 3) {
+  if (!gl || typeof THREE === 'undefined') return null;
   const ndc = new THREE.Vector2((mx / rect.width) * 2 - 1, -(my / rect.height) * 2 + 1);
   const ray = new THREE.Raycaster();
   ray.setFromCamera(ndc, gl.camera);
@@ -4294,7 +4844,7 @@ canvas.addEventListener('mousedown', e => {
     redraw(); return;
   }
 
-  if (editMode && (currentMode === 'blueprint' || currentMode === 'colored')) {
+  if (!READ_ONLY_MODE && editMode && (currentMode === 'blueprint' || currentMode === 'colored')) {
     const wx = (mx - pan2D.x) / pan2D.scale, wy = (my - pan2D.y) / pan2D.scale;
     // Check selected wall endpoint handles first
     if (selectedWall) {
@@ -4337,7 +4887,7 @@ canvas.addEventListener('mousedown', e => {
     }
   }
 
-  if (editMode && currentMode === '3d' && gl) {
+  if (!READ_ONLY_MODE && editMode && currentMode === '3d' && gl) {
     const rc = raycast3DFurnOrDoor(mx, my, rect);
     if (rc && rc.type === 'door') {
       pushUndoSnapshot();
@@ -4502,7 +5052,7 @@ window.addEventListener('mouseup', e => {
           }
         }
         updateEditorUI(); showInspector(selectedDoor || selectedItem || selectedWall); redraw();
-      } else if (gl && (currentMode === '3d' || currentMode === 'walk')) {
+      } else if (!READ_ONLY_MODE && gl && (currentMode === '3d' || currentMode === 'walk')) {
         const rc = raycast3DFurnOrDoor(mx, my, rect);
         if (rc && rc.type === 'door') { selectedDoor = rc.door; selectedItem = null; selectedWall = null; }
         else if (rc && rc.type === 'furn') { selectedItem = rc.item; selectedDoor = null; selectedWall = null; }
@@ -4532,7 +5082,7 @@ canvas.addEventListener('wheel', e => {
 
 window.addEventListener('keydown', e => {
   if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-  if (editMode && currentMode !== 'walk') {
+  if (!READ_ONLY_MODE && editMode && currentMode !== 'walk') {
     if ((e.ctrlKey || e.metaKey) && e.code === 'KeyZ') { e.preventDefault(); undoEdit(); return; }
     if (e.code === 'KeyR' && selectedItem) { e.preventDefault(); rotateSelectedFurn(); return; }
     if ((e.code === 'Delete' || e.code === 'Backspace') && (selectedItem || selectedDoor || selectedWall)) {
@@ -4615,7 +5165,11 @@ function toggleVideoRecord() {
   const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
   walkRecordedChunks = [];
   walkMediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 5000000 });
-  walkMediaRecorder._composite = () => { rctx.drawImage(glCanvas, 0, 0, 1280, 720); rctx.drawImage(canvas, 0, 0, 1280, 720); };
+  walkMediaRecorder._composite = () => {
+    rctx.clearRect(0, 0, 1280, 720);
+    if (gl && glCanvas.style.display !== 'none') rctx.drawImage(glCanvas, 0, 0, 1280, 720);
+    rctx.drawImage(canvas, 0, 0, 1280, 720);
+  };
   walkMediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) walkRecordedChunks.push(e.data); };
   walkMediaRecorder.onstop = () => {
     const url = URL.createObjectURL(new Blob(walkRecordedChunks, { type: 'video/webm' }));
@@ -4694,7 +5248,20 @@ function drawDimLine(x1, y1, x2, y2, text, color, horiz) {
   ctx.restore();
 }
 function drawCompassAndScale(W, H, isBlueprint) {
-  ctx.save(); const cx = W - 55, cy = 55;
+  const isMob = document.body.classList.contains('mobile-ui') || W < 700;
+  ctx.save();
+  if (isMob) {
+    const cx = W - 28, cy = 76;
+    ctx.fillStyle = isBlueprint ? 'rgba(15,23,42,0.86)' : 'rgba(255,255,255,0.92)';
+    ctx.strokeStyle = isBlueprint ? '#38bdf8' : '#334155'; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(cx, cy - 13); ctx.lineTo(cx - 5, cy); ctx.lineTo(cx + 5, cy); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = isBlueprint ? '#94a3b8' : '#64748b'; ctx.beginPath(); ctx.moveTo(cx, cy + 13); ctx.lineTo(cx - 5, cy); ctx.lineTo(cx + 5, cy); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = isBlueprint ? '#f8fafc' : '#0f172a'; ctx.font = '800 9px Cairo, Segoe UI'; ctx.textAlign = 'center'; ctx.fillText('N', cx, cy + 29);
+    ctx.restore();
+    return;
+  }
+  const cx = W - 55, cy = 55;
   ctx.fillStyle = isBlueprint ? 'rgba(15,23,42,0.86)' : 'rgba(255,255,255,0.92)';
   ctx.strokeStyle = isBlueprint ? '#38bdf8' : '#334155'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -4733,7 +5300,7 @@ window.toggleMobileDrawer = function(forceOpen) {
   if (!sb) return;
   const open = typeof forceOpen === 'boolean' ? forceOpen : !sb.classList.contains('drawer-open');
   sb.classList.toggle('drawer-open', open);
-  if (fab) fab.textContent = open ? '✕ إغلاق الأدوات' : '⚙️ الأدوات والمحرر';
+  if (fab) fab.textContent = open ? '✕ إغلاق' : (READ_ONLY_MODE ? '🧭 الغرف والجولة' : '⚙️ الأدوات والمحرر');
 };
 
 window.setMobileUIMode = function(enable) {
@@ -4742,10 +5309,10 @@ window.setMobileUIMode = function(enable) {
   if (sw) {
     if (enable) {
       sw.textContent = '🖥️ النسخة العادية';
-      sw.href = './index.html?desktop=1';
+      sw.href = READ_ONLY_MODE ? './index.html?desktop=1' : './Zedan_Apartment_2D_3D_Studio.html?desktop=1';
     } else {
       sw.textContent = '📱 نسخة التلفون';
-      sw.href = './mobile.html';
+      sw.href = READ_ONLY_MODE ? './mobile.html' : './Zedan_Apartment_Mobile.html';
     }
   }
   resizeCanvas();
@@ -4821,10 +5388,20 @@ function bindTouchGestures() {
 }
 
 (function init() {
+  if (READ_ONLY_MODE) {
+    document.body.classList.add('readonly-mode');
+    const mobFab = document.getElementById('mobileDrawerFab');
+    if (mobFab) mobFab.textContent = '🧭 الغرف والجولة';
+    const mobHdr = document.querySelector('.mobile-drawer-header span');
+    if (mobHdr) mobHdr.textContent = '🧭 التجول والتحكم بالعرض';
+  }
   loadSavedState();
   populateDoorWallDropdown();
   bindWalkPadButtons();
   bindTouchGestures();
+  if (typeof THREE === 'undefined' && window.__loadThreeCDN && window.__threeStatus !== 'software_3d') {
+    window.__loadThreeCDN(false);
+  }
   const params = new URLSearchParams(window.location.search);
   const mode = params.get('mode');
   const capture = params.get('capture');
@@ -4833,7 +5410,7 @@ function bindTouchGestures() {
   const forceMobile = params.get('mobile') === '1';
   const forceDesktop = params.get('desktop') === '1';
   if (capture === '1') document.body.classList.add('capture-mode');
-  else if (forceMobile || (DEFAULT_MOBILE_UI && !forceDesktop)) {
+  else if (forceMobile || (DEFAULT_MOBILE_UI && !forceDesktop) || (window.innerWidth <= 768 && !forceDesktop && capture !== '1')) {
     setMobileUIMode(true);
   }
   if (theme && ['warm_real', 'daylight', 'cool_modern', 'night'].includes(theme)) setLightingTheme(theme);
@@ -4842,6 +5419,8 @@ function bindTouchGestures() {
   if (mode && ['blueprint', 'colored', '3d', 'walk'].includes(mode)) {
     setMode(mode);
     if (mode === 'walk' && tourT !== null && !isNaN(parseFloat(tourT))) window.setTourProgress(parseFloat(tourT));
+  } else if (READ_ONLY_MODE) {
+    setMode('walk');
   }
 })();
 </script>
